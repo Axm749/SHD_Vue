@@ -98,9 +98,8 @@
           accordion
           tile
         >
-          <v-expansion-panel
-            eager
-          >
+          <!-- СХД -->
+          <v-expansion-panel eager>
             <v-expansion-panel-header>
               <h2> СХД </h2>
             </v-expansion-panel-header>
@@ -108,11 +107,11 @@
               <div :class="noMargins=== true ? 'module_bg' : 'mx-n5'">
                 <shd
               />
-              </div>
-              
+              </div> 
             </v-expansion-panel-content>
           </v-expansion-panel>
 
+          <!-- Электропитание -->
           <v-expansion-panel eager>
             <v-expansion-panel-header><h2>электропитание</h2></v-expansion-panel-header>
             <v-expansion-panel-content>
@@ -124,12 +123,25 @@
             </v-expansion-panel-content>
           </v-expansion-panel>
 
+          <!-- Охлаждение -->
           <v-expansion-panel eager>
             <v-expansion-panel-header><h2>охлаждение</h2></v-expansion-panel-header>
             <v-expansion-panel-content>
               <div :class="noMargins=== true ? 'module_bg mx-n2' : 'mx-n5'">
                 <cooling
                   ref="nusli"
+                />
+              </div>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+
+          <!-- ВЛС -->
+          <v-expansion-panel eager>
+            <v-expansion-panel-header><h2>ВЛС</h2></v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <div :class="noMargins=== true ? 'module_bg mx-n2' : 'mx-n5'">
+                <vls
+                  ref="vls"
                 />
               </div>
             </v-expansion-panel-content>
@@ -150,6 +162,7 @@
 import power from './components/power.vue';
 import shd from './components/shd.vue';
 import cooling from './components/cooling.vue'
+import vls from './components/vls.vue'
 // import condition from './components/condition.vue'
 
 
@@ -160,6 +173,7 @@ export default {
     shd,
     power,
     cooling,
+    vls,
     
   },
 

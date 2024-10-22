@@ -1,8 +1,6 @@
 <template>
     <div
     >
-      
-  
       <!-- ввод требований -->
       <v-card 
         class="pa-5" 
