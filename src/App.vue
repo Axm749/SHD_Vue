@@ -1,60 +1,308 @@
 <template>
   <v-app>
-    <v-app-bar
-      app
-      color="primary"
-      dark
+    <div 
+      :class="$vuetify.theme.dark==false ? 'body_light' : 'body_dark mb-0'"
     >
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
+      <!-- шапка при необходимости -->
 
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
+
+      <!-- настройки -->
+      <div 
+        :class="noMargins === true ? 'ma-0' : 'ma-2 module_bg'"
+      >
+        <v-expansion-panels
+            accordion
+            tile
+          >
+            <v-expansion-panel>
+              <v-expansion-panel-header>
+                <h2>Расчет СХД</h2>
+                <template v-slot:actions>
+                  <v-icon>
+                    mdi-cog
+                  </v-icon>
+                </template>
+              </v-expansion-panel-header>
+              <v-expansion-panel-content
+              >
+                
+                <v-checkbox
+                  info
+                  hide-details
+                  label="Использовать альтернативное отображение"
+                  v-model="irregularView"
+                  @change="saveTheme"
+                />
+                <v-checkbox
+                  info
+                  hide-details
+                  label="Убрать отступы"
+                  v-model="noMargins"
+                  @change="saveTheme"
+                />
+
+                <v-switch
+                  v-model="$vuetify.theme.dark"
+                  inset
+                  @change="saveTheme"
+                  label="Тёмная тема"
+                  persistent-hint
+                />
+
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          
+        </v-expansion-panels>
+      </div>
+      
+      
+      <!-- основной вид -->
+      <div 
+        v-if="!irregularView"
+        :class="noMargins === true ? 'ma-0' : 'ma-2'"
+      >
+        <div 
+          :class="noMargins === true ? 'mt-2' : 'mt-2 module_bg'"
+        >
+          <shd
+            @Power="getpower"
+            @Usli="getUsli"
+          />
+        </div>
+        
+        <div 
+          :class="noMargins === true ? 'mt-2' : 'mt-2 module_bg'"
+        >
+          <power
+            ref="npower"
+          />
+        </div>
+        
+        <div 
+          :class="noMargins === true ? 'mt-2' : 'mt-2 module_bg'"
+        >
+          <cooling
+            ref="nusli"
+          />
+        </div>
       </div>
 
-      <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
+      <!-- альтернативный вид -->
+      <div 
+        v-if="irregularView"
+        :class="noMargins === true ? 'ma-0 mt-5' : 'ma-2 module_bg'"
       >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
-    </v-app-bar>
+        <!-- добавить свойство v-model="panel" -->
+        <v-expansion-panels
+          multiple
+          accordion
+          tile
+        >
+          <v-expansion-panel
+            eager
+          >
+            <v-expansion-panel-header>
+              <h2> СХД </h2>
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <div :class="noMargins=== true ? 'module_bg' : 'mx-n5'">
+                <shd
+              />
+              </div>
+              
+            </v-expansion-panel-content>
+          </v-expansion-panel>
 
-    <v-main>
-      <HelloWorld/>
-    </v-main>
+          <v-expansion-panel eager>
+            <v-expansion-panel-header><h2>электропитание</h2></v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <div :class="noMargins=== true ? 'module_bg' : 'mx-n5'">
+                <power
+                  ref="npower"
+                />
+              </div>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+
+          <v-expansion-panel eager>
+            <v-expansion-panel-header><h2>охлаждение</h2></v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <div :class="noMargins=== true ? 'module_bg mx-n2' : 'mx-n5'">
+                <cooling
+                  ref="nusli"
+                />
+              </div>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+          
+        </v-expansion-panels>
+      </div>
+      
+      
+
+    </div>
+  
   </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld';
+
+import power from './components/power.vue';
+import shd from './components/shd.vue';
+import cooling from './components/cooling.vue'
+// import condition from './components/condition.vue'
+
 
 export default {
   name: 'App',
 
   components: {
-    HelloWorld,
+    shd,
+    power,
+    cooling,
+    
   },
 
   data: () => ({
-    //
+    irregularView: true,
+    noMargins: true,
+    // panel: [0,1,2]
   }),
+
+  methods:{
+    getpower(){
+      this.$refs.npower.getPower()
+    },
+    getUsli(){
+      this.$refs.nusli.getusli()
+    },
+    saveTheme(){
+      localStorage.setItem('PD_VUE_DARK_THEME', this.$vuetify.theme.dark)
+      localStorage.setItem('PD_VUE_NO_PADDING', this.noMargins)
+      localStorage.setItem('PD_VUE_IRREGULAR_VIEW', this.irregularView)
+      console.log('saved theme')
+    }    
+  },
+  mounted(){
+      if(localStorage.getItem('PD_VUE_DARK_THEME')=='true'){
+        this.$vuetify.theme.dark = true
+      } else {
+        this.$vuetify.theme.dark = false
+      }
+
+      if(localStorage.getItem('PD_VUE_NO_PADDING')=='true'){
+        this.noMargins = true
+      } else {
+        this.noMargins = false
+      }
+
+      if(localStorage.getItem('PD_VUE_IRREGULAR_VIEW')=='true'){
+        this.irregularView = true
+      } else {
+        this.irregularView = false
+      }
+
+
+
+      // this.panel = []
+
+    }
 };
 </script>
+
+<style>
+
+body{
+  margin: 0;
+  padding: 0px;
+  width: 100%;
+  height: 100%;
+    /* background-size: 200% 200%; */
+    /* background-image: linear-gradient( 0deg, #2ebf91, #4286f4); */
+    /* background-image: linear-gradient( 120deg, #1288ab, #e542f4); */
+    /* background-image: linear-gradient( 120deg, #33691E, #4DD0E1); */
+    /* background-image: linear-gradient( 120deg, var(--v-accent-lighten1), var(--v-accent-lighten2)); */
+    /* animation: bg 5s ease infinite; */
+}
+
+.body_light{
+  /* background-image: linear-gradient( 0deg, #2ebf91, #4286f4); */
+  background-image: linear-gradient( 120deg, #33691E, #4DD0E1);
+  height: 100%;
+  background-size: 200% 200%;
+  animation: bg 5s ease infinite;
+}
+
+.body_dark{
+  /* background-image: linear-gradient( 120deg, #1f0000, #1e0013); */
+  background-image: linear-gradient( 120deg, #000000, #370000);
+  color: #111;
+
+
+  /* background-color: #000000; */
+  height: 100%;
+  background-size: 200% 200%;
+  animation: bg 5s ease infinite;
+
+  background-color: rgb(46, 46, 46);
+  height: 100%;
+}
+
+.theme--dark.v-card{
+  background-color: #000000;
+  /* background-image: linear-gradient( 120deg, #000000, #370000);
+  background-size: 200% 200%;
+  animation: bg 5s ease infinite; */
+}
+
+.theme--dark.v-expansion-panels .v-expansion-panel{
+  background-color: #000;
+}
+
+
+
+@keyframes bg {
+    0%{
+        background-position: 0%, 100%;
+        
+    }
+    50%{
+        background-position: 100% 0%;
+    }
+    100%{
+        background-position: 0%, 100%;
+    } 
+}
+
+
+.container{
+    padding: 20px;
+    margin-top: 20px;
+    width: 90%;
+    border-radius: 20px;
+    background-color:rgb(245, 244, 248);
+}
+
+
+
+input::-webkit-inner-spin-button, input::-webkit-outer-spin-button{
+-webkit-appearance: none;
+}
+
+.module_bg{
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 0px;
+  padding: 3px;
+  margin-top: 20px;
+  /* box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.127); */
+  /* margin: 5px; */
+}
+
+.inCardTab{
+  background-color: rgba(0, 0, 0, 0.03);
+  border-radius: 5px;
+  padding: 5px;
+}
+
+
+</style>
