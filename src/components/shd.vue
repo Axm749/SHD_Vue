@@ -3,7 +3,10 @@
   >
     <!-- заголовок -->
     <div class="header">
-      <headerTab title="Система Хранения Данных"></headerTab>
+      <headerTab 
+      title="Система Хранения Данных"
+      v-bind:info = "componentInfo"
+      ></headerTab>
     </div>
     
     <!-- ввод требований -->
@@ -11,11 +14,6 @@
       class="pa-5 rounded-b"
       tile 
     >
-      <!-- <h1>Система хранения данных</h1> -->
-
-
-      
-
 
       <v-text-field
         outlined
@@ -261,7 +259,7 @@
       <!-- доступ к вычислениям видеонаблюдения -->
       <template v-if="options.value == 'video'">
         
-        <v-btn
+        <!-- <v-btn
           max-width="100%"
           color="primary"
           v-bind="dialog"
@@ -278,11 +276,11 @@
           height="1200px"
         >
           <video1 @cam_bitrate="getMbrVideo" />
-        </v-navigation-drawer>
+        </v-navigation-drawer> -->
         
         
         
-        <!-- <v-dialog
+        <v-dialog
           v-model="dialog"
           novalidate
           width="auto"
@@ -303,7 +301,7 @@
 
           <video1 @cam_bitrate="getMbrVideo" />
 
-        </v-dialog> -->
+        </v-dialog>
       </template>
 
 

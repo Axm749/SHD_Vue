@@ -36,39 +36,59 @@
         <v-spacer/>
         <v-btn 
         icon
+        @click="dialog=!dialog"
         >
           <v-icon>mdi-information-outline</v-icon>
         </v-btn>
       </v-toolbar>
+
+
+        <v-dialog
+            v-model="dialog"
+            novalidate
+            width="auto"
+            aria-hidden="true"
+        >
+            <tabInfo v-bind:info = "info"></tabInfo>
+
+        </v-dialog>
     </div>
   
     
   
   
-  </template>
-  
-  <script>
-  export default {
+</template>
+
+<script>
+import tabInfo from './tabInfo.vue';
+
+export default {
     name: "headerTab",
+    components: {
+        tabInfo,
+    },
     data() {
-      return {
-        name: "name"
-      };
+        return {
+        name: "name",
+        dialog: false,
+
+        };
     },
     props: {
         title: String,
+        info: Object
     },
     methods: {
-      
-      
-      //Старт
-      start() {
+        
+        
+        //Старт
+        start() {
 
-      }, 
-  
-     
+        }, 
+
+        
     },
-  };
-  </script>
+};
+</script>
   
   
