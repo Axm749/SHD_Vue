@@ -85,6 +85,14 @@
             ref="nusli"
           />
         </div>
+
+        <div 
+          :class="noMargins === true ? 'mt-2' : 'mt-2 module_bg'"
+        >
+          <vls
+            ref="vls"
+          />
+        </div>
       </div>
 
       <!-- альтернативный вид -->

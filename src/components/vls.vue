@@ -1,11 +1,16 @@
 <template>
     <div
     >
+      <!-- заголовок -->
+      <div class="header">
+        <headerTab title="Воздушные линии связи"></headerTab>
+      </div>
       <!-- ввод требований -->
       <v-card 
+        tile
         class="pa-5" 
       >
-        <h1>Воздушные линии связи</h1>
+        <!-- <h1>Воздушные линии связи</h1> -->
           
         <!-- старт -->
         <v-btn 
@@ -45,8 +50,12 @@
   </template>
   
   <script>
+  import headerTab from './ui/commonUi/header.vue';
   export default {
     name: "vls_vue",
+    components: {
+    headerTab,
+  },
     data() {
       return {
         snackbar: false,      // окошко об ошибке

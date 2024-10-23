@@ -8,6 +8,7 @@
                 <headerTab title="Видео. Битрейт и PPM"></headerTab>
             </div>
             
+            <!-- поле ввода -->
             <v-card
                 class="pa-5"
                 tile
