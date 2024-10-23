@@ -1,13 +1,21 @@
 <template>
   <div
   >
+    <!-- заголовок -->
+    <div class="header">
+      <headerTab title="Система Хранения Данных"></headerTab>
+    </div>
     
-
     <!-- ввод требований -->
     <v-card 
-      class="pa-5" 
+      class="pa-5 rounded-b"
+      tile 
     >
-      <h1>Система хранения данных</h1>
+      <!-- <h1>Система хранения данных</h1> -->
+
+
+      
+
 
       <v-text-field
         outlined
@@ -344,11 +352,13 @@
 
 <script>
 import video1 from "./video1.vue";
+import headerTab from "./ui/commonUi/header.vue";
 
 export default {
   name: "shd_vue",
   components: {
     video1,
+    headerTab,
   },
   data() {
     return {

@@ -231,17 +231,14 @@ body{
   padding: 0px;
   width: 100%;
   height: 100%;
-    /* background-size: 200% 200%; */
-    /* background-image: linear-gradient( 0deg, #2ebf91, #4286f4); */
-    /* background-image: linear-gradient( 120deg, #1288ab, #e542f4); */
-    /* background-image: linear-gradient( 120deg, #33691E, #4DD0E1); */
-    /* background-image: linear-gradient( 120deg, var(--v-accent-lighten1), var(--v-accent-lighten2)); */
-    /* animation: bg 5s ease infinite; */
 }
 
 .body_light{
+  background-image: linear-gradient( 0deg, #4e1600, #a07236);
+
   /* background-image: linear-gradient( 0deg, #2ebf91, #4286f4); */
-  background-image: linear-gradient( 120deg, #33691E, #4DD0E1);
+
+  /* background-image: linear-gradient( 120deg, #33691E, #4DD0E1); */
   height: 100%;
   background-size: 200% 200%;
   animation: bg 5s ease infinite;
@@ -249,7 +246,7 @@ body{
 
 .body_dark{
   /* background-image: linear-gradient( 120deg, #1f0000, #1e0013); */
-  background-image: linear-gradient( 120deg, #000000, #370000);
+  background-image: linear-gradient( 120deg, #000000, #2b0000);
   color: #111;
 
 

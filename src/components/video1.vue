@@ -2,12 +2,18 @@
     <div>
         <!-- через геометрические параметры -->
         <div class="module_bg">
+            
+            <!-- заголовок -->
+            <div class="header">
+                <headerTab title="Видео. Битрейт и PPM"></headerTab>
+            </div>
+            
             <v-card
                 class="pa-5"
                 tile
             >
                     
-                <h1>Видео (битрейт и PPM)</h1>
+                <!-- <h1>Видео (битрейт и PPM)</h1> -->
                 
                 <v-text-field
                     flat
@@ -213,8 +219,12 @@
 </template>
 
 <script>
+import headerTab from "./ui/commonUi/header.vue";
 
 export default {
+    components: {
+        headerTab,
+    },
     name: 'video_vue',
     data:() =>({
         PPM_zones: 2, //Зоны PPM
