@@ -1,7 +1,12 @@
 <template>
   <div>
-  <v-card class="pa-5">
-      <h1>Электропитание</h1>
+    <!-- заголовок -->
+    <div class="header">
+        <headerTab title="Электроснабжение"></headerTab>
+    </div>
+
+    <v-card class="pa-5">
+      <!-- <h1>Электропитание</h1> -->
 
       
       <v-text-field
@@ -111,55 +116,61 @@
 </template>
 
 <script>
-  export default{
-      name: 'power_vue',
-      data: () =>({
-          voultage: '...', //Напряжение аккумуляторных батарей
-          power: '...',    //Мощность для питания СХД
-          kpd: '...',      //КПД баттарей
-          batteries: '...',//Кол-во батарей
-          capacity: '...', //Ёмкость батарей
-          result:0,        //Параметр, отвечающий за вывод результата раздела электропитания
-          self: false,     //Параметр, отвечающий за ручной ввод мощности для питания СХД
-          started: false,  //Параметр, отвечающий за вывод результатов работы электропитания после нажатия "Старт"
-          rule: [
-              value => !!value || 'Необходимо заполнить это поле.',
-          ],                       //Правила для текстовых полей
-          snackbar: false,      // окошко об ошибке
-          timeout: 2500,
-          errorText: 'Неверно введены данные или они отсутствуют',
+import headerTab from './ui/commonUi/header.vue';
+  
+    
+export default{
+    name: 'power_vue',
+    components: {
+        headerTab,
+        },
+    data: () =>({
+        voultage: '...', //Напряжение аккумуляторных батарей
+        power: '...',    //Мощность для питания СХД
+        kpd: '...',      //КПД баттарей
+        batteries: '...',//Кол-во батарей
+        capacity: '...', //Ёмкость батарей
+        result:0,        //Параметр, отвечающий за вывод результата раздела электропитания
+        self: false,     //Параметр, отвечающий за ручной ввод мощности для питания СХД
+        started: false,  //Параметр, отвечающий за вывод результатов работы электропитания после нажатия "Старт"
+        rule: [
+            value => !!value || 'Необходимо заполнить это поле.',
+        ],                       //Правила для текстовых полей
+        snackbar: false,      // окошко об ошибке
+        timeout: 2500,
+        errorText: 'Неверно введены данные или они отсутствуют',
 
-      }),
-      methods:{
-          start(){
-              
-              this.started = true
-              if(this.self){ //Расчёт при ручном вводе
-                  this.result =0.1 * Math.ceil(
-                      10*this.voultage*this.capacity
-                      *this.batteries*this.kpd
-                      *0.85/this.power)
+    }),
+    methods:{
+        start(){
+            
+            this.started = true
+            if(this.self){ //Расчёт при ручном вводе
+                this.result =0.1 * Math.ceil(
+                    10*this.voultage*this.capacity
+                    *this.batteries*this.kpd
+                    *0.85/this.power)
 
-                  console.log("Время работы устройства:   ", this.result, " ч");
-              }else{         //Расчёт при автоматическом вводе
-                  this.power = ''
-                  this.power = localStorage.getItem('wats')
-                  this.result = 0.1 * Math.ceil(
-                      10*this.voultage*this.capacity
-                      *this.batteries*this.kpd
-                      *0.85/this.power
-                      )
-                  console.log("Время работы устройства:   ", this.result, " ч"); 
-              }
-              if (!this.result || this.result== Infinity){
-                  this.snackbar = true
-                  this.started = false
-                  return
-              }
-          },              //Ф-ция старт
-          getPower(){
-              return this.power = localStorage.getItem('wats')
-          }               //Ф-ция, отвечающая за приём параметра мощности из раздела СХД
+                console.log("Время работы устройства:   ", this.result, " ч");
+            }else{         //Расчёт при автоматическом вводе
+                this.power = ''
+                this.power = localStorage.getItem('wats')
+                this.result = 0.1 * Math.ceil(
+                    10*this.voultage*this.capacity
+                    *this.batteries*this.kpd
+                    *0.85/this.power
+                    )
+                console.log("Время работы устройства:   ", this.result, " ч"); 
+            }
+            if (!this.result || this.result== Infinity){
+                this.snackbar = true
+                this.started = false
+                return
+            }
+        },              //Ф-ция старт
+        getPower(){
+            return this.power = localStorage.getItem('wats')
+        }               //Ф-ция, отвечающая за приём параметра мощности из раздела СХД
       },
       mounted(){
           this.getPower()

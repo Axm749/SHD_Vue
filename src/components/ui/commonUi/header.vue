@@ -4,19 +4,18 @@
     <div>
       <v-toolbar
         dark
-        extended
         src='./images/autumnBg.jpg'
       >
         <v-app-bar-nav-icon/>
 
         <v-toolbar-title> {{this.title}} </v-toolbar-title>
 
-        <v-spacer/>
+        <!-- <v-spacer/>
         <v-btn 
         icon
         >
           <v-icon>mdi-export</v-icon>
-        </v-btn>
+        </v-btn> -->
       </v-toolbar>
     </div>
   
