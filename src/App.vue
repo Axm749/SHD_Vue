@@ -256,6 +256,7 @@ body{
   animation: bg 5s ease infinite;
 
   background-color: rgb(46, 46, 46);
+  /* color: #8f3900; */
   height: 100%;
 }
 
