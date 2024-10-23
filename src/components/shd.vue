@@ -260,7 +260,29 @@
 
       <!-- доступ к вычислениям видеонаблюдения -->
       <template v-if="options.value == 'video'">
-        <v-dialog
+        
+        <v-btn
+          max-width="100%"
+          color="primary"
+          v-bind="dialog"
+          @click="getVideo"
+          class="mt-5 mr-5"
+          ><v-icon>mdi-cog</v-icon>
+          Дополнительно
+        </v-btn>
+
+        <v-navigation-drawer
+          v-model="dialog"
+          absolute
+          temporary
+          height="1200px"
+        >
+          <video1 @cam_bitrate="getMbrVideo" />
+        </v-navigation-drawer>
+        
+        
+        
+        <!-- <v-dialog
           v-model="dialog"
           novalidate
           width="auto"
@@ -268,7 +290,6 @@
           class="mt-5"
         >
           <template v-slot:activator="{ props }">
-            <!-- <br> -->
             <v-btn
               max-width="100%"
               color="primary"
@@ -282,7 +303,7 @@
 
           <video1 @cam_bitrate="getMbrVideo" />
 
-        </v-dialog>
+        </v-dialog> -->
       </template>
 
 
@@ -366,6 +387,24 @@ export default {
       timeout: 2500,
       errorText: 'Неверно введены данные или они отсутствуют',
 
+
+      // для пункта с информацией о модуле
+      componentInfo: {
+        name: 'СХД',
+        incomes: [
+          'число устройств выдающих усреднённое значение битрейта', 'Количество дней (суток) на протяжении которых информация должна храниться', 
+          'Значение битрейта выбирается из предустановленных, рассчитывается в соответствующем модуле для видеокамер или вводится вручную при необходимости',
+        ],
+        outcomes: [
+          'Число узлов необходимое для удовлетворения данных условий',
+          'Объём хранимой информации',
+          'Прочие данные, что могут пригодиться профессионалам'], 
+        description: 'Первый созданный модуль. Представляет из себя расчет объёма системы хранения данных для систем с усреднённым входным битрейтом',
+        disclaimers: [
+          'округления идут в большую сторону, предполагается наихудший сценарий'
+        ]
+      
+      },
 
       convServParam: [
         {id: 0, title: `сервер управления`, count: 1, volume: 300},

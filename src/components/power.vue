@@ -4,9 +4,10 @@
     <div class="header">
         <headerTab title="Электроснабжение"></headerTab>
     </div>
-
-    <v-card class="pa-5">
-      <!-- <h1>Электропитание</h1> -->
+    
+    <!-- поля ввода -->
+    <v-card class="pa-5" tile>
+      
 
       
       <v-text-field
