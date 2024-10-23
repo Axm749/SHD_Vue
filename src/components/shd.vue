@@ -267,9 +267,9 @@
           class="mt-5 mr-5"
           ><v-icon>mdi-cog</v-icon>
           Дополнительно
-        </v-btn>
+        </v-btn> -->
 
-        <v-navigation-drawer
+        <!-- <v-navigation-drawer
           v-model="dialog"
           absolute
           temporary

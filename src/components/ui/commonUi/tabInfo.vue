@@ -18,24 +18,85 @@
     -->
   
   <div class="module_bg">
-    <v-card 
-    class="pa-5"
-    tile
-    >
-      <v-card-title>
-        Информация о разделе
-      </v-card-title>
+    <v-card tile>
+
 
       <!-- если информации нет -->
       <template v-if="!this.info">
         <p>there is no info... yet</p>
-
+        <h2 class="text-center"> T~T </h2>
       </template>
 
+      <!-- если информация есть -->
+      <div v-if="this.info">
+        <v-toolbar
+          src="./images/sunsetForestBg.webp"
+          dark
+          prominent
+        >
+          <!-- <v-app-bar-nav-icon color="white"></v-app-bar-nav-icon> -->
 
+          <v-toolbar-title>
+            Информация о модуле
+          </v-toolbar-title>
+<!-- 
+          <v-spacer></v-spacer>
 
-      {{ this.info }}
-    
+          <v-btn
+            color="white"
+            icon
+          >
+            <v-icon>mdi-dots-vertical</v-icon>
+          </v-btn> -->
+        </v-toolbar>
+        <div class="pa-5">
+
+          <h1>
+            {{ info.name }}
+          </h1>
+
+          <h3 class="subheading">
+            Описание
+          </h3>
+          <p>{{ info.description }}</p>
+
+          
+
+          <!-- входные параметры -->
+          <div class="mt-5">
+            <h3 class="subheading">
+              входные параметры
+            </h3>
+            <li v-for="income in info.incomes" :key="income.incomes">
+              {{ income }}
+            </li>
+          </div>
+
+          <!-- выходные параметры -->
+          <div class="mt-5">
+            <h3 class="subheading">
+              выходные параметры
+            </h3>
+            <li v-for="outcome in info.outcomes" :key="outcome.outcomes">
+              {{ outcome }}
+            </li>
+          </div>
+
+          <!-- важные замечания -->
+          <div class="mt-5">
+            <h3 class="subheading">
+              Важные замечания
+            </h3>
+            <li v-for="disclaimer in info.disclaimers" :key="disclaimer.disclaimers">
+              {{ disclaimer }}
+            </li>
+          </div>
+
+        </div>
+
+        
+
+      </div>    
     </v-card>
 
   </div>
@@ -47,10 +108,18 @@ export default {
   data() {
     return {
       name: "name"
+      
     };
   },
   props: {
       info: Object,
+      // Info: {
+      //   name: 'string',
+      //   incomes: ['string', 'string', 'string'],
+      //   outcomes: ['string', 'string', 'string'],
+      //   description: 'string',
+      //   disclaimers: ['string', 'string', 'string']
+      // },
   },
   methods: {
     

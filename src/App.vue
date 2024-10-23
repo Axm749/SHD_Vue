@@ -314,6 +314,7 @@ input::-webkit-inner-spin-button, input::-webkit-outer-spin-button{
   border-radius: 0px;
   padding: 3px;
   margin-top: 20px;
+  width: auto;
   /* box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.127); */
   /* margin: 5px; */
 }
