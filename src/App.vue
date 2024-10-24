@@ -6,54 +6,7 @@
       <!-- шапка при необходимости -->
 
 
-      <!-- настройки -->
-      <div 
-        :class="noMargins === true ? 'ma-0' : 'ma-2 module_bg'"
-      >
-        <v-expansion-panels
-            accordion
-            tile
-          >
-            <v-expansion-panel>
-              <v-expansion-panel-header>
-                <h2>Расчет СХД</h2>
-                <template v-slot:actions>
-                  <v-icon>
-                    mdi-cog
-                  </v-icon>
-                </template>
-              </v-expansion-panel-header>
-              <v-expansion-panel-content
-              >
-                
-                <v-checkbox
-                  info
-                  hide-details
-                  label="Использовать альтернативное отображение"
-                  v-model="irregularView"
-                  @change="saveTheme"
-                />
-                <v-checkbox
-                  info
-                  hide-details
-                  label="Убрать отступы"
-                  v-model="noMargins"
-                  @change="saveTheme"
-                />
-
-                <v-switch
-                  v-model="$vuetify.theme.dark"
-                  inset
-                  @change="saveTheme"
-                  label="Тёмная тема"
-                  persistent-hint
-                />
-
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          
-        </v-expansion-panels>
-      </div>
+      
       
       
       <!-- основной вид -->
@@ -158,7 +111,54 @@
         </v-expansion-panels>
       </div>
       
-      
+      <!-- настройки -->
+      <div 
+        :class="noMargins === true ? 'ma-0' : 'ma-2 module_bg'"
+      >
+        <v-expansion-panels
+            accordion
+            tile
+          >
+            <v-expansion-panel>
+              <v-expansion-panel-header>
+                <h2>Расчет СХД</h2>
+                <template v-slot:actions>
+                  <v-icon>
+                    mdi-cog
+                  </v-icon>
+                </template>
+              </v-expansion-panel-header>
+              <v-expansion-panel-content
+              >
+                
+                <v-checkbox
+                  info
+                  hide-details
+                  label="Использовать альтернативное отображение"
+                  v-model="irregularView"
+                  @change="saveTheme"
+                />
+                <v-checkbox
+                  info
+                  hide-details
+                  label="Убрать отступы"
+                  v-model="noMargins"
+                  @change="saveTheme"
+                />
+
+                <v-switch
+                  v-model="$vuetify.theme.dark"
+                  inset
+                  @change="saveTheme"
+                  label="Тёмная тема"
+                  persistent-hint
+                />
+
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          
+        </v-expansion-panels>
+      </div>
 
     </div>
   

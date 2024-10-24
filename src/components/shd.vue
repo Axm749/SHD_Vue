@@ -12,7 +12,8 @@
     <!-- ввод требований -->
     <v-card 
       class="pa-5 rounded-b"
-      tile 
+      tile
+      flat 
     >
 
       <v-text-field

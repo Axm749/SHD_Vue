@@ -5,7 +5,10 @@
             
             <!-- заголовок -->
             <div class="header">
-                <headerTab title="Видео. Битрейт и PPM"></headerTab>
+                <headerTab 
+                    title="Видео. Битрейт и PPM"
+                    v-bind:info = "componentInfo"
+                ></headerTab>
             </div>
             
             <!-- поле ввода -->
@@ -22,7 +25,6 @@
                     required
                     outlined
                     clearable
-                    label="Число зон PPM"
                     :rules="rule"
                     hide-details="auto"
                     v-model.number="PPM_zones"
@@ -43,7 +45,6 @@
                     required
                     outlined
                     clearable
-                    label="Высота установки камеры (м)"
                     :rules="rule"
                     hide-details="auto"
                     v-model.number="Cam_height"
@@ -58,6 +59,24 @@
                     </template>
                 </v-text-field>
 
+                <v-text-field
+                    flat
+                    type="number"
+                    required
+                    outlined
+                    clearable
+                    :rules="rule"
+                    hide-details="auto"
+                    v-model.number="cam_angle"
+                    class="mt-5"
+                >
+                    <template v-slot:label>
+                        <toolbarInfo
+                            title="Угол наклона камеры (градусы)"
+                            imageUrl='forestBg'
+                        />
+                    </template>
+                </v-text-field>
 
                 <v-text-field
                     flat
@@ -65,27 +84,20 @@
                     required
                     outlined
                     clearable
-                    label="Угол наклона камеры (градусы)"
-                    :rules="rule"
-                    hide-details="auto"
-                    v-model.number="cam_angle"
-                    class="mt-5"
-                >
-                
-                </v-text-field>
-                <v-text-field
-                    flat
-                    type="number"
-                    required
-                    outlined
-                    clearable
-                    label="Вертикальный угол обзора объектива (градусы)"
                     :rules="rule"
                     hide-details="auto"
                     v-model.number="Vertical_cam_angle"
                     class="mt-5"
-                />
-                    <v-text-field
+                >
+                    <template v-slot:label>
+                        <toolbarInfo
+                            title="Вертикальный угол обзора объектива (градусы)"
+                            imageUrl='forestBg'
+                        />
+                    </template>
+                </v-text-field>
+                
+                <v-text-field
                     flat
                     type="number"
                     required
@@ -96,32 +108,54 @@
                     hide-details="auto"
                     v-model.number="Horizontal_cam_angle"
                     class="mt-5"
-                />
-                    <v-text-field
-                    flat
-                    type="number"
-                    required
-                    outlined
-                    clearable
-                    label="Дальность обзора (м)"
-                    :rules="rule"
-                    hide-details="auto"
-                    v-model.number="Camera_reach"
-                    class="mt-5"
-                />
+                >
+                    <template v-slot:label>
+                        <toolbarInfo
+                            title="Горизонтальный угол обзора объектива (градусы)"
+                            imageUrl='forestBg'
+                        />
+                    </template>
+                </v-text-field>
+                    
                 <v-text-field
                     flat
                     type="number"
                     required
                     outlined
                     clearable
-                    label="Разрешение по горизонтали (пикселей)"
+                    :rules="rule"
+                    hide-details="auto"
+                    v-model.number="Camera_reach"
+                    class="mt-5"
+                > 
+                    <template v-slot:label>
+                        <toolbarInfo
+                            title="Дальность обзора (м)"
+                            imageUrl='forestBg'
+                        />
+                    </template>
+                </v-text-field>
+                
+                <v-text-field
+                    flat
+                    type="number"
+                    required
+                    outlined
+                    clearable
                     :rules="rule"
                     hide-details="auto"
                     v-model.number="Resolution_X"
                     class="mt-5"
-                />
-                    <v-text-field
+                >
+                    <template v-slot:label>
+                        <toolbarInfo
+                            title="Разрешение по горизонтали (пикселей)"
+                            imageUrl='forestBg'
+                        />
+                    </template>
+                </v-text-field>
+
+                <v-text-field
                     flat
                     type="number"
                     required
@@ -132,8 +166,16 @@
                     hide-details="auto"
                     v-model.number="Resolution_Y"
                     class="mt-5"
-                />
-                    <v-text-field
+                >
+                    <template v-slot:label>
+                        <toolbarInfo
+                            title="Разрешение по вертикали (пикселей)"
+                            imageUrl='forestBg'
+                        />
+                    </template>                
+                </v-text-field>
+
+                <v-text-field
                     type="number"
                     :disabled="self === false "
                     outlined
@@ -276,8 +318,22 @@ export default {
     },
     name: 'video_vue',
     data:() =>({
-        imageForest: './ui/commonUi/images/autumnBg.jpg',
+        // для пункта с информацией о модуле
+        componentInfo: {
+            name: 'Видеонаблюдение',
+            incomes: [
+            'входная величина', 
+            'входная величина',
+            ],
+            outcomes: [
+            'выходная величина',
+            ], 
+            description: 'Описание',
+            disclaimers: [
+            'округления идут в большую сторону, предполагается наихудший сценарий'
+            ]
         
+        },
         
         PPM_zones: 2, //Зоны PPM
         Cam_height:3, //Высота установки камеры
