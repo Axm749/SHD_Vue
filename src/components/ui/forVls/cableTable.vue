@@ -1,28 +1,29 @@
 <!-- элемент для внесения сюда всех таблиц для выбора параметров кабеля -->
 <template>
     <div>
-    
-        <v-data-table
-        v-bind:headers="headers"
-        v-bind:items="items"
-        hide-default-footer
-        
-        >
-            <template v-slot:header>
-                <thead>
-                <tr>
-                    <th style="border-bottom: none">Марка</th>
-                    <th colspan="3">Растягивающее усиление, кН</th>
-                    <th colspan="1" style="border-bottom: none">Вес, кг/мм</th>
-                    <th colspan="1" style="border-bottom: none">Диаметр, мм</th>
-                    <th colspan="1" style="border-bottom: none">Сечение, мм<sup>2</sup></th>
-                    <th colspan="3">Модуль упругости, кН/мм<sup>2</sup></th>
-                    <th colspan="1" style="border-bottom: none">ТКЛР<sup>4</sup>, 1/°C, 10<sup>-6</sup></th>                 
-                </tr>
-                </thead>
-            </template>
-        </v-data-table>
+        <div v-for="item in data" :key="item.name">
+            <v-data-table
+            v-bind:headers="headers"
+            v-bind:items="item.content"
+            hide-default-footer
+            
+            >
+                <template v-slot:header>
+                    <thead>
+                    <tr>
+                        <th style="border-bottom: none">Марка</th>
+                        <th colspan="3">Растягивающее усиление, кН</th>
+                        <th colspan="1" style="border-bottom: none">Вес, кг/мм</th>
+                        <th colspan="1" style="border-bottom: none">Диаметр, мм</th>
+                        <th colspan="1" style="border-bottom: none">Сечение, мм<sup>2</sup></th>
+                        <th colspan="3">Модуль упругости, кН/мм<sup>2</sup></th>
+                        <th colspan="1" style="border-bottom: none">ТКЛР<sup>4</sup>, 1/°C, 10<sup>-6</sup></th>                 
+                    </tr>
+                    </thead>
+                </template>
+            </v-data-table>
 
+        </div>
             
     </div>
 </template>
@@ -31,7 +32,10 @@
 
 
 export default {
-    name: "vlsTab;e",
+    name: "cableTable",
+    props:{
+        data: Array,
+    },
     data: () => ({
         started: false, //Параметр, отвечающий за вывод результатов работы программы при нажатии "Старт"
         analog: false, //Параметр, отвечающий за вывод результатов работы программы при аналоговом расчёте
@@ -58,139 +62,10 @@ export default {
         { text: "", value: "TKLR", sortable: false },
 
         ],
-        items: [
-        {
-            value: false,
-            Mark: "ДПТ до 48ОВ (6x8)",
-            MDRN: 4,
-            MRN: 1.0,
-            MPR: 8.48,
-            weight: 115.6,
-            diameter: 12.2,
-            Slice: 116.3,
-            L_nach: 4.56,
-            L_Kon: 4.92,
-            L_feat: 3.19,
-            TKLR: 16.92,
-        },
-        {
-            value: false,
-            MDRN: 6,
-            MRN: 1.5,
-            MPR: 8.48,
-            weight: 115.6,
-            diameter: 12.2,
-            Slice: 116.3,
-            L_nach: 4.56,
-            L_Kon: 4.92,
-            L_feat: 3.19,
-            TKLR: 16.92,
-        },
-        {
-            value: false,
-            MDRN: 7,
-            MRN: 1.75,
-            MPR: 9.45,
-            weight: 116.6,
-            diameter: 12.2,
-            Slice: 117.0,
-            L_nach: 5.05,
-            L_Kon: 5.45,
-            L_feat: 3.54,
-            TKLR: 14.89,
-        },
-        // {
-        //   value: false,
-        //   MDRN: 4,
-        //   MRN: 1.0,
-        //   MPR: 8.48,
-        //   weight: 115.6,
-        //   diameter: 12.2,
-        //   Slice: 116.3,
-        //   L_nach: 4.56,
-        //   L_Kon: 4.92,
-        //   L_feat: 3.19,
-        //   TKLR: 16.92,
-        // },
-        // {
-        //   value: false,
-        //   MDRN: 4,
-        //   MRN: 1.0,
-        //   MPR: 8.48,
-        //   weight: 115.6,
-        //   diameter: 12.2,
-        //   Slice: 116.3,
-        //   L_nach: 4.56,
-        //   L_Kon: 4.92,
-        //   L_feat: 3.19,
-        //   TKLR: 16.92,
-        // },
-        // {
-        //   value: false,
-        //   MDRN: 4,
-        //   MRN: 1.0,
-        //   MPR: 8.48,
-        //   weight: 115.6,
-        //   diameter: 12.2,
-        //   Slice: 116.3,
-        //   L_nach: 4.56,
-        //   L_Kon: 4.92,
-        //   L_feat: 3.19,
-        //   TKLR: 16.92,
-        // },
-        // {
-        //   value: false,
-        //   MDRN: 4,
-        //   MRN: 1.0,
-        //   MPR: 8.48,
-        //   weight: 115.6,
-        //   diameter: 12.2,
-        //   Slice: 116.3,
-        //   L_nach: 4.56,
-        //   L_Kon: 4.92,
-        //   L_feat: 3.19,
-        //   TKLR: 16.92,
-        // },
-        // {
-        //   value: false,
-        //   MDRN: 4,
-        //   MRN: 1.0,
-        //   MPR: 8.48,
-        //   weight: 115.6,
-        //   diameter: 12.2,
-        //   Slice: 116.3,
-        //   L_nach: 4.56,
-        //   L_Kon: 4.92,
-        //   L_feat: 3.19,
-        //   TKLR: 16.92,
-        // },
-        // {
-        //   value: false,
-        //   MDRN: 4,
-        //   MRN: 1.0,
-        //   MPR: 8.48,
-        //   weight: 115.6,
-        //   diameter: 12.2,
-        //   Slice: 116.3,
-        //   L_nach: 4.56,
-        //   L_Kon: 4.92,
-        //   L_feat: 3.19,
-        //   TKLR: 16.92,
-        // },
-        // {
-        //   value: false,
-        //   MDRN: 4,
-        //   MRN: 1.0,
-        //   MPR: 8.48,
-        //   weight: 115.6,
-        //   diameter: 12.2,
-        //   Slice: 116.3,
-        //   L_nach: 4.56,
-        //   L_Kon: 4.92,
-        //   L_feat: 3.19,
-        //   TKLR: 16.92,
-        // },
-        ],
+
+
+
+
     }),
     methods: {
         
@@ -231,3 +106,68 @@ border-bottom: none
 }
 
 </style>
+
+
+<!-- [ 
+{ 
+"name": "ДПТ до 48ОВ", 
+"content": [ 
+    { 
+        "MDRN": 4, 
+        "MRN": 1, 
+        "MPR": 8.48, 
+        "weight": 115.6, 
+        "diameter": 12.2, 
+        "Slice": 116.3, 
+        "L_nach": 4.56, 
+        "L_Kon": 4.92, 
+        "L_feat": 3.19, 
+        "TKLR": 16.92 
+    }, 
+    { 
+        "MDRN": 6, 
+        "MRN": 1.5, 
+        "MPR": 8.48, 
+        "weight": 115.6, 
+        "diameter": 12.2, 
+        "Slice": 116.3, 
+        "L_nach": 4.56, 
+        "L_Kon": 4.92, 
+        "L_feat": 3.19, 
+        "TKLR": 16.92 
+    }, 
+    { 
+        "MDRN": 7, 
+        "MRN": 1.75, 
+        "MPR": 9.45, 
+        "weight": 116.6, 
+        "diameter": 12.2, 
+        "Slice": 117, 
+        "L_nach": 5.05, 
+        "L_Kon": 5.45, 
+        "L_feat": 3.54, 
+        "TKLR": 14.89 
+    }, 
+    {
+    } 
+] 
+}, 
+{ 
+"name": "ДПТ до 72ОВ", 
+"content": 
+    [ 
+        { 
+            "MDRN": 7, 
+            "MRN": 1.75, 
+            "MPR": 9.45, 
+            "weight": 116.6, 
+            "diameter": 12.2, 
+            "Slice": 117, 
+            "L_nach": 5.05, 
+            "L_Kon": 5.45, 
+            "L_feat": 3.54, 
+            "TKLR": 14.89 
+        }, 
+    ] 
+} 
+] -->

@@ -14,7 +14,13 @@
       class="pa-5" 
     >
       <!-- <h1>Воздушные линии связи</h1> -->
-      <cableTable/>
+
+
+
+
+
+      <!-- выбор марки кабеля -->
+      <tableSpace/>
         
       <!-- старт -->
       <v-btn 
@@ -55,13 +61,13 @@
 
 <script>
 import headerTab from './ui/commonUi/header.vue';
-import cableTable from './ui/forVls/cableTable.vue';
+import tableSpace from './ui/forVls/tableSpace.vue';
 
 export default {
   name: "vls_vue",
   components: {
     headerTab,
-    cableTable,
+    tableSpace,
   },
   data() {
     return {
