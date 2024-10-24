@@ -4,7 +4,7 @@
       <v-tooltip
         left
         max-width="350px"
-        min-width="200px"
+        min-width="400px"
       >
         <template v-slot:activator="{ on }">
           <p>
@@ -12,7 +12,6 @@
                 mdi-help-circle-outline
             </v-icon>
               {{ title }}     
-              {{ title }}
           </p>
         </template>
 
