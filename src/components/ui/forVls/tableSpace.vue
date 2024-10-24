@@ -100,9 +100,9 @@ export default {
                         TKLR: 14.89 
                     }, 
                     {
-                        Mark: "",
-                        MDRN: 7,
-                        MRN: 1.75,
+                        Mark: "(данные от балды)",
+                        MDRN: 100,
+                        MRN: 1.55,
                         MPR: 9.45,
                         weight: 116.6,
                         diameter: 12.2,

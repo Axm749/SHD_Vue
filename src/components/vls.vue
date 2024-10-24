@@ -20,7 +20,29 @@
 
 
       <!-- выбор марки кабеля -->
-      <tableSpace/>
+      <v-dialog
+          v-model="chooseCable"
+          transition="dialog-bottom-transition"
+          width="80%"
+          :scrollable="false"
+          aria-hidden="true"
+        >
+        <template v-slot:activator="{ props2 }">
+            <v-btn
+              class="mt-2 mt-5"
+              width="100%"
+              color="primary"
+              v-bind="props2"
+              @click="chooseCable = true"
+              ><v-icon>mdi-cable-data</v-icon>
+              выбрать кабель
+            </v-btn>
+          </template>
+
+        <tableSpace/>    
+
+      </v-dialog>
+      
         
       <!-- старт -->
       <v-btn 
@@ -74,6 +96,8 @@ export default {
       snackbar: false,      // окошко об ошибке
       timeout: 2500,        // время высвечивания окна об ошибке
       errorText: 'Неверно введены данные или они отсутствуют',
+
+      chooseCable: false,
     };
   },
   methods: {

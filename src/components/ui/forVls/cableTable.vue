@@ -22,7 +22,8 @@
                     </thead>
                 </template>
             </v-data-table>
-
+            <br>
+            <br>
         </div>
             
     </div>
@@ -44,12 +45,7 @@ export default {
         search: "",
         selected: [],
         headers: [
-        {
-            text: "",
-            align: "left",
-            sortable: false,
-            value: "Mark",
-        },
+        { text: "", value: "Mark", sortable: false,  align: "left" },
         { text: "МДРН", value: "MDRN", sortable: false },
         { text: "МРН", value: "MRN", sortable: false },
         { text: "МПР", value: "MPR", sortable: false },
