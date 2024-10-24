@@ -4,7 +4,7 @@
       <v-tooltip
         left
         max-width="350px"
-        min-width="400px"
+        min-width="80%"
       >
         <template v-slot:activator="{ on }">
           <p>

@@ -92,46 +92,52 @@
         </template>                
       </v-text-field>
 
-
-      <v-text-field
-        flat
-        type="number"
-        required
-        outlined
-        clearable
-        :rules="rule"
-        hide-details="auto"
-        v-model.number="T_sr"
-        class="mt-5"
-      >
-        <template v-slot:label>
-            <toolbarInfo
-                title="средняя темпиратура эксплуатации (С*)"
-                imageUrl=''
-                v-bind:desc = "componentInfo.incomes[4]"
-            />
-        </template>                
-      </v-text-field>
-
-      <v-text-field
-        flat
-        type="number"
-        required
-        outlined
-        clearable
-        :rules="rule"
-        hide-details="auto"
-        v-model.number="T"
-        class="mt-5"
-      >
-        <template v-slot:label>
-            <toolbarInfo
-                title="темпиратура кабеля в условиях эксплуатации (С*)"
-                imageUrl=''
-                v-bind:desc = "componentInfo.incomes[5]"
-            />
-        </template>                
-      </v-text-field>
+      <v-row class="mt-5">
+        
+        <v-col>
+          <v-text-field
+            flat
+            type="number"
+            required
+            outlined
+            clearable
+            :rules="rule"
+            hide-details="auto"
+            v-model.number="T_sr"
+          >
+            <template v-slot:label>
+                <toolbarInfo
+                    title="средняя темпиратура эксплуатации (С*)"
+                    imageUrl=''
+                    v-bind:desc = "componentInfo.incomes[4]"
+                />
+            </template>                
+          </v-text-field>
+        </v-col>
+        
+        <v-col>
+          <v-text-field
+            flat
+            type="number"
+            required
+            outlined
+            clearable
+            :rules="rule"
+            hide-details="auto"
+            v-model.number="T"
+          >
+            <template v-slot:label>
+                <toolbarInfo
+                    title="темпиратура кабеля в условиях эксплуатации (С*)"
+                    imageUrl=''
+                    v-bind:desc = "componentInfo.incomes[5]"
+                />
+            </template>                
+          </v-text-field>  
+        </v-col>
+        
+      </v-row>
+      
 
       
 
@@ -147,8 +153,10 @@
           aria-hidden="true"
         >
         <template v-slot:activator="{ props2 }">
+            <p class="mt-5">выбранный кабель: {{ chosenCable }}</p>
+            <!-- здесь можно сделать сам вывод выбранных значений -->
             <v-btn
-              class="mt-2 mt-5"
+              class="mt-5"
               width="100%"
               color="primary"
               v-bind="props2"
@@ -156,8 +164,7 @@
               ><v-icon>mdi-cable-data</v-icon>
               выбрать кабель
             </v-btn>
-            <p>выбранный кабель: {{ chosenCable }}</p>
-            <!-- здесь можно сделать сам вывод выбранных значений -->
+            
           </template>
 
         <tableSpace/>    
@@ -221,7 +228,7 @@ export default {
       errorText: 'Неверно введены данные или они отсутствуют',
 
       chooseCable: false,
-      chosenCable: 'idk',
+      chosenCable: 'ДПТ до 48 ОВ (6х8)',
 
       componentInfo: 
       {
@@ -254,9 +261,9 @@ export default {
       // а вот отсюда уже нужные для вычисления переменные
 
       // константы:
-      g: 9.8,   // ускорение свободного падения, константа
-      
-
+      g: 9.8,         // ускорение свободного падения (м/с^2)
+      Ro_L: 0.0009,   // объёмная масса гололеда (кг/см^3)
+                      // БЫТЬ ОСТОРОЖНЫМ СО СТЕПЕНЬЮ ДЕСЯТКИ И ПЕРЕВОДИТЬ ДО ОТПРАВКИ
 
       // входные параметры
       m: 100,   // удельный весь кабеля (кг/км)
@@ -268,15 +275,25 @@ export default {
       T: 20,    // темпиратура кабеля в условиях эксплуатации
 
 
-      
 
-      // Получаемое из таблички
-      // для примера берётся ДПТ до 48ОВ, с МДРН = 4
-      E_kab: 4.56,   // модуль упругости кабеля (кН/мм^2)
+
+  // Получаемое из таблички кабеля
+  // для примера берётся ДПТ до 48ОВ, с МДРН = 4
+      E_kab: 4.56,        // модуль упругости кабеля (кН/мм^2)
       // ЗДЕСЬ Я ХЗ, КАКАЯ ИМЕННО УПРУГОСТЬ. ЛИБО НАЧАЛЬНАЯ, ЛИБО КОНЕЧНАЯ, ЛИБО ВЫТЯЖКИ... беру начальную
-      S_kab: 116.3,   // сечение кабеля (мм^2)
-      TKLR: 16.92,    // Темпиратурный коэффициент линейного расширения (1/С*)
+      S_kab: 116.3,       // сечение кабеля (мм^2)
+      TKLR: 0.00001692,   // Темпиратурный коэффициент линейного расширения (1/С*)
+                          // БЫТЬ ОСТОРОЖНЫМ СО СТЕПЕНЬЮ ДЕСЯТКИ И ПЕРЕВОДИТЬ ДО ОТПРАВКИ
 
+
+  // Из таблички о высоте расположения  (за предустановленные взял 25м)
+      K_i: 1,     // Коэффициент изменения толщины стенки гололеда по высоте над поверхностью земли
+      d: 10,      // диаметр кабеля (мм)
+      K_d: 1,     // Коэффициент изменение толщины стенки гололеда в зависимости от диаметра провода (троса)
+
+
+  // Из таблицы района гололеда         (за предустановленные взял 1 район)
+      C: 10,       // толщина стенки гололеда (мм)
 
 
       // нужные для внутренних расчетов
@@ -292,6 +309,7 @@ export default {
       L_kab: 0,   // Длина подвешенного кабеля
       L_n0: 0,    // Длина кабеля в ненагруженном состоянии
 
+      W_g: 0,     // Вес кабеля при воздействии максимального гололеда
 
 
     };
@@ -317,18 +335,20 @@ export default {
 
       this.task_2_6()
 
+      this.task_2_7()
+
     },
     
     // Вес кабеля
     task_2_1(){
       this.W_kab = (this.m * this.g / 1000).toFixed(this.decimalsRounding)
-      console.log('вес кабеля, Н/м', this.W_kab)
+      console.log('2.1 вес кабеля, Н/м', this.W_kab)
     },
 
     // Растягивающая нагрузка, действующая на кабель
     task_2_2(){
       this.H_nach = ((this.W_kab * this.L^2) / ( 8 * this.S )).toFixed(this.decimalsRounding+2)
-      console.log('Растягивающая нагрузка, Н', this.H_nach)
+      console.log('2.2 Растягивающая нагрузка, Н', this.H_nach)
     },
 
     // Перепад высот между опорами
@@ -336,22 +356,22 @@ export default {
       this.L1 = (
         this.L - (2 * this.h * this.H_nach)/(this.W_kab * this.L)
       ).toFixed(this.decimalsRounding+2)
-      console.log('Малый эквивалентный пролет', this.L1)
+      console.log('2.3 Малый эквивалентный пролет', this.L1)
 
       this.L2 = (
         this.L + (2 * this.h * this.H_nach)/(this.W_kab * this.L)
       ).toFixed(this.decimalsRounding+2)
-      console.log('Больший эквивалентный пролет', this.L2)
+      console.log('2.3 Больший эквивалентный пролет', this.L2)
 
       this.S1 = (
         (this.W_kab * this.L1^2)/(8 * this.H_nach)
       ).toFixed(this.decimalsRounding+2)
-      console.log('Малая стрела провеса', this.S1)
+      console.log('2.3 Малая стрела провеса', this.S1)
 
       this.S2 = (
         (this.W_kab * this.L2^2)/(8 * this.H_nach)
       ).toFixed(this.decimalsRounding+2)
-      console.log('Большая стрела провеса', this.S2)
+      console.log('2.3 Большая стрела провеса', this.S2)
     },
 
     // Длина подвешенного кабеля
@@ -359,7 +379,7 @@ export default {
       this.L_kab = (
         this.L + 4/3 * ( this.S1^2 / this.L1 + this.S2^2 / this.L2 )
       ).toFixed(this.decimalsRounding)
-      console.log('длина подвешенного кабеля, м', this.L_kab)
+      console.log('2.4 длина подвешенного кабеля, м', this.L_kab)
     },
 
     // Длина кабеля в ненагруженном состоянии
@@ -367,7 +387,7 @@ export default {
       this.L_n0 = (
         this.L_kab / (1 + (this.H_nach / (this.E_kab * this.S_kab)))
       ).toFixed(this.decimalsRounding)
-      console.log('Длина кабеля в ненагруженном состоянии, м', this.L_n0)
+      console.log('2.5 Длина кабеля в ненагруженном состоянии, м', this.L_n0)
     },
 
     // Длина кабеля в ненагруженном состоянии с учетом температуры
@@ -375,9 +395,18 @@ export default {
       this.L_nk = (
         this.L_n0 * (1 + this.TKLR * (this.T - this.T_sr))
       ).toFixed(this.decimalsRounding)
-      console.log('Длина кабеля в ненагруженном состоянии с учетом температуры, м', this.L_nk)
+      // console.log('2.6 ТКЛР', this.TKLR)
+      // console.log('2.6 проверка', 1 + this.TKLR * (this.T - this.T_sr))
+      console.log('2.6 Длина кабеля в ненагруженном состоянии с учетом температуры, м', this.L_nk)
     },
 
+    // Вес кабеля при воздействии максимального гололеда
+    task_2_7(){
+      this.W_g = this.W_kab + this.Ro_L * this.g * 3.14159 * this.K_i * this.K_d * this.C * (this.d + this.C)
+      console.log('2.7 проверка', this.Ro_L * this.g * 3.14159 * this.K_i * this.K_d * this.C * (this.d + this.C))
+      console.log('2.7 проверка', this.W_kab)
+      console.log('2.7 Вес кабеля при воздействии максимального гололеда, кг', this.W_g)
+    },
 
   },
 };
