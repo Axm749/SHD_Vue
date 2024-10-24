@@ -3,6 +3,9 @@
     <div>
     
         <cableTable v-bind:data="DPT"/>
+        <cableTable v-bind:data="DPTS"/>
+        <cableTable v-bind:data="DOTS"/>
+        <cableTable v-bind:data="DOTA"/>
 
             
     </div>
