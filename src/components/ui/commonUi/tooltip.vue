@@ -17,12 +17,20 @@
 
 
         <div>
+          
           <v-img v-if="imageUrl=='autumnBg'" src="./images/autumnBg.jpg" />
           
           <v-img v-if="imageUrl=='forestBg'" src="./images/forestBg.jpg"/>
 
           <v-img v-if="imageUrl=='sunsetForestBg'" src="./images/sunsetForestBg.webp" />
+
         </div>
+
+        <!-- если нет изображения -->
+        <p class="text-center" v-if="imageUrl==''">Нет изображения</p>
+          
+        <!-- описание -->
+        <p class="text-center" v-if="desc" > {{ desc }}</p>
         
 
       </v-tooltip>
@@ -40,6 +48,7 @@ export default {
     props: {
         title: String,
         imageUrl: String,
+        desc: String,
     },
 };
 </script>
