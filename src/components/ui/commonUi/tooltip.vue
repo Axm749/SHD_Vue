@@ -11,7 +11,8 @@
             <v-icon small v-on="on">
                 mdi-help-circle-outline
             </v-icon>
-              {{ title }}    
+              {{ title }}     
+              {{ title }}
           </p>
         </template>
 
