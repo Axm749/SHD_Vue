@@ -4,8 +4,8 @@
     <!-- заголовок -->
     <div class="header">
       <headerTab 
-      title="Система Хранения Данных"
-      v-bind:info = "componentInfo"
+        title="Система Хранения Данных"
+        v-bind:info = "componentInfo"
       ></headerTab>
     </div>
     

@@ -11,10 +11,7 @@
         disclaimers: ['string', 'string', 'string']
       },
     
-    
     Информация из разделов передаются через пропсы, проходя через header.vue
-    
-       
     -->
   
   <div class="module_bg">
@@ -32,6 +29,7 @@
         <v-toolbar
           src="./images/sunsetForestBg.webp"
           dark
+          flat
           prominent
         >
           <!-- <v-app-bar-nav-icon color="white"></v-app-bar-nav-icon> -->
@@ -39,15 +37,7 @@
           <v-toolbar-title>
             Информация о модуле
           </v-toolbar-title>
-<!-- 
-          <v-spacer></v-spacer>
-
-          <v-btn
-            color="white"
-            icon
-          >
-            <v-icon>mdi-dots-vertical</v-icon>
-          </v-btn> -->
+          
         </v-toolbar>
         <div class="pa-5">
 

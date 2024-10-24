@@ -27,7 +27,16 @@
                     hide-details="auto"
                     v-model.number="PPM_zones"
                     class="mt-5"
-                />
+                >
+                    <template v-slot:label>
+                        <toolbarInfo
+                            title="Число зон PPM"
+                            imageUrl='autumnBg'
+                        />
+                        
+                    </template>
+                </v-text-field>
+
                 <v-text-field
                     flat
                     type="number"
@@ -39,7 +48,17 @@
                     hide-details="auto"
                     v-model.number="Cam_height"
                     class="mt-5"
-                />
+                >
+                    <template v-slot:label>
+                        <toolbarInfo
+                            title="Высота установки камеры (м)"
+                            imageUrl='forestBg'
+                        />
+                        
+                    </template>
+                </v-text-field>
+
+
                 <v-text-field
                     flat
                     type="number"
@@ -51,7 +70,9 @@
                     hide-details="auto"
                     v-model.number="cam_angle"
                     class="mt-5"
-                />
+                >
+                
+                </v-text-field>
                 <v-text-field
                     flat
                     type="number"
@@ -122,7 +143,9 @@
                     hide-details="auto"
                     v-model="kodak"
                     class="mt-5"
-                />
+                >
+                
+                </v-text-field>
 
                 <v-checkbox 
                 info
@@ -217,17 +240,45 @@
             </v-card>
         </div>
     </div>
+
+
+
+
+    <!-- 
+        <template v-slot:label>
+                        <v-tooltip
+                            left
+                            min-width="200px"
+                            max-width="800px"
+                        >
+                            <template v-slot:activator="{ on }">
+                                <p>
+                                    <v-icon v-on="on">
+                                        mdi-help-circle-outline
+                                    </v-icon>
+                                    Высота установки камеры (м)
+                                </p>
+                            </template>
+                            <v-img src="./ui/commonUi/images/forestBg.jpg"></v-img>
+                        </v-tooltip>
+                    </template>
+     -->
 </template>
 
 <script>
 import headerTab from "./ui/commonUi/header.vue";
+import toolbarInfo from './ui/commonUi/tooltip.vue';
 
 export default {
     components: {
         headerTab,
+        toolbarInfo,
     },
     name: 'video_vue',
     data:() =>({
+        imageForest: './ui/commonUi/images/autumnBg.jpg',
+        
+        
         PPM_zones: 2, //Зоны PPM
         Cam_height:3, //Высота установки камеры
         cam_angle:60, //Угол наклона камеры
