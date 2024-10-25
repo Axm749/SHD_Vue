@@ -3,8 +3,8 @@
     
       <v-tooltip
         left
-        max-width="350px"
-        min-width="80%"
+        max-width="80%"
+        min-width="50%"
       >
         <template v-slot:activator="{ on }">
           <p>
@@ -16,6 +16,7 @@
         </template>
 
 
+        <!-- библиотека изображений -->
         <div>
           
           <v-img v-if="imageUrl=='autumnBg'" src="./images/autumnBg.jpg" />

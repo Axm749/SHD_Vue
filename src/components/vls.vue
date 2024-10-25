@@ -137,6 +137,27 @@
         </v-col>
         
       </v-row>
+
+
+      <v-text-field
+        class="mt-5"
+        flat
+        type="number"
+        required
+        outlined
+        clearable
+        :rules="rule"
+        hide-details="auto"
+        v-model.number="height"
+      >
+        <template v-slot:label>
+            <toolbarInfo
+                title="высота расположения приведенного центра тяжести проводов, троссов и средних точек"
+                imageUrl=''
+                desc = "высота расположения приведенного центра тяжести проводов, троссов и средних точек"
+            />
+        </template>                
+      </v-text-field> 
       
 
       
@@ -170,6 +191,61 @@
         <tableSpace/>    
 
       </v-dialog>
+
+
+      <!-- выбор высоты кабеля
+      <v-dialog
+          v-model="chooseZone"
+          transition="dialog-bottom-transition"
+          width="80%"
+          :scrollable="false"
+          aria-hidden="true"
+        >
+        <template v-slot:activator="{ props3 }">
+            <p class="mt-5">выбранная высота: {{ chosenZone }}</p>
+            <v-btn
+              class="mt-5"
+              width="100%"
+              color="primary"
+              v-bind="props3"
+              @click="chooseZone = true"
+              ><v-icon>mdi-cable-data</v-icon>
+              выбрать зону
+            </v-btn>
+            
+          </template>
+
+        <tableSpace type="zone"/>    
+
+      </v-dialog> -->
+
+
+      <!-- выбор районов гололеда -->
+      <v-dialog
+          v-model="chooseZone"
+          transition="dialog-bottom-transition"
+          width="80%"
+          :scrollable="false"
+          aria-hidden="true"
+        >
+        <template v-slot:activator="{ props3 }">
+            <p class="mt-5">выбранная зона: {{ chosenZone }}</p>
+            <!-- здесь можно сделать сам вывод выбранных значений -->
+            <v-btn
+              class="mt-5"
+              width="100%"
+              color="primary"
+              v-bind="props3"
+              @click="chooseZone = true"
+              ><v-icon>mdi-cable-data</v-icon>
+              выбрать зону
+            </v-btn>
+            
+          </template>
+
+        <climateTable/>    
+
+      </v-dialog>
       
         
       <!-- старт -->
@@ -178,6 +254,14 @@
         color="primary" 
         class="mt-5"
       >Старт</v-btn>
+
+
+
+      <v-btn 
+        @click="interpolate(height)" 
+        color="primary" 
+        class="mt-5"
+      >тест интерполяции</v-btn>
     </v-card>
 
 
@@ -213,12 +297,14 @@
 import headerTab from './ui/commonUi/header.vue';
 import tableSpace from './ui/forVls/tableSpace.vue';
 import toolbarInfo from './ui/commonUi/tooltip.vue';
+import climateTable from './ui/forVls/climateTable.vue';
 
 export default {
   name: "vls_vue",
   components: {
     headerTab,
     tableSpace,
+    climateTable,
     toolbarInfo
   },
   data() {
@@ -229,6 +315,9 @@ export default {
 
       chooseCable: false,
       chosenCable: 'ДПТ до 48 ОВ (6х8)',
+      
+      chooseZone: false,
+      chosenZone: "1",
 
       componentInfo: 
       {
@@ -256,6 +345,8 @@ export default {
 
       decimalsRounding: 2, // число знаков после запятой при округлении. Где-то может расширяться или снижаться
 
+
+      height: 0,
 
 
       // а вот отсюда уже нужные для вычисления переменные
@@ -292,6 +383,29 @@ export default {
       K_d: 1,     // Коэффициент изменение толщины стенки гололеда в зависимости от диаметра провода (троса)
 
 
+      heightTable: [
+        {
+          height: 25,
+          K_i: 1,
+          d: 10,
+          K_d: 1,
+        },
+        {
+          height: 30,
+          K_i: 1.4,
+          d: 20,
+          K_d: 0.9,
+        },
+        {
+          height: 50,
+          K_i: 1.6,
+          d: 30,
+          K_d: 0.8,
+        },
+      ],
+
+
+
   // Из таблицы района гололеда         (за предустановленные взял 1 район)
       C: 10,       // толщина стенки гололеда (мм)
 
@@ -315,7 +429,66 @@ export default {
     };
   },
   methods: {
-    
+
+    interpolate(value){
+      var interpolatedResult = 1
+
+      // минимальное значение высоты
+      var minValueX = this.heightTable[0].height
+      console.log('минимальное значение', minValueX, 'м')
+        
+      var minValueK_d = this.heightTable[0].K_d
+      console.log('минимальное K_d', minValueK_d, 'м')
+
+      // максимальное значение высоты
+      var maxValueX = this.heightTable[
+        this.heightTable.length - 1
+      ].height
+      console.log('максимальное значение', maxValueX, 'м')
+
+      var maxValueK_d = this.heightTable[
+        this.heightTable.length - 1
+      ].K_d
+      console.log('максимальное K_d', maxValueK_d, 'м')
+      
+      
+
+
+      console.log('введено', value, 'м')
+      if (value < minValueX){
+        console.error('введено меньше минимального', value, '<', minValueX, 'м')
+        console.error('точность будет ниже')
+        
+        console.error('Я могу и запретить вычисления при таком случае')
+        console.error('ппц, всё плохо')
+
+        this.K_d = this.interpolateFormula(value, 0, minValueX, 0, minValueK_d)
+        console.log('ответ: K_d =', this.K_d)
+      }
+      if (value > maxValueX){
+        console.error('введено больше максимального', value, '>', maxValueX, 'м')
+        console.error('точность будет ниже')
+        
+        console.error('Я могу и запретить вычисления при таком случае')
+        console.error('ппц, всё плохо')
+
+
+      }
+
+
+
+
+
+
+      console.log(interpolatedResult)
+    },
+
+    interpolateFormula(value, x1, x2, y1, y2){
+      // x1, x2 - значения по оси Х
+      // y1, y2 - значения по оси У
+      return (y1 + (value-x1)* ((y2-y1)/(x2-x1))).toFixed(this.decimalsRounding)
+    },
+
     
     //Старт
     start() {
@@ -341,7 +514,7 @@ export default {
     
     // Вес кабеля
     task_2_1(){
-      this.W_kab = (this.m * this.g / 1000).toFixed(this.decimalsRounding)
+      this.W_kab = parseFloat(this.m * this.g / 1000).toFixed(this.decimalsRounding)
       console.log('2.1 вес кабеля, Н/м', this.W_kab)
     },
 
@@ -402,9 +575,21 @@ export default {
 
     // Вес кабеля при воздействии максимального гололеда
     task_2_7(){
-      this.W_g = this.W_kab + this.Ro_L * this.g * 3.14159 * this.K_i * this.K_d * this.C * (this.d + this.C)
-      console.log('2.7 проверка', this.Ro_L * this.g * 3.14159 * this.K_i * this.K_d * this.C * (this.d + this.C))
-      console.log('2.7 проверка', this.W_kab)
+      this.W_g = parseFloat(
+        parseFloat(this.W_kab) + 
+        parseFloat(this.Ro_L * this.g * Math.PI * this.K_i * this.K_d * this.C * (this.d + this.C))
+        ).toFixed(this.decimalsRounding)
+      // console.log('2.7 проверка', parseFloat(this.W_kab))
+      // console.log('2.7 проверка', this.Ro_L)
+      // console.log('2.7 проверка', this.g)
+      // console.log('2.7 проверка', Math.PI)
+      // console.log('2.7 проверка', this.K_i)
+      // console.log('2.7 проверка', this.K_d)
+      // console.log('2.7 проверка', this.C)
+      // console.log('2.7 проверка', this.d)
+      // console.log('2.7 проверка', parseFloat(this.d + this.C))
+      // console.log('2.7 проверка', parseFloat(this.Ro_L * this.g * Math.PI * this.K_i * this.K_d * this.C * (this.d + this.C)).toFixed(this.decimalsRounding))
+      
       console.log('2.7 Вес кабеля при воздействии максимального гололеда, кг', this.W_g)
     },
 
