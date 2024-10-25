@@ -2,23 +2,56 @@
 <!-- элемент для внесения сюда всех таблиц для выбора параметров кабеля -->
 <template>
     <div>
-		<v-card>
-			<v-card-title primary-title>
-				title
-			</v-card-title>
-
-			<v-data-table
-				headers="headers"
-				items="data"
-				hide-actions
-				item-key="Field"
-				loading="true"
+		
+		<v-card class="overflow-hidden">
+			<v-app-bar
+			absolute
+			dark
+			shrink-on-scroll
+			prominent
+			fade-img-on-scroll
+			scroll-target="#scrolling-techniques-3"
 			>
-				
-			</v-data-table>
+				<template v-slot:img="{ props }">
+					<v-img
+					v-bind="props"
+					src="../commonUi/images/autumnBg.jpg"
+					></v-img>
+				</template>
 
-		</v-card>
-            
+				<v-btn icon>
+					<v-icon>mdi-content-save</v-icon>
+				</v-btn>
+
+				<v-app-bar-title>
+					Выбор климата
+				</v-app-bar-title>
+
+			</v-app-bar>
+
+
+			<v-sheet
+			id="scrolling-techniques-3"
+			class="overflow-y-auto"
+			max-height="600px"
+			>
+				<v-card height="800px" style="margin-top: 126px;">
+					
+					<v-card-title primary-title>
+						сделать отображение получше, как и найти пикчу получше
+					</v-card-title>
+					<v-img src="./images/climateMap.gif"></v-img>
+					<v-card-text>
+						Если совсем будем с жиру беситься, 
+						то можем сделать интерактивную карту, 
+						как на сайте 
+						<a target="_blank" href="https://vols.expert/configurator/interactive-climate-maps/">Волс.Эксперт</a>
+					</v-card-text>
+
+
+				</v-card>
+			</v-sheet>
+		</v-card>       
     </div>
 </template>
 
@@ -31,7 +64,7 @@ export default {
     //     cableTable,
     // },
     data: () => ({
-        // в этом модуле будет храниться вся база данных марок кабелей
+        // в этом модуле будет храниться вся база климатических зон
 
         started: false, //Параметр, отвечающий за вывод результатов работы программы при нажатии "Старт"
         analog: false, //Параметр, отвечающий за вывод результатов работы программы при аналоговом расчёте

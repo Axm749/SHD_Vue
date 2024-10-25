@@ -248,20 +248,31 @@
       </v-dialog>
       
         
-      <!-- старт -->
-      <v-btn 
-        @click="start" 
-        color="primary" 
-        class="mt-5"
-      >Старт</v-btn>
+      <!-- кнопки -->
+      <v-row class="mt-5">
+        <v-col>
+          <v-btn 
+            @click="start" 
+            color="primary" 
+            width="100%"
+          >Старт</v-btn>
+        </v-col>  
+        <v-col>
+          <v-btn 
+            @click="interpolate(height)" 
+            color="primary" 
+            width="100%"
+          >тест интерполяции</v-btn>
+        </v-col>
+          
+        
+          
+      </v-row>
+      
 
 
 
-      <v-btn 
-        @click="interpolate(height)" 
-        color="primary" 
-        class="mt-5"
-      >тест интерполяции</v-btn>
+      
     </v-card>
 
 

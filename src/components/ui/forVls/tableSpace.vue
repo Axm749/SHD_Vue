@@ -1,13 +1,64 @@
 <!-- элемент для внесения сюда всех таблиц для выбора параметров кабеля -->
 <template>
     <div>
-    
-        <cableTable v-bind:data="DPT"/>
-        <cableTable v-bind:data="DPTS"/>
-        <cableTable v-bind:data="DOTS"/>
-        <cableTable v-bind:data="DOTA"/>
+        <v-card class="overflow-hidden">
+			<v-app-bar
+			absolute
+            dark
+            color="primary"
+			shrink-on-scroll
+			fade-img-on-scroll
+			scroll-target="#scrolling-techniques-2"
+			>
+			<template v-slot:img="{ props }">
+				<v-img
+				v-bind="props"
+                
+				src="../commonUi/images/autumnBg.jpg"
+				></v-img>
+			</template>
 
-            
+			<v-app-bar-nav-icon></v-app-bar-nav-icon>
+
+			<v-app-bar-title>Выбор таблицы</v-app-bar-title>
+
+			<template v-slot:extension>
+				<v-tabs v-model="tab">
+				<v-tab
+					v-for="item in items" 
+					:key="item"
+				>{{item}}</v-tab>
+				</v-tabs>
+			</template>
+			</v-app-bar>
+
+
+			<v-sheet
+			id="scrolling-techniques-2"
+			class="overflow-y-auto"
+			max-height="600px"
+			>
+				<v-tabs-items v-model="tab" style="height: 1000px; margin-top: 226px;">	
+					<v-tab-item>
+						<cableTable v-bind:data="DPT"/>
+					</v-tab-item>
+
+					<v-tab-item>
+						<cableTable v-bind:data="DPTS"/>
+					</v-tab-item>
+
+					<v-tab-item>
+						<cableTable v-bind:data="DOTS"/>
+					</v-tab-item>
+					
+					<v-tab-item>
+						<cableTable v-bind:data="DOTA"/>
+					</v-tab-item>
+					
+				</v-tabs-items>
+			
+			</v-sheet>
+		</v-card>              
     </div>
 </template>
 
@@ -22,11 +73,10 @@ export default {
     data: () => ({
         // в этом модуле будет храниться вся база данных марок кабелей
 
-        started: false, //Параметр, отвечающий за вывод результатов работы программы при нажатии "Старт"
-        analog: false, //Параметр, отвечающий за вывод результатов работы программы при аналоговом расчёте
-        rule: [(value) => !!value || "Необходимо заполнить это поле."], //Правила для текстовых полей
-        accept: false,
-        search: "",
+        tab: null,
+		items: [
+          'ДПТ', 'ДПТс', 'ДОТа', 'ДОТс',
+        ],
 
         // что выбрано пользователем
         selected: [],
@@ -131,3 +181,8 @@ export default {
     };
 </script>
 
+<style>
+.a{
+    background-color: rgba(red, green, blue, alpha);
+}
+</style>
