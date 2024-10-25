@@ -33,7 +33,7 @@
                     <template v-slot:label>
                         <toolbarInfo
                             title="Число зон PPM"
-                            imageUrl='autumnBg'
+                            imageUrl='PPMZones'
                         />
                         
                     </template>
@@ -53,7 +53,7 @@
                     <template v-slot:label>
                         <toolbarInfo
                             title="Высота установки камеры (м)"
-                            imageUrl='forestBg'
+                            imageUrl='placementHeight'
                         />
                         
                     </template>
@@ -73,7 +73,7 @@
                     <template v-slot:label>
                         <toolbarInfo
                             title="Угол наклона камеры (градусы)"
-                            imageUrl='forestBg'
+                            imageUrl='cameraTilt'
                         />
                     </template>
                 </v-text-field>
@@ -92,7 +92,7 @@
                     <template v-slot:label>
                         <toolbarInfo
                             title="Вертикальный угол обзора объектива (градусы)"
-                            imageUrl='forestBg'
+                            imageUrl='verticalFOV'
                         />
                     </template>
                 </v-text-field>
@@ -112,7 +112,7 @@
                     <template v-slot:label>
                         <toolbarInfo
                             title="Горизонтальный угол обзора объектива (градусы)"
-                            imageUrl='forestBg'
+                            imageUrl='horizontalFOV'
                         />
                     </template>
                 </v-text-field>
@@ -131,7 +131,7 @@
                     <template v-slot:label>
                         <toolbarInfo
                             title="Дальность обзора (м)"
-                            imageUrl='forestBg'
+                            imageUrl='viewDistance'
                         />
                     </template>
                 </v-text-field>
@@ -150,7 +150,7 @@
                     <template v-slot:label>
                         <toolbarInfo
                             title="Разрешение по горизонтали (пикселей)"
-                            imageUrl='forestBg'
+                            desc="количество пикселей на матрице по горизонтали"
                         />
                     </template>
                 </v-text-field>
@@ -170,7 +170,7 @@
                     <template v-slot:label>
                         <toolbarInfo
                             title="Разрешение по вертикали (пикселей)"
-                            imageUrl='forestBg'
+                            desc="количество пикселей на матрице по вертикали"
                         />
                     </template>                
                 </v-text-field>

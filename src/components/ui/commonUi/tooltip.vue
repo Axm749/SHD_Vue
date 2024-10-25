@@ -19,11 +19,49 @@
         <!-- библиотека изображений -->
         <div>
           
+          <!-- общие картинки -->
           <v-img v-if="imageUrl=='autumnBg'" src="./images/autumnBg.jpg" />
           
           <v-img v-if="imageUrl=='forestBg'" src="./images/forestBg.jpg"/>
 
           <v-img v-if="imageUrl=='sunsetForestBg'" src="./images/sunsetForestBg.webp" />
+
+          <!-- подсказки для видеонаблюдения -->
+
+          <v-img 
+            v-if="imageUrl=='verticalFOV'" 
+            src="./images/cameraTips/Вертикальный_угол_обзора.png" 
+          />
+
+          <v-img 
+            v-if="imageUrl=='horizontalFOV'" 
+            src="./images/cameraTips/Горизонтальный_уол_камеры.png" 
+          />
+
+          <v-img 
+            v-if="imageUrl=='placementHeight'" 
+            src="./images/cameraTips/Высота_установки_камеры.png" 
+          />
+
+          <v-img 
+            v-if="imageUrl=='blindZone'" 
+            src="./images/cameraTips/Длина_Слепой_Зоны.png" 
+          />
+          
+          <v-img 
+            v-if="imageUrl=='PPMZones'" 
+            src="./images/cameraTips/Зоны_PPM.png" 
+          />
+
+          <v-img 
+            v-if="imageUrl=='cameraTilt'" 
+            src="./images/cameraTips/Угол_наклона_камеры.png" 
+          />
+
+          <v-img 
+            v-if="imageUrl=='viewDistance'" 
+            src="./images/cameraTips/Максимальная_длина_обзора_камеры.png" 
+          />
 
         </div>
 

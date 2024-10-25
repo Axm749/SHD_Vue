@@ -170,6 +170,7 @@
 
 
       <!-- выбор марки кабеля -->
+
       <v-dialog
           v-model="chooseCable"
           transition="dialog-bottom-transition"
@@ -178,17 +179,27 @@
           aria-hidden="true"
         >
         <template v-slot:activator="{ props2 }">
-            <p class="mt-5">выбранный кабель: {{ chosenCable }}</p>
-            <!-- здесь можно сделать сам вывод выбранных значений -->
-            <v-btn
-              class="mt-5"
-              width="100%"
-              color="primary"
-              v-bind="props2"
-              @click="chooseCable = true"
-              ><v-icon>mdi-cable-data</v-icon>
-              выбрать кабель
-            </v-btn>
+            
+          <v-row>
+            <v-col>
+              <p class="mt-5">выбранный кабель: {{ chosenCable }}</p>
+              <!-- здесь можно сделать сам вывод выбранных значений -->
+            </v-col>
+            <v-col>
+              <v-btn
+                class="mt-5"
+                width="100%"
+                color="primary"
+                v-bind="props2"
+                @click="chooseCable = true"
+                ><v-icon>mdi-cable-data</v-icon>
+                выбрать кабель
+              </v-btn>
+            </v-col>
+          </v-row>
+          
+            
+            
             
           </template>
 
@@ -336,7 +347,7 @@ export default {
       decimalsRounding: 2, // число знаков после запятой при округлении. Где-то может расширяться или снижаться
 
 
-      height: 0,
+      height: 35,
 
 
       // а вот отсюда уже нужные для вычисления переменные
