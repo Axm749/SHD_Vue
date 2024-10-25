@@ -154,7 +154,11 @@
             <toolbarInfo
                 title="высота расположения приведенного центра тяжести проводов, троссов и средних точек"
                 imageUrl=''
-                desc = "высота расположения приведенного центра тяжести проводов, троссов и средних точек"
+                desc = "
+                Выставлять в пределах от 25 до 100 метров. 
+                В других случаях точность не гарантирована 
+                из-за отсутствия таблиц на такой случай
+                "
             />
         </template>                
       </v-text-field> 
@@ -193,32 +197,7 @@
       </v-dialog>
 
 
-      <!-- выбор высоты кабеля
-      <v-dialog
-          v-model="chooseZone"
-          transition="dialog-bottom-transition"
-          width="80%"
-          :scrollable="false"
-          aria-hidden="true"
-        >
-        <template v-slot:activator="{ props3 }">
-            <p class="mt-5">выбранная высота: {{ chosenZone }}</p>
-            <v-btn
-              class="mt-5"
-              width="100%"
-              color="primary"
-              v-bind="props3"
-              @click="chooseZone = true"
-              ><v-icon>mdi-cable-data</v-icon>
-              выбрать зону
-            </v-btn>
-            
-          </template>
-
-        <tableSpace type="zone"/>    
-
-      </v-dialog> -->
-
+      
 
       <!-- выбор районов гололеда -->
       <v-dialog
@@ -442,56 +421,106 @@ export default {
   methods: {
 
     interpolate(value){
-      var interpolatedResult = 1
 
       // минимальное значение высоты
       var minValueX = this.heightTable[0].height
-      console.log('минимальное значение', minValueX, 'м')
-        
-      var minValueK_d = this.heightTable[0].K_d
-      console.log('минимальное K_d', minValueK_d, 'м')
+        var minValueK_d = this.heightTable[0].K_d
+        var minValueK_i = this.heightTable[0].K_i
+        var minValued =   this.heightTable[0].d        
 
       // максимальное значение высоты
       var maxValueX = this.heightTable[
         this.heightTable.length - 1
       ].height
-      console.log('максимальное значение', maxValueX, 'м')
+        var maxValueK_d = this.heightTable[
+          this.heightTable.length - 1
+        ].K_d
+        var maxValueK_i = this.heightTable[
+          this.heightTable.length - 1
+        ].K_i
+        var maxValued = this.heightTable[
+          this.heightTable.length - 1
+        ].d
+              
 
-      var maxValueK_d = this.heightTable[
-        this.heightTable.length - 1
-      ].K_d
-      console.log('максимальное K_d', maxValueK_d, 'м')
-      
-      
+
+
+
+        var debug = 0
+        if(debug){
+          console.log('минимальное значение', minValueX, 'м')
+          console.log('минимальное K_d', minValueK_d)
+          console.log('минимальное K_i', minValueK_i)
+          console.log('минимальное d', minValued)
+
+          console.log('максимальное значение', maxValueX, 'м')
+          console.log('максимальное K_d', maxValueK_d)
+          console.log('максимальное K_i', maxValueK_i)
+          console.log('максимальное d', maxValued)
+        }
+
 
 
       console.log('введено', value, 'м')
+      // ниже минимума
       if (value < minValueX){
         console.error('введено меньше минимального', value, '<', minValueX, 'м')
-        console.error('точность будет ниже')
+        // console.error('точность будет ниже')
         
-        console.error('Я могу и запретить вычисления при таком случае')
-        console.error('ппц, всё плохо')
+        // console.error('Я могу и запретить вычисления при таком случае')
+        // console.error('ппц, всё плохо')
 
         this.K_d = this.interpolateFormula(value, 0, minValueX, 0, minValueK_d)
         console.log('ответ: K_d =', this.K_d)
+        return
       }
+      // превышение максимума
       if (value > maxValueX){
         console.error('введено больше максимального', value, '>', maxValueX, 'м')
-        console.error('точность будет ниже')
+        // console.error('точность будет ниже')
         
-        console.error('Я могу и запретить вычисления при таком случае')
-        console.error('ппц, всё плохо')
+        // console.error('Я могу и запретить вычисления при таком случае')
+        // console.error('ппц, всё плохо')
 
-
+        this.K_d = this.interpolateFormula(value, maxValueX, 100000, maxValueK_d, 1000)
+        console.log('ответ: K_d =', this.K_d)
+        return
       }
 
 
+      // вычисления с учетом длины массива
+      console.log('idk, its fine')
+      console.log(`preiterated, value ${value}, check ${this.heightTable[0].height}, len = ${this.heightTable.length}`)
+      for (let i = 0; i<this.heightTable.length; i++){
+        console.log(`iteration ${i}, value ${value}, check ${this.heightTable[i].height}`)
+        if (value < this.heightTable[i].height){
+          var h1 = this.heightTable[i-1].height
+          var h2 = this.heightTable[i].height
+          
+          var K_d1 = this.heightTable[i-1].K_d
+          var K_d2 = this.heightTable[i].K_d
+
+          this.K_d = this.interpolateFormula(value, h1, h2, K_d1, K_d2)
+          console.log(this.K_d,' = K_d interpolated(',value, h1,h2,K_d1,K_d2,')')
+          
+
+          var K_i1 = this.heightTable[i-1].K_i
+          var K_i2 = this.heightTable[i].K_i
+
+          this.K_i = this.interpolateFormula(value, h1, h2, K_i1, K_i2)
+          console.log(this.K_i,' = K_i interpolated(',value, h1,h2,K_i1,K_i2,')')
+        
+        
+        
+        
+        
+        
+        
+        
+        }
+      }
 
 
-
-
-      console.log(interpolatedResult)
     },
 
     interpolateFormula(value, x1, x2, y1, y2){
