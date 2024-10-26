@@ -40,7 +40,7 @@
 					<v-card-title primary-title>
 						сделать отображение получше, как и найти пикчу получше
 					</v-card-title>
-					<v-img src="./images/climateWindMap.gif"></v-img>
+					<v-img src="./images/climateIceMap.jpg"></v-img>
 					<v-img src="./images/climateWindMap.gif"></v-img>
 					<v-card-text>
 						Если совсем будем с жиру беситься, 

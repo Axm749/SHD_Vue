@@ -250,20 +250,13 @@
             color="primary" 
             width="100%"
           >Старт</v-btn>
-        </v-col>  
-        <v-col>
-          <v-btn 
-            @click="interpolateHeight(height)" 
-            color="primary" 
-            width="100%"
-          >тест интерполяции</v-btn>
         </v-col>
         <v-col>
           <v-btn 
-            @click="task_2_8" 
+            @click="test" 
             color="primary" 
             width="100%"
-          >2.8</v-btn>
+          >тест</v-btn>
         </v-col>
           
       </v-row>
@@ -432,6 +425,9 @@ export default {
   // Из таблицы района гололеда         (за предустановленные взял 1 район)
       C: 10,       // толщина стенки гололеда (мм)
 
+  // Из таблицы района по ветру         (за предустановленные взял 1 район)
+      W_0: 400,   // Нормативно ветровое давление
+      v_0: 25,    // скорость ветра
 
       // нужные для внутренних расчетов
       W_kab: 0,   // Вес кабеля (Н/м)
@@ -470,6 +466,78 @@ export default {
 
       ],
 
+      K_w: 0,
+      // для интерполяции в пункте 2.8
+      K_wTable:[
+        {
+          height: 15,
+          K_w_A: 1,
+          W_w_B: 0.65,
+          K_w_C: 0.4,
+        },
+        {
+          height: 20,
+          K_w_A: 1.25,
+          W_w_B: 0.85,
+          K_w_C: 0.55,
+        },
+        {
+          height: 40,
+          K_w_A: 1.5,
+          W_w_B: 1.1,
+          K_w_C: 0.8,
+        },
+        {
+          height: 60,
+          K_w_A: 1.7,
+          W_w_B: 1.3,
+          K_w_C: 1,
+        },
+        {
+          height: 80,
+          K_w_A: 1.85,
+          W_w_B: 1.45,
+          K_w_C: 1.15,
+        },
+        {
+          height: 100,
+          K_w_A: 2,
+          W_w_B: 1.6,
+          K_w_C: 1.25,
+        },
+        {
+          height: 150,
+          K_w_A: 2.25,
+          W_w_B: 1.9,
+          K_w_C: 1.55,
+        },
+        {
+          height: 200,
+          K_w_A: 2.45,
+          W_w_B: 2.1,
+          K_w_C: 1.8,
+        },
+        {
+          height: 250,
+          K_w_A: 2.65,
+          W_w_B: 2.3,
+          K_w_C: 1.8,
+        },
+        {
+          height: 300,
+          K_w_A: 2.75,
+          W_w_B: 2.5,
+          K_w_C: 2.2,
+        },
+        {
+          height: 350,
+          K_w_A: 2.75,
+          W_w_B: 2.75,
+          K_w_C: 2.35,
+        },
+        
+      ]
+
     };
   },
   methods: {
@@ -479,165 +547,85 @@ export default {
       console.log('Final get data', this.chosenCable)
       this.chooseCable = false
 
-
-
       this.E_kab=this.chosenCable.L_nach    // модуль упругости кабеля (кН/мм^2)
       // ЗДЕСЬ Я ХЗ, КАКАЯ ИМЕННО УПРУГОСТЬ. ЛИБО НАЧАЛЬНАЯ, ЛИБО КОНЕЧНАЯ, ЛИБО ВЫТЯЖКИ... беру начальную
       this.S_kab=this.chosenCable.Slice
       this.TKLR = this.chosenCable.TLKR * 0.000001
     },
-    
-    interpolateHeight(value){
-
-      // минимальное значение высоты
-      var minValueX = this.heightTable[0].height
-        var minValueK_d = this.heightTable[0].K_d
-        var minValueK_i = this.heightTable[0].K_i
-        var minValued =   this.heightTable[0].d        
-
-      // максимальное значение высоты
-      var maxValueX = this.heightTable[
-        this.heightTable.length - 1
-      ].height
-        var maxValueK_d = this.heightTable[
-          this.heightTable.length - 1
-        ].K_d
-        var maxValueK_i = this.heightTable[
-          this.heightTable.length - 1
-        ].K_i
-        var maxValued = this.heightTable[
-          this.heightTable.length - 1
-        ].d
-              
-
-        var debug = 0
-        if(debug){
-          console.log('минимальное значение', minValueX, 'м')
-          console.log('минимальное K_d', minValueK_d)
-          console.log('минимальное K_i', minValueK_i)
-          console.log('минимальное d', minValued)
-
-          console.log('максимальное значение', maxValueX, 'м')
-          console.log('максимальное K_d', maxValueK_d)
-          console.log('максимальное K_i', maxValueK_i)
-          console.log('максимальное d', maxValued)
-        }
-
-      console.log('введено', value, 'м')
-      
-      // ниже минимума
-      if (value < minValueX){
-        console.error('введено меньше минимального', value, '<', minValueX, 'м')
-        this.K_d = this.interpolateFormula(value, 0, minValueX, 0, minValueK_d)
-        console.log('ответ: K_d =', this.K_d)
-        return
-      }
-      // превышение максимума
-      if (value > maxValueX){
-        console.error('введено больше максимального', value, '>', maxValueX, 'м')
-        this.K_d = this.interpolateFormula(value, maxValueX, 100000, maxValueK_d, 1000)
-        console.log('ответ: K_d =', this.K_d)
-        return
-      }
 
 
-      // вычисления с учетом длины массива
-      console.log('idk, its fine')
-      console.log(`preiterated, value ${value}, check ${this.heightTable[0].height}, len = ${this.heightTable.length}`)
-      for (let i = 0; i<this.heightTable.length; i++){
-        console.log(`iteration ${i}, value ${value}, check ${this.heightTable[i].height}`)
-        if (value < this.heightTable[i].height){
-          var h1 = this.heightTable[i-1].height
-          var h2 = this.heightTable[i].height
-          
-          var K_d1 = this.heightTable[i-1].K_d
-          var K_d2 = this.heightTable[i].K_d
 
-          this.K_d = this.interpolateFormula(value, h1, h2, K_d1, K_d2)
-          console.log(this.K_d,' = K_d interpolated(',value, h1,h2,K_d1,K_d2,')')
-          
-
-          var K_i1 = this.heightTable[i-1].K_i
-          var K_i2 = this.heightTable[i].K_i
-
-          this.K_i = this.interpolateFormula(value, h1, h2, K_i1, K_i2)
-          console.log(this.K_i,' = K_i interpolated(',value, h1,h2,K_i1,K_i2,')')
-        
-          var d1 = this.heightTable[i-1].d
-          var d2 = this.heightTable[i].d
-
-          this.d = this.interpolateFormula(value, h1, h2, d1, d2)
-          console.log(this.d,' = d interpolated(',value, h1,h2,d1,d2,')')
-          return
-        }
-      }
-    },
-
-    interpolateK_l(value){
-
+    /**
+     * Функция интерполяции, универсальная
+     * @param {number} value           - как координата X, по которой ищем 
+     * @param {massive} dataTable - база данных, где ищем. Является массивом объектов
+     * @param {string} searchableValue - искомый параметр объекта массива
+     * @param {string} SearchThrough   - какой параметр является координатой X
+     */
+    interpolateUniversal(value, dataTable, searchableValue, SearchThrough){
       // минимальное значение 
-      var minValueX = this.K_lTable[0].height
-        var minValueK_l = this.K_lTable[0].K_l  
+      var minValueX = dataTable[0][SearchThrough]
+        var minValueSearched = dataTable[0][searchableValue]  
 
       // максимальное значение 
-      var maxValueX = this.K_lTable[
-        this.K_lTable.length - 1
-      ].height
-        var maxValueK_l = this.K_lTable[
-          this.K_lTable.length - 1
-        ].K_l
-              
+      var maxValueX = dataTable[
+        dataTable.length - 1
+      ][SearchThrough]
+        var maxValueSearched = dataTable[
+          dataTable.length - 1
+        ][searchableValue] 
 
-        var debug = 1
-        if(debug){
-          console.log('минимальное значение', minValueX, 'м')
-          console.log('минимальное K_l', minValueK_l)
+      var debug = 1
+      if(debug){
+        console.log(`минимальное значение ${SearchThrough} `, minValueX)
+        console.log(`минимальное значение ${searchableValue} `, minValueSearched)
 
-          console.log('максимальное значение', maxValueX, 'м')
-          console.log('максимальное K_l', maxValueK_l)
-        }
-
-      console.log('введенная высота', value, 'м')
+        console.log(`максимальное значение ${SearchThrough} `, maxValueX)
+        console.log(`максимальное значение ${searchableValue} `, maxValueSearched)
+      }
+      console.log('введенное значение', value)
 
       // ниже минимума
       if (value <= minValueX){
-        console.error('введено меньше минимального', value, '<', minValueX, 'м')
-        this.K_l = minValueK_l
-        console.log('ответ: K_l =', this.K_l)
-        return
+        console.error('введено меньше минимального', value, '<', minValueX)
+        console.log('ответ:', minValueSearched)
+        return minValueSearched
       }
       // превышение максимума
       if (value >= maxValueX){
-        console.error('введено больше максимального', value, '>', maxValueX, 'м')
-        this.K_l = maxValueK_l
-        console.log('ответ: K_l =', this.K_l)
-        return
+        console.error('введено больше максимального', value, '>', maxValueX)
+        console.log('ответ:', maxValueSearched)
+        return maxValueSearched
       }
 
-
       // вычисления с учетом длины массива
-      console.log('idk, its fine')
-      console.log(`preiterated, value ${value}, check ${this.K_lTable[0].height}, len = ${this.K_lTable.length}`)
-      for (let i = 1; i<this.K_lTable.length; i++){
-        console.log(`iteration ${i}, value ${value}, check ${this.K_lTable[i].height}`)
-        if (value < this.K_lTable[i].height){
-          var h1 = this.K_lTable[i-1].height
-          var h2 = this.K_lTable[i].height
-          
-          var K_l1 = this.K_lTable[i-1].K_l
-          var K_l2 = this.K_lTable[i].K_l
+      console.log(`предцикловый вывод, входное значение ${value}, проверить минимальное значение ${dataTable[0][SearchThrough]}, длина массива = ${dataTable.length}`)
+      for (var i = 0; i<dataTable.length; i++){
+        console.log(`итерация ${i}, значение ${value}, сравниваем с ${dataTable[i][SearchThrough]}`)
+        if (value < dataTable[i][SearchThrough]){
+          var x1 = dataTable[i-1][SearchThrough]
+          var x2 = dataTable[i][SearchThrough]
 
-          this.K_l = this.interpolateFormula(value, h1, h2, K_l1, K_l2)
-          console.log(this.K_l,' = K_d interpolated(',value, h1, h2, K_l1, K_l2,')')
-          return
+          var y1 = dataTable[i-1][searchableValue]
+          var y2 = dataTable[i][searchableValue]
+
+          var result = this.interpolateFormula(value, x1, x2, y1, y2)
+          console.log( searchableValue, '=', result,' как результат интерполяции (',value, x1, x2, y1, y2,')')
+          return result
         }
       }
     },
 
+    /**
+     * 
+     * @param {number} value  координата по оси Х, по которой нужно найти Y
+     * @param {number} x1     значение по оси Х меньше искомой
+     * @param {number} x2     значение по оси Х больше искомой
+     * @param {number} y1     значение по оси Y меньше искомой
+     * @param {number} y2     значение по оси Y больше искомой
+     */
     interpolateFormula(value, x1, x2, y1, y2){
-      // x1, x2 - значения по оси Х
-      // y1, y2 - значения по оси У
-      return (y1 + (value-x1)* ((y2-y1)/(x2-x1))).toFixed(this.decimalsRounding)
+      return (y1 + (value-x1)* ((y2-y1)/(x2-x1))).toFixed(this.decimalsRounding+1)
     },
 
     
@@ -726,10 +714,30 @@ export default {
       console.log('2.6 Длина кабеля в ненагруженном состоянии с учетом температуры, м', this.L_nk)
     },
 
+    // здесь будет уже упоминание таблицы
     // Вес кабеля при воздействии максимального гололеда
     task_2_7(){
       // для получения нужных Ki, Kd и d
-      this.interpolateHeight(this.height)
+      // this.interpolateHeight(this.height)
+      this.K_i = this.interpolateUniversal(
+          this.height, 
+          this.heightTable, 
+          'K_i', 
+          'height'
+        )
+      this.K_d = this.interpolateUniversal(
+          this.height, 
+          this.heightTable, 
+          'K_d', 
+          'height'
+        )
+      this.d = this.interpolateUniversal(
+          this.height, 
+          this.heightTable, 
+          'd', 
+          'height'
+        )
+      // this.interpolateUniversal(this.height, this.heightTable, 'K_i', 'height')
 
       this.W_g = parseFloat(
         parseFloat(this.W_kab) + 
@@ -752,13 +760,49 @@ export default {
     // Ветровая нагрузка на кабель при гололеде
     task_2_8(){
       console.log("2.8 проверяем числа")
-      this.interpolateK_l(this.height)
+      // this.interpolateK_l(this.height)
+      this.K_l = this.interpolateUniversal(
+          this.height, 
+          this.K_lTable, 
+          'K_l', 
+          'height'
+        )
       console.log(this.K_l, this.height)
+
+      // this.interpolateK_w(this.height, this.terrainType)
       
-      
-      this.W_v= this.a_w * this.K_l
+      // K_w - по табличке, входным параметром является - this.height
+      // a_w - по табличке ветрового давления
+      /*
+      W - Нормативное ветровое давление по району
+
+        При расчете в режиме максимального ветра - по табличке (W_0)
+        При расчете в режиме максимального гололеда - по формуле 
+                    со скоростью ветра при гололеде v_г
+
+                    W = v^2 / 1.6
+
+                    если v_г неизвестен, то
+                    W_г = 0.25 * W_0
+      */
+      this.W_v = this.a_w * this.K_l * this.K_w * this.C_x * this.W * (this.d_kab + 2* this.K_i * this.K_d * this.C ) * 0.001  
     },
 
+
+
+
+    // чисто для своих проверок, привязано к своей кнопке
+    test(){
+      console.log("lets test")
+      console.log(
+        this.interpolateUniversal(
+          this.height, 
+          this.heightTable, 
+          'K_i', 
+          'height'
+        )
+      )
+    }
 
   },
 };
