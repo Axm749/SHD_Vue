@@ -253,19 +253,18 @@
         </v-col>  
         <v-col>
           <v-btn 
-            @click="interpolate(height)" 
+            @click="interpolateHeight(height)" 
             color="primary" 
             width="100%"
           >тест интерполяции</v-btn>
         </v-col>
         <v-col>
           <v-btn 
-            @click="getCable" 
+            @click="task_2_8" 
             color="primary" 
             width="100%"
-          >вывести нынешний кабель</v-btn>
+          >2.8</v-btn>
         </v-col>
-        
           
       </v-row>
       
@@ -449,6 +448,27 @@ export default {
 
       W_g: 0,     // Вес кабеля при воздействии максимального гололеда
 
+      K_l: 1.2,       // коэффициент учитывающий влияние длины пролета на ветровую нагрузку
+      // определяется по табличке, интерполяцией
+      K_lTable:[
+        {
+          height: 50,
+          K_l: 1.2
+        },
+        {
+          height: 100,
+          K_l: 1.1
+        },
+        {
+          height: 150,
+          K_l: 1.05
+        },
+        {
+          height: 250,
+          K_l: 1
+        }
+
+      ],
 
     };
   },
@@ -457,7 +477,7 @@ export default {
     NewWriteSelected(data){
       this.chosenCable = data[0]
       console.log('Final get data', this.chosenCable)
-
+      this.chooseCable = false
 
 
 
@@ -466,11 +486,8 @@ export default {
       this.S_kab=this.chosenCable.Slice
       this.TKLR = this.chosenCable.TLKR * 0.000001
     },
-    getCable(){
-      console.log(this.chosenCable)
-    },
     
-    interpolate(value){
+    interpolateHeight(value){
 
       // минимальное значение высоты
       var minValueX = this.heightTable[0].height
@@ -492,9 +509,6 @@ export default {
           this.heightTable.length - 1
         ].d
               
-
-
-
 
         var debug = 0
         if(debug){
@@ -549,17 +563,75 @@ export default {
           this.K_i = this.interpolateFormula(value, h1, h2, K_i1, K_i2)
           console.log(this.K_i,' = K_i interpolated(',value, h1,h2,K_i1,K_i2,')')
         
-        
-        
-        
-        
-        
-        
-        
+          var d1 = this.heightTable[i-1].d
+          var d2 = this.heightTable[i].d
+
+          this.d = this.interpolateFormula(value, h1, h2, d1, d2)
+          console.log(this.d,' = d interpolated(',value, h1,h2,d1,d2,')')
+          return
         }
+      }
+    },
+
+    interpolateK_l(value){
+
+      // минимальное значение 
+      var minValueX = this.K_lTable[0].height
+        var minValueK_l = this.K_lTable[0].K_l  
+
+      // максимальное значение 
+      var maxValueX = this.K_lTable[
+        this.K_lTable.length - 1
+      ].height
+        var maxValueK_l = this.K_lTable[
+          this.K_lTable.length - 1
+        ].K_l
+              
+
+        var debug = 1
+        if(debug){
+          console.log('минимальное значение', minValueX, 'м')
+          console.log('минимальное K_l', minValueK_l)
+
+          console.log('максимальное значение', maxValueX, 'м')
+          console.log('максимальное K_l', maxValueK_l)
+        }
+
+      console.log('введенная высота', value, 'м')
+
+      // ниже минимума
+      if (value <= minValueX){
+        console.error('введено меньше минимального', value, '<', minValueX, 'м')
+        this.K_l = minValueK_l
+        console.log('ответ: K_l =', this.K_l)
+        return
+      }
+      // превышение максимума
+      if (value >= maxValueX){
+        console.error('введено больше максимального', value, '>', maxValueX, 'м')
+        this.K_l = maxValueK_l
+        console.log('ответ: K_l =', this.K_l)
+        return
       }
 
 
+      // вычисления с учетом длины массива
+      console.log('idk, its fine')
+      console.log(`preiterated, value ${value}, check ${this.K_lTable[0].height}, len = ${this.K_lTable.length}`)
+      for (let i = 1; i<this.K_lTable.length; i++){
+        console.log(`iteration ${i}, value ${value}, check ${this.K_lTable[i].height}`)
+        if (value < this.K_lTable[i].height){
+          var h1 = this.K_lTable[i-1].height
+          var h2 = this.K_lTable[i].height
+          
+          var K_l1 = this.K_lTable[i-1].K_l
+          var K_l2 = this.K_lTable[i].K_l
+
+          this.K_l = this.interpolateFormula(value, h1, h2, K_l1, K_l2)
+          console.log(this.K_l,' = K_d interpolated(',value, h1, h2, K_l1, K_l2,')')
+          return
+        }
+      }
     },
 
     interpolateFormula(value, x1, x2, y1, y2){
@@ -588,6 +660,8 @@ export default {
       this.task_2_6()
 
       this.task_2_7()
+
+      this.task_2_8()
 
     },
     
@@ -654,6 +728,9 @@ export default {
 
     // Вес кабеля при воздействии максимального гололеда
     task_2_7(){
+      // для получения нужных Ki, Kd и d
+      this.interpolateHeight(this.height)
+
       this.W_g = parseFloat(
         parseFloat(this.W_kab) + 
         parseFloat(this.Ro_L * this.g * Math.PI * this.K_i * this.K_d * this.C * (this.d + this.C))
@@ -671,6 +748,17 @@ export default {
       
       console.log('2.7 Вес кабеля при воздействии максимального гололеда, кг', this.W_g)
     },
+
+    // Ветровая нагрузка на кабель при гололеде
+    task_2_8(){
+      console.log("2.8 проверяем числа")
+      this.interpolateK_l(this.height)
+      console.log(this.K_l, this.height)
+      
+      
+      this.W_v= this.a_w * this.K_l
+    },
+
 
   },
 };

@@ -13,14 +13,15 @@
 			<template v-slot:img="{ props }">
 				<v-img
 				v-bind="props"
-                
 				src="../commonUi/images/autumnBg.jpg"
 				></v-img>
 			</template>
 
-			<v-app-bar-nav-icon></v-app-bar-nav-icon>
+			<v-app-bar-nav-icon
+            @click="notice"
+            ></v-app-bar-nav-icon>
 
-			<v-app-bar-title>Выбор таблицы</v-app-bar-title>
+			<v-app-bar-title> Выбор таблицы </v-app-bar-title>
 
 			<template v-slot:extension>
 				<v-tabs v-model="tab">
@@ -237,13 +238,11 @@ export default {
             this.selected = data
             // console.log('selected is writing', this.selected)
             this.$emit('anotherGetVlsSelected', this.selected)
+        },
+        notice(){
+            console.log('ну привет, человек')
         }
     },
 };
 </script>
 
-<style>
-.a{
-    background-color: rgba(red, green, blue, alpha);
-}
-</style>
