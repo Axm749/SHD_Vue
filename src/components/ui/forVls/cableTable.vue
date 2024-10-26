@@ -6,6 +6,7 @@
             v-bind:headers="headers"
             v-bind:items="item.content"
             hide-default-footer
+            @click:row="onClickRow"
             
             >
                 <template v-slot:header>
@@ -64,9 +65,26 @@ export default {
 
     }),
     methods: {
-        
+        async onClickRow(item) {
+			this.selected = [{
+				Mark: item.Mark,
+				MDRN: item.MDRN,
+				MRN: item.MRN,
+				MPR: item.MPR,
+                Weight: item.weight,
+                Diameter: item.diameter,
+                Slice: item.Slice,
+                L_nach: item.L_nach,
+                L_kon: item.L_Kon,
+                L_feat: item.L_feat,
+                TLKR: item.TKLR
+			}]
+            // console.log('selected: ',this.selected)
+            this.$emit('getVlsSelected', this.selected)
+        }
     },
-    };
+
+};
 </script>
 
 <style>
@@ -101,69 +119,15 @@ box-shadow: none;
 border-bottom: none
 }
 
+#scrolling-techniques-2 > div > div > div > div > div > div > div > table > tbody > tr > td.text-left{
+    border-bottom: none;
+    color: transparent;
+}
+
+#scrolling-techniques-2 > div > div > div > div > div > div > div > table > tbody > tr:first-child > td.text-left{
+    color: black;
+}
+
 </style>
 
 
-<!-- [ 
-{ 
-"name": "ДПТ до 48ОВ", 
-"content": [ 
-    { 
-        "MDRN": 4, 
-        "MRN": 1, 
-        "MPR": 8.48, 
-        "weight": 115.6, 
-        "diameter": 12.2, 
-        "Slice": 116.3, 
-        "L_nach": 4.56, 
-        "L_Kon": 4.92, 
-        "L_feat": 3.19, 
-        "TKLR": 16.92 
-    }, 
-    { 
-        "MDRN": 6, 
-        "MRN": 1.5, 
-        "MPR": 8.48, 
-        "weight": 115.6, 
-        "diameter": 12.2, 
-        "Slice": 116.3, 
-        "L_nach": 4.56, 
-        "L_Kon": 4.92, 
-        "L_feat": 3.19, 
-        "TKLR": 16.92 
-    }, 
-    { 
-        "MDRN": 7, 
-        "MRN": 1.75, 
-        "MPR": 9.45, 
-        "weight": 116.6, 
-        "diameter": 12.2, 
-        "Slice": 117, 
-        "L_nach": 5.05, 
-        "L_Kon": 5.45, 
-        "L_feat": 3.54, 
-        "TKLR": 14.89 
-    }, 
-    {
-    } 
-] 
-}, 
-{ 
-"name": "ДПТ до 72ОВ", 
-"content": 
-    [ 
-        { 
-            "MDRN": 7, 
-            "MRN": 1.75, 
-            "MPR": 9.45, 
-            "weight": 116.6, 
-            "diameter": 12.2, 
-            "Slice": 117, 
-            "L_nach": 5.05, 
-            "L_Kon": 5.45, 
-            "L_feat": 3.54, 
-            "TKLR": 14.89 
-        }, 
-    ] 
-} 
-] -->

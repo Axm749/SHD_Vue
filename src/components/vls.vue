@@ -203,7 +203,9 @@
             
           </template>
 
-        <tableSpace/>    
+        <tableSpace
+          @anotherGetVlsSelected="NewWriteSelected"
+        />    
 
       </v-dialog>
 
@@ -233,7 +235,9 @@
             
           </template>
 
-        <climateTable/>    
+        <climateTable
+          
+        />    
 
       </v-dialog>
       
@@ -254,7 +258,13 @@
             width="100%"
           >тест интерполяции</v-btn>
         </v-col>
-          
+        <v-col>
+          <v-btn 
+            @click="getCable" 
+            color="primary" 
+            width="100%"
+          >вывести нынешний кабель</v-btn>
+        </v-col>
         
           
       </v-row>
@@ -314,8 +324,22 @@ export default {
       timeout: 2500,        // время высвечивания окна об ошибке
       errorText: 'Неверно введены данные или они отсутствуют',
 
+      selected: '',
+
       chooseCable: false,
-      chosenCable: 'ДПТ до 48 ОВ (6х8)',
+      chosenCable: {
+        Mark: 'ДПТ до 48 ОВ (6х8)',
+        MDRN: 6, 
+        MRN: 1.5, 
+        MPR: 8.48, 
+        Weight: 115.6, 
+        Diameter: 12.2, 
+        Slice: 116.3, 
+        L_nach: 4.56, 
+        L_kon: 4.92, 
+        L_feat: 3.19, 
+        TLKR: 16.92
+      },
       
       chooseZone: false,
       chosenZone: "1",
@@ -383,7 +407,6 @@ export default {
       d: 10,      // диаметр кабеля (мм)
       K_d: 1,     // Коэффициент изменение толщины стенки гололеда в зависимости от диаметра провода (троса)
 
-
       heightTable: [
         {
           height: 25,
@@ -431,6 +454,22 @@ export default {
   },
   methods: {
 
+    NewWriteSelected(data){
+      this.chosenCable = data[0]
+      console.log('Final get data', this.chosenCable)
+
+
+
+
+      this.E_kab=this.chosenCable.L_nach    // модуль упругости кабеля (кН/мм^2)
+      // ЗДЕСЬ Я ХЗ, КАКАЯ ИМЕННО УПРУГОСТЬ. ЛИБО НАЧАЛЬНАЯ, ЛИБО КОНЕЧНАЯ, ЛИБО ВЫТЯЖКИ... беру начальную
+      this.S_kab=this.chosenCable.Slice
+      this.TKLR = this.chosenCable.TLKR * 0.000001
+    },
+    getCable(){
+      console.log(this.chosenCable)
+    },
+    
     interpolate(value){
 
       // минимальное значение высоты
@@ -470,17 +509,11 @@ export default {
           console.log('максимальное d', maxValued)
         }
 
-
-
       console.log('введено', value, 'м')
+      
       // ниже минимума
       if (value < minValueX){
         console.error('введено меньше минимального', value, '<', minValueX, 'м')
-        // console.error('точность будет ниже')
-        
-        // console.error('Я могу и запретить вычисления при таком случае')
-        // console.error('ппц, всё плохо')
-
         this.K_d = this.interpolateFormula(value, 0, minValueX, 0, minValueK_d)
         console.log('ответ: K_d =', this.K_d)
         return
@@ -488,11 +521,6 @@ export default {
       // превышение максимума
       if (value > maxValueX){
         console.error('введено больше максимального', value, '>', maxValueX, 'м')
-        // console.error('точность будет ниже')
-        
-        // console.error('Я могу и запретить вычисления при таком случае')
-        // console.error('ппц, всё плохо')
-
         this.K_d = this.interpolateFormula(value, maxValueX, 100000, maxValueK_d, 1000)
         console.log('ответ: K_d =', this.K_d)
         return

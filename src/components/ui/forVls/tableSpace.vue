@@ -40,19 +40,31 @@
 			>
 				<v-tabs-items v-model="tab" style="height: 1000px; margin-top: 226px;">	
 					<v-tab-item>
-						<cableTable v-bind:data="DPT"/>
+						<cableTable 
+                            v-bind:data="DPT"
+                            @getVlsSelected="VLS_selected"
+                        />
 					</v-tab-item>
 
 					<v-tab-item>
-						<cableTable v-bind:data="DPTS"/>
+						<cableTable 
+                            v-bind:data="DPTS"
+                            @getVlsSelected="VLS_selected"
+                        />
 					</v-tab-item>
 
 					<v-tab-item>
-						<cableTable v-bind:data="DOTS"/>
+						<cableTable 
+                            v-bind:data="DOTS"
+                            @getVlsSelected="VLS_selected"
+                        />
 					</v-tab-item>
 					
 					<v-tab-item>
-						<cableTable v-bind:data="DOTA"/>
+						<cableTable 
+                            v-bind:data="DOTA"
+                            @getVlsSelected="VLS_selected"
+                        />
 					</v-tab-item>
 					
 				</v-tabs-items>
@@ -104,7 +116,7 @@ export default {
                         TKLR: 16.92,
                     },
                     {
-                        Mark: "",
+                        Mark: "ДПТ до 48ОВ (6x8)",
                         MDRN: 6,
                         MRN: 1.5,
                         MPR: 8.48,
@@ -117,7 +129,7 @@ export default {
                         TKLR: 16.92,
                     },
                     {
-                        Mark: "",
+                        Mark: "ДПТ до 48ОВ (6x8)",
                         MDRN: 7,
                         MRN: 1.75,
                         MPR: 9.45,
@@ -150,7 +162,7 @@ export default {
                         TKLR: 14.89 
                     }, 
                     {
-                        Mark: "(данные от балды)",
+                        Mark: "ДПТ до 72ОВ (6x12)",
                         MDRN: 100,
                         MRN: 1.55,
                         MPR: 9.45,
@@ -185,7 +197,7 @@ export default {
                         TKLR: 16.92,
                     },
                     {
-                        Mark: "здесь всё тоже от балды",
+                        Mark: "ДПТС до 48ОВ (6x8)",
                         MDRN: 6,
                         MRN: 1.5,
                         MPR: 8.48,
@@ -221,9 +233,13 @@ export default {
         
     }),
     methods: {
-        
+        VLS_selected(data){
+            this.selected = data
+            // console.log('selected is writing', this.selected)
+            this.$emit('anotherGetVlsSelected', this.selected)
+        }
     },
-    };
+};
 </script>
 
 <style>

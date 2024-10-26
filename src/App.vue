@@ -46,6 +46,12 @@
             ref="vls"
           />
         </div>
+
+        <div 
+          :class="noMargins === true ? 'mt-2' : 'mt-2 module_bg'"
+        >
+          <video1/>
+        </div>
       </div>
 
       <!-- альтернативный вид -->
@@ -171,6 +177,7 @@ import power from './components/power.vue';
 import shd from './components/shd.vue';
 import cooling from './components/cooling.vue'
 import vls from './components/vls.vue'
+import video1 from './components/video1.vue';
 // import condition from './components/condition.vue'
 
 
@@ -182,6 +189,7 @@ export default {
     power,
     cooling,
     vls,
+    video1
     
   },
 
