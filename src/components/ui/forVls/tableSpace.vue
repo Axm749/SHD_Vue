@@ -190,7 +190,7 @@ export default {
                         MRN: 1.0,
                         MPR: 8.48,
                         weight: 115.6,
-                        diameter: 12.2,
+                        diameter: 40.2,
                         Slice: 116.3,
                         L_nach: 4.56,
                         L_Kon: 4.92,

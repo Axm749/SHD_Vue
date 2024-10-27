@@ -221,7 +221,8 @@
           aria-hidden="true"
         >
         <template v-slot:activator="{ props3 }">
-            <p class="mt-5">выбранная зона: {{ chosenZone }}</p>
+            <p class="mt-5">выбранная зона по ветру: {{ windField }}</p>
+            <p class="mt-5">выбранная зона по гололеду: {{ iceField }}</p>
             <!-- здесь можно сделать сам вывод выбранных значений -->
             <v-btn
               class="mt-5"
@@ -257,6 +258,13 @@
             color="primary" 
             width="100%"
           >тест</v-btn>
+        </v-col>
+        <v-col>
+          <v-checkbox
+            v-model="debug"
+            :label="`debug: ${debug.toString()}`"
+          >
+          </v-checkbox>
         </v-col>
           
       </v-row>
@@ -315,6 +323,7 @@ export default {
       snackbar: false,      // окошко об ошибке
       timeout: 2500,        // время высвечивания окна об ошибке
       errorText: 'Неверно введены данные или они отсутствуют',
+      debug: true,
 
       selected: '',
 
@@ -334,7 +343,6 @@ export default {
       },
       
       chooseZone: false,
-      chosenZone: "1",
 
       componentInfo: 
       {
@@ -363,7 +371,7 @@ export default {
       decimalsRounding: 2, // число знаков после запятой при округлении. Где-то может расширяться или снижаться
 
 
-      height: 35,
+      
 
 
       // а вот отсюда уже нужные для вычисления переменные
@@ -378,42 +386,49 @@ export default {
       L: 20,    // расстояние вежду опорами (м)
       S: 5,     // Стрела провеса
       h: 15,    // Перепад высот между точками подвеса кабеля
+      height:35,// Высота расположения приведенного центра тяжести проводов, троссов и средних точек 
 
+      // не знаю, как правильно это оценивать
       T_sr: 24, // Средняя темпиратура эксплуатации
       T: 20,    // темпиратура кабеля в условиях эксплуатации
 
 
 
 
+      
+  // потом это будет получаться из табличек о климате, но пока так
+      W: 0,     // нормативное ветровое давление, Па
+      windField: 1, // район по ветру
+      iceField: 1,  // район по гололеду
+  
+
   // Получаемое из таблички кабеля
   // для примера берётся ДПТ до 48ОВ, с МДРН = 4
       E_kab: 4.56,        // модуль упругости кабеля (кН/мм^2)
       // ЗДЕСЬ Я ХЗ, КАКАЯ ИМЕННО УПРУГОСТЬ. ЛИБО НАЧАЛЬНАЯ, ЛИБО КОНЕЧНАЯ, ЛИБО ВЫТЯЖКИ... беру начальную
+      Diameter: 0,        // диаметр кабеля
       S_kab: 116.3,       // сечение кабеля (мм^2)
       TKLR: 0.00001692,   // Темпиратурный коэффициент линейного расширения (1/С*)
-                          // БЫТЬ ОСТОРОЖНЫМ СО СТЕПЕНЬЮ ДЕСЯТКИ И ПЕРЕВОДИТЬ ДО ОТПРАВКИ
+                          // БЫТЬ ОСТОРОЖНЫМ СО СТЕПЕНЬЮ ДЕСЯТКИ И НЕ ПЕРЕВОДИТЬ ДО ОТПРАВКИ. Принимающая функция переводит из коэффициента 10^(-6)
 
 
   // Из таблички о высоте расположения  (за предустановленные взял 25м)
+  // используется интерполяция для всех трёх
       K_i: 1,     // Коэффициент изменения толщины стенки гололеда по высоте над поверхностью земли
       d: 10,      // диаметр кабеля (мм)
       K_d: 1,     // Коэффициент изменение толщины стенки гололеда в зависимости от диаметра провода (троса)
-
       heightTable: [
-        {
-          height: 25,
+        { height: 25,
           K_i: 1,
           d: 10,
           K_d: 1,
         },
-        {
-          height: 30,
+        { height: 30,
           K_i: 1.4,
           d: 20,
           K_d: 0.9,
         },
-        {
-          height: 50,
+        { height: 50,
           K_i: 1.6,
           d: 30,
           K_d: 0.8,
@@ -426,8 +441,18 @@ export default {
       C: 10,       // толщина стенки гололеда (мм)
 
   // Из таблицы района по ветру         (за предустановленные взял 1 район)
-      W_0: 400,   // Нормативно ветровое давление
+      W_0: 400,   // Нормативно ветровое давление на высоте 10 метров над землёй
       v_0: 25,    // скорость ветра
+
+
+
+
+
+
+
+
+
+
 
       // нужные для внутренних расчетов
       W_kab: 0,   // Вес кабеля (Н/м)
@@ -466,6 +491,14 @@ export default {
 
       ],
 
+      terrainType: 'A', // тип местности, где:
+                        /*
+                          A - открытые побережья морей, озер, водохранилищ, пустыни, степи, лесостепи, тундра;
+                          
+                          В — городские территории, лесные массивы и другие местности, равномерно покрытые препятствиями высотой не менее 2/3 высоты опор; 
+                          
+                          С — городские районы с застройкой зданиями высотой более 25 м, просеки в лесных массивах с высотой деревьев более высоты опор, орографически защищенные извилистые и узкие склоновые долины и ущелья.
+                        */
       K_w: 0,
       // для интерполяции в пункте 2.8
       K_wTable:[
@@ -536,7 +569,51 @@ export default {
           K_w_C: 2.35,
         },
         
-      ]
+      ],
+
+
+      a_w: 0,     
+      a_wTable: [
+        {
+          a_w: 1,
+          W_0: 200
+        },
+        {
+          a_w: 0.94,
+          W_0: 240
+        },
+        {
+          a_w: 0.88,
+          W_0: 280
+        },
+        {
+          a_w: 0.85,
+          W_0: 300
+        },
+        {
+          a_w: 0.83,
+          W_0: 320
+        },
+        {
+          a_w: 0.8,
+          W_0: 360
+        },
+        {
+          a_w: 0.76,
+          W_0: 400
+        },
+        {
+          a_w: 0.71,
+          W_0: 500
+        },
+        {
+          a_w: 0.7,
+          W_0: 580
+        },
+      ],
+
+      C_x: 0,           // коэффициент лобового сопротивления
+                        // если диаметр менее 20мм, то равен 1.2. Иначе - 1.1
 
     };
   },
@@ -550,6 +627,7 @@ export default {
       this.E_kab=this.chosenCable.L_nach    // модуль упругости кабеля (кН/мм^2)
       // ЗДЕСЬ Я ХЗ, КАКАЯ ИМЕННО УПРУГОСТЬ. ЛИБО НАЧАЛЬНАЯ, ЛИБО КОНЕЧНАЯ, ЛИБО ВЫТЯЖКИ... беру начальную
       this.S_kab=this.chosenCable.Slice
+      this.Diameter = this.chosenCable.Diameter
       this.TKLR = this.chosenCable.TLKR * 0.000001
     },
 
@@ -575,33 +653,47 @@ export default {
           dataTable.length - 1
         ][searchableValue] 
 
-      var debug = 1
-      if(debug){
+      if(this.debug){
         console.log(`минимальное значение ${SearchThrough} `, minValueX)
         console.log(`минимальное значение ${searchableValue} `, minValueSearched)
 
         console.log(`максимальное значение ${SearchThrough} `, maxValueX)
         console.log(`максимальное значение ${searchableValue} `, maxValueSearched)
+        
+        console.log('введенное значение', value)
       }
-      console.log('введенное значение', value)
+      
 
       // ниже минимума
       if (value <= minValueX){
-        console.error('введено меньше минимального', value, '<', minValueX)
+        console.error(`
+        при расчете ${searchableValue} по ${SearchThrough}=${value},
+        введено меньше минимального, ${value}, '<', ${minValueX}
+        `
+        )
         console.log('ответ:', minValueSearched)
-        return minValueSearched
+        return parseFloat(minValueSearched)
       }
       // превышение максимума
       if (value >= maxValueX){
-        console.error('введено больше максимального', value, '>', maxValueX)
+        console.error(`
+        при расчете ${searchableValue} по ${SearchThrough}=${value},
+        введено больше максимального, ${value}, '>', ${maxValueX}
+        `
+        )
         console.log('ответ:', maxValueSearched)
-        return maxValueSearched
+        return parseFloat(maxValueSearched)
       }
 
       // вычисления с учетом длины массива
-      console.log(`предцикловый вывод, входное значение ${value}, проверить минимальное значение ${dataTable[0][SearchThrough]}, длина массива = ${dataTable.length}`)
+      if(this.debug){
+        console.log(`предцикловый вывод, входное значение ${value}, проверить минимальное значение ${dataTable[0][SearchThrough]}, длина массива = ${dataTable.length}`)
+      }
       for (var i = 0; i<dataTable.length; i++){
-        console.log(`итерация ${i}, значение ${value}, сравниваем с ${dataTable[i][SearchThrough]}`)
+        if(this.debug){
+          console.log(`итерация ${i}, значение ${value}, сравниваем с ${dataTable[i][SearchThrough]}`)
+        }
+
         if (value < dataTable[i][SearchThrough]){
           var x1 = dataTable[i-1][SearchThrough]
           var x2 = dataTable[i][SearchThrough]
@@ -611,7 +703,7 @@ export default {
 
           var result = this.interpolateFormula(value, x1, x2, y1, y2)
           console.log( searchableValue, '=', result,' как результат интерполяции (',value, x1, x2, y1, y2,')')
-          return result
+          return parseFloat(result)
         }
       }
     },
@@ -760,21 +852,35 @@ export default {
     // Ветровая нагрузка на кабель при гололеде
     task_2_8(){
       console.log("2.8 проверяем числа")
-      // this.interpolateK_l(this.height)
       this.K_l = this.interpolateUniversal(
           this.height, 
           this.K_lTable, 
           'K_l', 
           'height'
         )
-      console.log(this.K_l, this.height)
+      this.K_w = this.interpolateUniversal(
+        this.height, 
+        this.K_wTable, 
+        `K_w_${this.terrainType}`, 
+        'height'
+      )
 
-      // this.interpolateK_w(this.height, this.terrainType)
-      
-      // K_w - по табличке, входным параметром является - this.height
       // a_w - по табличке ветрового давления
-      /*
-      W - Нормативное ветровое давление по району
+      this.a_w = this.interpolateUniversal(
+        this.W_0, 
+        this.a_wTable, 
+        `a_w`, 
+        'W_0'
+      )
+
+      // C_x - по табличке от диаметра кабел
+      if(this.d >= 20){
+        this.C_x = 1.1
+      } else { this.C_x = 1.2}
+      console.log('Diameter =', this.d)
+      console.log('C_x =', this.C_x)
+
+      /*W - Нормативное ветровое давление по району
 
         При расчете в режиме максимального ветра - по табличке (W_0)
         При расчете в режиме максимального гололеда - по формуле 
@@ -785,10 +891,39 @@ export default {
                     если v_г неизвестен, то
                     W_г = 0.25 * W_0
       */
-      this.W_v = this.a_w * this.K_l * this.K_w * this.C_x * this.W * (this.d_kab + 2* this.K_i * this.K_d * this.C ) * 0.001  
+
+      
+      this.W_v_wind = parseFloat(this.windPressure(this.W_0))
+      console.log('ответ для ветра:', this.W_v_wind)
+
+      console.log('режим максимального гололеда, таблицы нет, потому W_г = 0.25*W_0 =', this.W_0/4)
+      this.W_v_ice = parseFloat(this.windPressure(this.W_0/4))
+      console.log('ответ для гололеда:', this.W_v_ice)
+      
     },
 
 
+
+    /**
+     * ветровая нагрузка на кабель в разных режимах
+     * чисто чтобы не повторять по несколько раз
+     * @param W - нормативное ветровое давление, Па, в рассматриваемом режиме: либо макс. ветра, либо макс. гололеда
+     */
+    windPressure(W){
+      if (this.debug){
+        console.log('a_w =', this.a_w)
+        console.log('K_l =', this.K_l)
+        console.log('K_w =', this.K_w)
+        console.log('C_x =', this.C_x)
+        console.log('d =', this.d)
+        console.log('C =', this.C)
+      }
+      
+      
+      return parseFloat(
+        this.a_w * this.K_l * this.K_w * this.C_x * W * parseFloat(this.d + 2* this.K_i * this.K_d * this.C ) * 0.001  
+      ).toFixed(this.decimalsRounding)
+    },
 
 
     // чисто для своих проверок, привязано к своей кнопке
