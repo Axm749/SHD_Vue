@@ -78,7 +78,6 @@
         required
         outlined
         clearable
-        :rules="rule"
         hide-details="auto"
         v-model.number="h"
         class="mt-5"
@@ -466,6 +465,7 @@ export default {
 
       L_kab: 0,   // Длина подвешенного кабеля
       L_n0: 0,    // Длина кабеля в ненагруженном состоянии
+      L_max: 0,   // Длина кабеля в нагруженном состоянии
 
       W_g: 0,     // Вес кабеля при воздействии максимального гололеда
 
@@ -617,6 +617,8 @@ export default {
 
       W_max: 0,         // Максимальная нагрузка, действующая на кабель
 
+               
+
     };
   },
   methods: {
@@ -746,6 +748,8 @@ export default {
       this.task_2_8()
 
       this.task_2_9()
+
+      this.task_2_10()
 
     },
     
@@ -904,26 +908,81 @@ export default {
       this.W_v_wind = parseFloat(this.windPressure(this.W_0))
       console.log('ответ для ветра:', this.W_v_wind)
 
-      console.log('режим максимального гололеда, таблицы нет, потому W_г = 0.25*W_0 =', this.W_0/4)
+      if(this.debug) console.log('режим максимального гололеда, таблицы нет, потому W_г = 0.25*W_0 =', this.W_0/4)
       this.W_v_ice = parseFloat(this.windPressure(this.W_0/4))
       console.log('ответ для гололеда:', this.W_v_ice)
     },
 
+    // Максимальная нагрузка, действующая на кабель
     task_2_9(){
       this.W_max = parseFloat(
         Math.sqrt(
-          ((this.W_0/4)*(this.W_0/4)) + this.W_0*this.W_0
+          (this.W_v_wind*this.W_v_wind) + (this.W_v_ice*this.W_v_ice)
         ).toFixed(this.decimalsRounding)
       )
-      console.log('2.9 Максимальная нагрузка, действующая на кабель', this.W_max)
+      console.warn('2.9 Максимальная нагрузка, действующая на кабель ???', this.W_max)
     },
 
+    // Расчет максимальной стрела провиса
     task_2_10(){
+      // длина кабеля в нагруженом состоянии
+      // S_max пока нет, потому оно закоментировано
+      // this.L_max = this.L_nk * (1 + (
+      //   (this.W_max*this.L*this.L)
+      //   /
+      //   (8*this.S_max*this.E_kab*this.S_kab)
+      // ))
 
+      this.L_max = this.L + (4/3)*((this.S1^2/this.L1)+(this.S2^2/this.L2))
+
+      // переопределение S1 и S2
+      console.log('переопределение S1 и S2')
+      console.log(`до:    S1=${this.S1}, S2=${this.S2}`)
+      this.S1 = parseFloat(this.S*this.L1*this.L1/(this.L*this.L)).toFixed(this.decimalsRounding)
+      this.S2 = parseFloat(this.S*this.L2*this.L2/(this.L*this.L)).toFixed(this.decimalsRounding)
+      console.log(`после: S1=${this.S1}, S2=${this.S2}`)
+
+      var a = 3*(this.L*this.L + ((this.h*this.h)/2) - this.L*this.L_nk)/8
+      a = parseFloat(a.toFixed(this.decimalsRounding+2))
+
+
+      var b = (-3*this.W_max*((this.L)**3)*this.L_nk)/(64*this.E_kab*this.S_kab)
+
+
+      b = parseFloat(b.toFixed(this.decimalsRounding+2))
+      console.log('a =',a, 'and b =',b)
+
+      this.S_max = this.kubicEquasion(a,b)
+      this.S_max = parseFloat(this.S_max.toFixed(this.decimalsRounding+2))
+      console.log('2.10 максимальная стрела провиса =',this.S_max)
     },
 
+    /**
+     * решение кубического уровнения для получения S_max
+     * @param a - первое вводное
+     * @param b - второе вводное
+     */
+    kubicEquasion(a, b){
+      
+      var parametr = (a/3)^3 + (-b/2)^2
+      console.log('parametr',parametr)
+      var answer = 0
+      if(parametr>=0){
+        answer = (((-b/2) + Math.sqrt(parametr))^(1/3) + (
+          (-b/2) - Math.sqrt(parametr)
+        )^(1/3))
 
 
+        console.log(answer, 'вариант 1')
+      }
+      else{
+        answer =  (
+          2 * Math.sqrt(-a/3)*Math.cos((1/3)*Math.cos((-b/2)/((-a/3)^(3/2)))^(-1))
+        )
+        console.log(answer, 'вариант 2')
+      }
+      return answer 
+    },
 
     /**
      * ветровая нагрузка на кабель в разных режимах для 2.8
