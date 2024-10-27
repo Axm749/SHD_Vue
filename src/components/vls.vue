@@ -444,7 +444,7 @@ export default {
       W_0: 400,   // Нормативно ветровое давление на высоте 10 метров над землёй
       v_0: 25,    // скорость ветра
 
-
+      
 
 
 
@@ -613,7 +613,9 @@ export default {
       ],
 
       C_x: 0,           // коэффициент лобового сопротивления
-                        // если диаметр менее 20мм, то равен 1.2. Иначе - 1.1
+      // если диаметр менее 20мм, то равен 1.2. Иначе - 1.1
+
+      W_max: 0,         // Максимальная нагрузка, действующая на кабель
 
     };
   },
@@ -666,22 +668,22 @@ export default {
 
       // ниже минимума
       if (value <= minValueX){
-        console.error(`
+        if(this.debug) console.error(`
         при расчете ${searchableValue} по ${SearchThrough}=${value},
         введено меньше минимального, ${value}, '<', ${minValueX}
         `
         )
-        console.log('ответ:', minValueSearched)
+        if(this.debug) console.log('ответ:', minValueSearched)
         return parseFloat(minValueSearched)
       }
       // превышение максимума
       if (value >= maxValueX){
-        console.error(`
+        if(this.debug) console.error(`
         при расчете ${searchableValue} по ${SearchThrough}=${value},
         введено больше максимального, ${value}, '>', ${maxValueX}
         `
         )
-        console.log('ответ:', maxValueSearched)
+        if(this.debug) console.log('ответ:', maxValueSearched)
         return parseFloat(maxValueSearched)
       }
 
@@ -702,7 +704,7 @@ export default {
           var y2 = dataTable[i][searchableValue]
 
           var result = this.interpolateFormula(value, x1, x2, y1, y2)
-          console.log( searchableValue, '=', result,' как результат интерполяции (',value, x1, x2, y1, y2,')')
+          if(this.debug) console.log( searchableValue, '=', result,' как результат интерполяции (',value, x1, x2, y1, y2,')')
           return parseFloat(result)
         }
       }
@@ -742,6 +744,8 @@ export default {
       this.task_2_7()
 
       this.task_2_8()
+
+      this.task_2_9()
 
     },
     
@@ -851,13 +855,15 @@ export default {
 
     // Ветровая нагрузка на кабель при гололеде
     task_2_8(){
-      console.log("2.8 проверяем числа")
+      console.log("2.8 ветровая нагрузка на кабель при гололеде. Здесь бы нам уже получить W_0")
+      // по своей таблице от высоты
       this.K_l = this.interpolateUniversal(
           this.height, 
           this.K_lTable, 
           'K_l', 
           'height'
         )
+      // по своей таблице от высоты
       this.K_w = this.interpolateUniversal(
         this.height, 
         this.K_wTable, 
@@ -877,8 +883,12 @@ export default {
       if(this.d >= 20){
         this.C_x = 1.1
       } else { this.C_x = 1.2}
-      console.log('Diameter =', this.d)
-      console.log('C_x =', this.C_x)
+
+      if(this.debug){
+        console.log('Diameter =', this.d)
+        console.log('C_x =', this.C_x)
+      }
+      
 
       /*W - Нормативное ветровое давление по району
 
@@ -890,22 +900,33 @@ export default {
 
                     если v_г неизвестен, то
                     W_г = 0.25 * W_0
-      */
-
-      
+      */      
       this.W_v_wind = parseFloat(this.windPressure(this.W_0))
       console.log('ответ для ветра:', this.W_v_wind)
 
       console.log('режим максимального гололеда, таблицы нет, потому W_г = 0.25*W_0 =', this.W_0/4)
       this.W_v_ice = parseFloat(this.windPressure(this.W_0/4))
       console.log('ответ для гололеда:', this.W_v_ice)
-      
+    },
+
+    task_2_9(){
+      this.W_max = parseFloat(
+        Math.sqrt(
+          ((this.W_0/4)*(this.W_0/4)) + this.W_0*this.W_0
+        ).toFixed(this.decimalsRounding)
+      )
+      console.log('2.9 Максимальная нагрузка, действующая на кабель', this.W_max)
+    },
+
+    task_2_10(){
+
     },
 
 
 
+
     /**
-     * ветровая нагрузка на кабель в разных режимах
+     * ветровая нагрузка на кабель в разных режимах для 2.8
      * чисто чтобы не повторять по несколько раз
      * @param W - нормативное ветровое давление, Па, в рассматриваемом режиме: либо макс. ветра, либо макс. гололеда
      */
@@ -929,15 +950,10 @@ export default {
     // чисто для своих проверок, привязано к своей кнопке
     test(){
       console.log("lets test")
-      console.log(
-        this.interpolateUniversal(
-          this.height, 
-          this.heightTable, 
-          'K_i', 
-          'height'
-        )
-      )
-    }
+
+    },
+
+
 
   },
 };
