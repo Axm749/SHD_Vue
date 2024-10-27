@@ -385,7 +385,7 @@ export default {
                       // БЫТЬ ОСТОРОЖНЫМ СО СТЕПЕНЬЮ ДЕСЯТКИ И ПЕРЕВОДИТЬ ДО ОТПРАВКИ
 
       // входные параметры
-      m: 100,   // удельный весь кабеля (кг/км)
+      
       L: 20,    // расстояние вежду опорами (м)
       S: 5,     // Стрела провеса
       h: 15,    // Перепад высот между точками подвеса кабеля
@@ -413,6 +413,10 @@ export default {
       S_kab: 116.3,       // сечение кабеля (мм^2)
       TKLR: 0.00001692,   // Темпиратурный коэффициент линейного расширения (1/С*)
                           // БЫТЬ ОСТОРОЖНЫМ СО СТЕПЕНЬЮ ДЕСЯТКИ И НЕ ПЕРЕВОДИТЬ ДО ОТПРАВКИ. Принимающая функция переводит из коэффициента 10^(-6)
+      m: 100,   // удельный весь кабеля (кг/км)
+      S_vit: 0,
+      S_kon: 0,
+
 
 
   // Из таблички о высоте расположения  (за предустановленные взял 25м)
@@ -461,12 +465,20 @@ export default {
       W_kab: 0,   // Вес кабеля (Н/м)
       H_nach: 0,  // Растягивающая нагрузка (Н)
       H_max: 0,   // Максимальная растягивающая нагрузка
+      H_n_vit: 0, // Растягивающая нагрузка вытяжки
 
       L1: 0,      // Малый эквивалентный пролет
       L2: 0,      // Больший эквивалентный пролет
 
+
+      // используется для составления монтажной таблицы
+      // L_n_MON_T: 0,  // длина кабеля в ненагруженном состоянии с учетом монтажной температуры
+      // L_MON_nk: 0,   // длина кабеля в ненагруженном состоянии при различной температуре
+      // T_mon: 0,      // температура кабеля в условиях эксплуатации 
+
       S1: 0,      //
       S2: 0,      //
+      S_n_vit: 0, // Стрела провеса вытяжки
 
       L_kab: 0,   // Длина подвешенного кабеля
       L_n0: 0,    // Длина кабеля в ненагруженном состоянии
@@ -633,8 +645,9 @@ export default {
       console.log('Final get data', this.chosenCable)
       this.chooseCable = false
 
-      this.E_kab=this.chosenCable.L_nach    // модуль упругости кабеля (кН/мм^2)
+      this.E_kab = this.chosenCable.L_nach    // модуль упругости кабеля (кН/мм^2)
       // ЗДЕСЬ Я ХЗ, КАКАЯ ИМЕННО УПРУГОСТЬ. ЛИБО НАЧАЛЬНАЯ, ЛИБО КОНЕЧНАЯ, ЛИБО ВЫТЯЖКИ... беру начальную
+      this.E_vit = this.chosenCable.L_feat
       this.S_kab=this.chosenCable.Slice
       this.Diameter = this.chosenCable.Diameter
       this.TKLR = this.chosenCable.TLKR * 0.000001
@@ -760,7 +773,9 @@ export default {
 
       this.task_2_11()
 
-      this.task_2_12()
+      // this.task_2_12()
+
+      this.task_2_13()
 
     },
     
@@ -938,13 +953,6 @@ export default {
     task_2_10(){
 
       // длина кабеля в нагруженом состоянии
-      // S_max пока нет, потому оно закоментировано
-      // this.L_max = this.L_nk * (1 + (
-      //   (this.W_max*this.L*this.L)
-      //   /
-      //   (8*this.S_max*this.E_kab*this.S_kab)
-      // ))
-
       this.L_max = this.L + (4/3)*((this.S1^2/this.L1)+(this.S2^2/this.L2))
 
       // переопределение S1 и S2
@@ -960,16 +968,12 @@ export default {
       ).toFixed(this.decimalsRounding)
 
       console.log(`после: S1=${this.S1}, S2=${this.S2}`)
-
-      var a = 3*((this.L^2) + (((this.h)^2)/2) - this.L*this.L_nk)/8
+      var a = this.makeA(this.L, this.h, this.L_nk)
       a = parseFloat(a.toFixed(this.decimalsRounding+2))
-
-
-      var b = (-3*this.W_max*((this.L)^3)*this.L_nk)/(64*this.E_kab*this.S_kab)
-
+      var b = this.makeB(this.W_max, this.L, this.L_nk, this.E_kab, this.S_kab)
 
       b = parseFloat(b.toFixed(this.decimalsRounding+2))
-      console.log('a =',a, 'and b =',b)
+      // console.log('a =',a, 'and b =',b)
 
       this.S_max = this.kubicEquasion(a,b)
       this.S_max = parseFloat(this.S_max.toFixed(this.decimalsRounding+2))
@@ -984,12 +988,83 @@ export default {
       console.log('для сравнения, обычная растягивающая нагрузка из 2.2', this.H_nach, 'Н')
     },
 
-    // 
+    // Расчет монтажной стрелы провеса, нагрузки и монтажной таблицы
     task_2_12(){
       console.warn('2.12 Давайте пока не будем, пожалуйста. Можем даже отдельный расчетик под это сделать, но если надо будет')
+
+
+
+      this.L_MON_nk = this.L_n0*(1+this.TKLR * (this.T_mon - this.T_sr))
+      console.log('L_MON_nk =', this.L_MON_nk)
+
+      var a = 3*((this.L^2) + (((this.h)^2)/2) - this.L*this.L_nk)/8
+      a = parseFloat(a.toFixed(this.decimalsRounding+2))
+
+      var b = (-3*this.W_max*((this.L)^3)*this.L_nk)/(64*this.E_kab*this.S_kab)
+      b = parseFloat(b.toFixed(this.decimalsRounding+2))
+      console.log('a =',a, 'and b =',b)
+
+      this.S_mon = this.kubicEquasion(a, b)
+
     },
 
+    // Расчет конечной стрелы провеса и нагрузки при нормальных условиях
+    task_2_13(){
+      console.log('2.13 Расчет конечной стрелы провеса и нагрузки при нормальных условиях')
+      this.L_max
 
+      // стрела провеса вытяжки
+      var a = this.makeA(this.L, this.h, this.L_nk)
+      var b = this.makeB(this.W_kab, this.L, this.L_nk, this.E_vit, this.S_kab)
+      console.log('a =',a, 'and b =',b)
+      this.S_n_vit = this.kubicEquasion(a, b)
+      console.log('S_n_vit', this.S_n_vit)
+
+
+      // нагрузка после вытяжки (она же усталось металла)
+      this.H_n_vit = (this.W_kab * (this.L^2)) / (8 * this.S_n_vit)
+      console.log('H_n_vit', this.H_n_vit)
+      console.log('для сравнения начальная нагрузка', this.H_nach)
+      console.log('для сравнения максимальная нагрузка', this.H_max)
+
+    },
+
+    
+    /**
+     * функция составляющая коэффициент A
+     * @param L     - длина без учета темпиратуры
+     * @param h     - высота установки
+     * @param L_nk  - длина с учетом темпиратуры
+     */
+    makeA(L, h, L_nk){
+      var result = 3*((L^2) + (((h)^2)/2) - L*L_nk)/8
+      if(this.debug) console.log('a from makeA',result)
+      return result
+    },
+    
+
+    /**
+     * функция составляющая коэффициент B
+     * @param {number} W     - нагрузка на кабель
+     * @param {number} L     - длина без учета темпиратуры
+     * @param {number} L_nk  - длина с учетом темпиратуры
+     * @param {number} E     - модуль упругости
+     * @param {number} S     - стрела провеса
+     */
+    makeB(W, L, L_nk, E, S){
+      if(this.debug) {
+        console.log('W =', W)
+        console.log('L =', L)
+        console.log('L_nk =', L_nk)
+        console.log('E =', E)
+        console.log('S =', S)
+      }
+      var result = parseFloat(
+        (-3*W*((L)^3)*L_nk)/(64*E*S)
+      )
+      if(this.debug) console.log('b from makeB',result)
+      return result
+    },
 
 
 
@@ -1022,7 +1097,7 @@ export default {
             (-b/2) - Math.sqrt(parametr)
           )^(1/3)
         )
-        console.log(answer, 'вариант 1')
+        if(this.debug) console.log(answer, 'вариант 1')
       }
       else{
         answer =  (
@@ -1034,7 +1109,7 @@ export default {
             )^(-1)
           )
         )
-        console.log(answer, 'вариант 2')
+        if(this.debug) console.log(answer, 'вариант 2')
       }
       return answer 
     },
