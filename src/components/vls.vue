@@ -14,7 +14,49 @@
       class="pa-5" 
     >
       <!-- <h1>Воздушные линии связи</h1> -->
-      <v-text-field
+      
+      <!-- выбор марки кабеля -->
+      <v-dialog
+          v-model="chooseCable"
+          transition="dialog-bottom-transition"
+          width="80%"
+          :scrollable="false"
+          aria-hidden="true"
+        >
+        <template v-slot:activator="{ props2 }">
+            
+          <v-row>
+            <v-col>
+              <p class="mt-5">выбранный кабель: {{ chosenCable }}</p>
+              <!-- здесь можно сделать сам вывод выбранных значений -->
+            </v-col>
+            <v-col>
+              <v-btn
+                class="mt-5"
+                width="100%"
+                color="primary"
+                v-bind="props2"
+                @click="chooseCable = true"
+                ><v-icon>mdi-cable-data</v-icon>
+                выбрать кабель
+              </v-btn>
+            </v-col>
+          </v-row>
+        </template>
+
+        <tableSpace
+          @anotherGetVlsSelected="NewWriteSelected"
+        />    
+
+      </v-dialog>
+      
+      
+      
+      
+      
+      
+      <!-- <v-text-field
+        disabled
         flat
         type="number"
         required
@@ -31,7 +73,7 @@
                 imageUrl=''
             />
         </template>                
-      </v-text-field>
+      </v-text-field> -->
 
       <v-text-field
         flat
@@ -91,7 +133,7 @@
         </template>                
       </v-text-field>
 
-      <v-row class="mt-5">
+      <v-row class="mt-2">
         
         <v-col>
           <v-text-field
@@ -154,7 +196,7 @@
                 title="высота расположения приведенного центра тяжести проводов, троссов и средних точек"
                 imageUrl=''
                 desc = "
-                Выставлять в пределах от 25 до 100 метров. 
+                таблицы для интерполяции есть не под все значения, но в пределах от 25 до 70 метров всё должно быть окей. 
                 В других случаях точность не гарантирована 
                 из-за отсутствия таблиц на такой случай
                 "
@@ -168,45 +210,7 @@
 
 
 
-      <!-- выбор марки кабеля -->
-
-      <v-dialog
-          v-model="chooseCable"
-          transition="dialog-bottom-transition"
-          width="80%"
-          :scrollable="false"
-          aria-hidden="true"
-        >
-        <template v-slot:activator="{ props2 }">
-            
-          <v-row>
-            <v-col>
-              <p class="mt-5">выбранный кабель: {{ chosenCable }}</p>
-              <!-- здесь можно сделать сам вывод выбранных значений -->
-            </v-col>
-            <v-col>
-              <v-btn
-                class="mt-5"
-                width="100%"
-                color="primary"
-                v-bind="props2"
-                @click="chooseCable = true"
-                ><v-icon>mdi-cable-data</v-icon>
-                выбрать кабель
-              </v-btn>
-            </v-col>
-          </v-row>
-          
-            
-            
-            
-          </template>
-
-        <tableSpace
-          @anotherGetVlsSelected="NewWriteSelected"
-        />    
-
-      </v-dialog>
+      
 
 
       
@@ -456,6 +460,7 @@ export default {
       // нужные для внутренних расчетов
       W_kab: 0,   // Вес кабеля (Н/м)
       H_nach: 0,  // Растягивающая нагрузка (Н)
+      H_max: 0,   // Максимальная растягивающая нагрузка
 
       L1: 0,      // Малый эквивалентный пролет
       L2: 0,      // Больший эквивалентный пролет
@@ -633,6 +638,7 @@ export default {
       this.S_kab=this.chosenCable.Slice
       this.Diameter = this.chosenCable.Diameter
       this.TKLR = this.chosenCable.TLKR * 0.000001
+      this.m = this.chosenCable.Weight
     },
 
 
@@ -712,8 +718,9 @@ export default {
       }
     },
 
-    /**
-     * 
+    /** 
+     * формула интерполяции, вынесенная отдельной функцией для удобства. 
+     * Строго привязана к функций interpolateUniversal
      * @param {number} value  координата по оси Х, по которой нужно найти Y
      * @param {number} x1     значение по оси Х меньше искомой
      * @param {number} x2     значение по оси Х больше искомой
@@ -750,6 +757,10 @@ export default {
       this.task_2_9()
 
       this.task_2_10()
+
+      this.task_2_11()
+
+      this.task_2_12()
 
     },
     
@@ -925,6 +936,7 @@ export default {
 
     // Расчет максимальной стрела провиса
     task_2_10(){
+
       // длина кабеля в нагруженом состоянии
       // S_max пока нет, потому оно закоментировано
       // this.L_max = this.L_nk * (1 + (
@@ -938,15 +950,22 @@ export default {
       // переопределение S1 и S2
       console.log('переопределение S1 и S2')
       console.log(`до:    S1=${this.S1}, S2=${this.S2}`)
-      this.S1 = parseFloat(this.S*this.L1*this.L1/(this.L*this.L)).toFixed(this.decimalsRounding)
-      this.S2 = parseFloat(this.S*this.L2*this.L2/(this.L*this.L)).toFixed(this.decimalsRounding)
+
+      this.S1 = parseFloat(
+        this.S*this.L1*this.L1/(this.L*this.L)
+      ).toFixed(this.decimalsRounding)
+
+      this.S2 = parseFloat(
+        this.S*((this.L2)^2)/((this.L)^2)
+      ).toFixed(this.decimalsRounding)
+
       console.log(`после: S1=${this.S1}, S2=${this.S2}`)
 
-      var a = 3*(this.L*this.L + ((this.h*this.h)/2) - this.L*this.L_nk)/8
+      var a = 3*((this.L^2) + (((this.h)^2)/2) - this.L*this.L_nk)/8
       a = parseFloat(a.toFixed(this.decimalsRounding+2))
 
 
-      var b = (-3*this.W_max*((this.L)**3)*this.L_nk)/(64*this.E_kab*this.S_kab)
+      var b = (-3*this.W_max*((this.L)^3)*this.L_nk)/(64*this.E_kab*this.S_kab)
 
 
       b = parseFloat(b.toFixed(this.decimalsRounding+2))
@@ -955,10 +974,38 @@ export default {
       this.S_max = this.kubicEquasion(a,b)
       this.S_max = parseFloat(this.S_max.toFixed(this.decimalsRounding+2))
       console.log('2.10 максимальная стрела провиса =',this.S_max)
+      console.log('2.10 для сравнения обычная стрела провеса =',this.S)
     },
+
+    // Максимальная растягивающая нагрузка при наихудших условиях
+    task_2_11(){
+      this.H_max = (this.W_max * (this.L^2)) / (8 * this.S_max)
+      console.log('2.11 Максимальная растягивающая нагрузка при наихудших условиях', this.H_max, 'Н')
+      console.log('для сравнения, обычная растягивающая нагрузка из 2.2', this.H_nach, 'Н')
+    },
+
+    // 
+    task_2_12(){
+      console.warn('2.12 Давайте пока не будем, пожалуйста. Можем даже отдельный расчетик под это сделать, но если надо будет')
+    },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * решение кубического уровнения для получения S_max
+     * Для пункта 2.10
      * @param a - первое вводное
      * @param b - второе вводное
      */
@@ -968,16 +1015,24 @@ export default {
       console.log('parametr',parametr)
       var answer = 0
       if(parametr>=0){
-        answer = (((-b/2) + Math.sqrt(parametr))^(1/3) + (
-          (-b/2) - Math.sqrt(parametr)
-        )^(1/3))
-
-
+        answer = (
+          (
+            (-b/2) + Math.sqrt(parametr)
+          )^(1/3) + (
+            (-b/2) - Math.sqrt(parametr)
+          )^(1/3)
+        )
         console.log(answer, 'вариант 1')
       }
       else{
         answer =  (
-          2 * Math.sqrt(-a/3)*Math.cos((1/3)*Math.cos((-b/2)/((-a/3)^(3/2)))^(-1))
+          2 * Math.sqrt(-a/3)*Math.cos(
+            (1/3)*Math.cos(
+              (-b/2)/(
+                (-a/3)^(3/2)
+              )
+            )^(-1)
+          )
         )
         console.log(answer, 'вариант 2')
       }

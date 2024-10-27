@@ -14,7 +14,7 @@
                     <tr>
                         <th style="border-bottom: none">Марка</th>
                         <th colspan="3">Растягивающее усиление, кН</th>
-                        <th colspan="1" style="border-bottom: none">Вес, кг/мм</th>
+                        <th colspan="1" style="border-bottom: none">Вес, кг/км</th>
                         <th colspan="1" style="border-bottom: none">Диаметр, мм</th>
                         <th colspan="1" style="border-bottom: none">Сечение, мм<sup>2</sup></th>
                         <th colspan="3">Модуль упругости, кН/мм<sup>2</sup></th>
