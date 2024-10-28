@@ -673,7 +673,7 @@ export default {
     windWriteSelected(data){
       console.log('wind data', `${JSON.stringify(data[0])}`)
       // потом это будет получаться из табличек о климате, но пока так
-      this.W = data[0].Norma     // нормативное ветровое давление, Па
+      this.W = data[0].Norma * 1000     // нормативное ветровое давление, Па
       this.windField = data[0].airZone
       this.W_0 = data[0].windPressure
       this.v_0 = data[0].windSpeed
