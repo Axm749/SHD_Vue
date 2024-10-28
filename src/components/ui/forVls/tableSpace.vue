@@ -35,9 +35,9 @@
 
 
 			<v-sheet
-			id="scrolling-techniques-2"
-			class="overflow-y-auto"
-			max-height="70%"
+                id="scrolling-techniques-2"
+                class="overflow-y-auto"
+                max-height="70%"
 			>
 				<v-tabs-items v-model="tab" style="margin-top: 226px;">	
 					<v-tab-item>

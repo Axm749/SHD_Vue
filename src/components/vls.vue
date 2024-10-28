@@ -45,35 +45,12 @@
         </template>
 
         <tableSpace
-          @anotherGetVlsSelected="NewWriteSelected"
+          @anotherGetVlsSelected="cableWriteSelected"
         />    
 
       </v-dialog>
       
-      
-      
-      
-      
-      
-      <!-- <v-text-field
-        disabled
-        flat
-        type="number"
-        required
-        outlined
-        clearable
-        :rules="rule"
-        hide-details="auto"
-        v-model.number="m"
-        class="mt-5"
-      >
-        <template v-slot:label>
-            <toolbarInfo
-                title="масса кабеля (кг/км)"
-                imageUrl=''
-            />
-        </template>                
-      </v-text-field> -->
+
 
       <v-text-field
         flat
@@ -224,23 +201,24 @@
           aria-hidden="true"
         >
         <template v-slot:activator="{ props3 }">
-            <p class="mt-5">выбранная зона по ветру: {{ windField }}</p>
-            <p class="mt-5">выбранная зона по гололеду: {{ iceField }}</p>
-            <!-- здесь можно сделать сам вывод выбранных значений -->
-            <v-btn
-              class="mt-5"
-              width="100%"
-              color="primary"
-              v-bind="props3"
-              @click="chooseZone = true"
-              ><v-icon>mdi-cable-data</v-icon>
-              выбрать зону
-            </v-btn>
-            
-          </template>
+          <p class="mt-5">выбранная зона по ветру: {{ windField }}</p>
+          <p class="mt-5">выбранная зона по гололеду: {{ iceField }}</p>
+          <!-- здесь можно сделать сам вывод выбранных значений -->
+          <v-btn
+            class="mt-5"
+            width="100%"
+            color="primary"
+            v-bind="props3"
+            @click="chooseZone = true"
+            ><v-icon>mdi-cable-data</v-icon>
+            выбрать зону
+          </v-btn>
+          
+        </template>
 
         <climateTable
-          
+          @windGetVlsSelected="windWriteSelected"
+          @iceGetVlsSelected="iceWriteSelected"
         />    
 
       </v-dialog>
@@ -262,6 +240,7 @@
             width="100%"
           >тест</v-btn>
         </v-col>
+        
         <v-col>
           <v-checkbox
             v-model="debug"
@@ -448,7 +427,12 @@ export default {
       W: 0,     // нормативное ветровое давление, Па
       windField: 1, // район по ветру
       iceField: 1,  // район по гололеду
-  
+  // Из таблицы района по ветру         (за предустановленные взял 1 район)
+      W_0: 400,   // Нормативно ветровое давление на высоте 10 метров над землёй
+      v_0: 25,    // скорость ветра
+
+  // Из таблицы района гололеда         (за предустановленные взял 1 район)
+      C: 10,       // толщина стенки гололеда (мм)
 
   // Получаемое из таблички кабеля
   // для примера берётся ДПТ до 48ОВ, с МДРН = 4
@@ -490,22 +474,11 @@ export default {
 
 
 
-  // Из таблицы района гололеда         (за предустановленные взял 1 район)
-      C: 10,       // толщина стенки гололеда (мм)
 
-  // Из таблицы района по ветру         (за предустановленные взял 1 район)
-      W_0: 400,   // Нормативно ветровое давление на высоте 10 метров над землёй
-      v_0: 25,    // скорость ветра
+
+
 
       
-
-
-
-
-
-
-
-
 
       // нужные для внутренних расчетов
       W_kab: 0,   // Вес кабеля (Н/м)
@@ -691,12 +664,42 @@ export default {
   },
   methods: {
 
-    NewWriteSelected(data){
+
+// // Из таблицы района по ветру         (за предустановленные взял 1 район)
+//     W: 0,     // нормативное ветровое давление, Па
+//     windField: 1, // район по ветру
+//     W_0: 400,   // Нормативно ветровое давление на высоте 10 метров над землёй
+//     v_0: 25,    // скорость ветра
+    windWriteSelected(data){
+      console.log('wind data', `${JSON.stringify(data[0])}`)
+      // потом это будет получаться из табличек о климате, но пока так
+      this.W = data[0].Norma     // нормативное ветровое давление, Па
+      this.windField = data[0].airZone
+      this.W_0 = data[0].windPressure
+      this.v_0 = data[0].windSpeed
+    },
+
+
+// Из таблицы района гололеда         (за предустановленные взял 1 район)
+//    C: 10,       // толщина стенки гололеда (мм)
+//    iceField: 1,  // район по гололеду
+    iceWriteSelected(data){
+      console.log('ice data', `${JSON.stringify(data[0])}`)
+        // потом это будет получаться из табличек о климате, но пока так
+        this.C = data[0].iceWidth     // нормативное ветровое давление, Па
+        this.iceField = data[0].iceField
+
+    },
+    
+    
+    cableWriteSelected(data){
       this.chosenCable = data[0]
       console.log('Final get data', this.chosenCable)
       this.chooseCable = false
       this.setCableParams(this.chosenCable)
     },
+
+    
 
     setCableParams(chosenCable){
       this.E_kab = chosenCable.L_nach    // модуль упругости кабеля (кН/мм^2)
@@ -1199,6 +1202,7 @@ export default {
     // чисто для своих проверок, привязано к своей кнопке
     test(){
       console.log("lets test")
+      console.log(this.W)
 
     },
 
