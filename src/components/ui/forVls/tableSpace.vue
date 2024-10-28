@@ -37,9 +37,9 @@
 			<v-sheet
 			id="scrolling-techniques-2"
 			class="overflow-y-auto"
-			max-height="600px"
+			max-height="70%"
 			>
-				<v-tabs-items v-model="tab" style="height: 2500px; margin-top: 226px;">	
+				<v-tabs-items v-model="tab" style="margin-top: 226px;">	
 					<v-tab-item>
 						<cableTable 
                             v-bind:data="DPT"
@@ -58,14 +58,15 @@
 
 					<v-tab-item>
 						<cableTable 
-                            v-bind:data="DOTS"
+                            v-bind:data="DOTA"
+                            v-bind:name="items[2]"
                             @getVlsSelected="VLS_selected"
                         />
 					</v-tab-item>
 					
 					<v-tab-item>
 						<cableTable 
-                            v-bind:data="DOTA"
+                            v-bind:data="DOTS"
                             @getVlsSelected="VLS_selected"
                         />
 					</v-tab-item>
@@ -748,8 +749,41 @@ export default {
                 ],
             },
         ],
-        DOTA: [], 
-        DOTS: [],
+        DOTA: [
+        ], 
+        DOTS: [
+        {
+                name: "ДПТС до 48ОВ",
+                content: [
+                    {
+                        Mark: "ДПТС до 48ОВ",
+                        MDRN: 4,
+                        MRN: 1.0,
+                        MPR: '-',
+                        weight: 121.8,
+                        diameter: 12.5,
+                        Slice: 122.6,
+                        L_nach: 3.86,
+                        L_Kon: 4.17,
+                        L_feat: 2.70,
+                        TKLR: 23.09,
+                    },
+                    {
+                        Mark: "ДПТС до 48ОВ",
+                        MDRN: 6,
+                        MRN: 1.5,
+                        MPR: '-',
+                        weight: 123.2,
+                        diameter: 12.5,
+                        Slice: 123.6,
+                        L_nach: 4.10,
+                        L_Kon: 4.43,
+                        L_feat: 2.87,
+                        TKLR: 21.97,
+                    }
+                ],
+            },
+        ],
         
 
 

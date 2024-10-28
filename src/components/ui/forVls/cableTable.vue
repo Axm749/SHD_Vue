@@ -1,14 +1,44 @@
 <!-- элемент для внесения сюда всех таблиц для выбора параметров кабеля -->
 <template>
     <div>
-        <div v-if="name == 'ДПТ'">
+
+        <!-- На случай, если данные не пришли. Если нет имени или если нет данных -->
+        <div
+            v-if="!rulesForVisible"
+            class="grey--text my-2 font-weight-medium"
+        >
+            Данные не Полученны
+
+            <div 
+                v-if="!name"
+                class="grey--text my-2 font-weight-medium"
+            >
+                Нет имени массива
+            </div>
+            <div 
+                v-if="!data[0]"
+                class="grey--text my-2 font-weight-medium"
+            >
+                Нет данных
+            </div>
+        </div>
+
+        
+        <!-- Если всё хорошо, то выводим данные -->
+        <div v-if="rulesForVisible">
+            <div v-if="name != 'ДПТс'">
             <div v-for="item in data" :key="item.name">
+                <v-divider></v-divider>
+                <div class="font-weight-regular ma-5">
+                    {{ item.name }}
+                </div>
+                <v-divider></v-divider>
                 <v-data-table
                 :headers="headers1"
                 v-bind:items="item.content"
                 hide-default-footer
                 @click:row="onClickRow"
-                
+                class="mb-10"                
                 >
                     <template v-slot:header>
                         <thead>
@@ -24,8 +54,7 @@
                         </thead>
                     </template>
                 </v-data-table>
-                <br>
-                <br>
+
             </div>
         </div>
 
@@ -33,11 +62,17 @@
 
         <div v-if="name == 'ДПТс'">
             <div v-for="item in data" :key="item.name">
+                <v-divider></v-divider>
+                <div class="font-weight-regular ma-5">
+                    {{ item.name }}
+                </div>
+                <v-divider></v-divider>
                 <v-data-table
                 v-bind:headers="headers2"
                 v-bind:items="item.content"
                 hide-default-footer
                 @click:row="onClickRow"
+                class="mb-10"
                 
                 >
                     <template v-slot:header>
@@ -54,10 +89,12 @@
                         </thead>
                     </template>
                 </v-data-table>
-                <br>
-                <br>
             </div>
         </div>
+
+        </div>
+
+
         
             
     </div>
@@ -79,6 +116,7 @@ export default {
         accept: false,
         search: "",
         selected: [],
+        // не ДПТС
         headers1: [
         { text: "", value: "Mark", sortable: false,  align: "left" },
         { text: "МДРН", value: "MDRN", sortable: false },
@@ -92,6 +130,8 @@ export default {
         { text: "Вытяжки", value: "L_feat", sortable: false },
         { text: "", value: "TKLR", sortable: false },
         ],
+
+        // ДПТс
         headers2: [
         { text: "", value: "Mark", sortable: false,  align: "left" },
         { text: "МДРН", value: "MDRN", sortable: false },
@@ -126,8 +166,28 @@ export default {
 			}]
             // console.log('selected: ',this.selected)
             this.$emit('getVlsSelected', this.selected)
-        }
+        },
+
+        // чисто свободная функция для дебага
+        debug(){
+            console.log(this.name)
+            console.log(!this.name)
+            console.log('----------')
+            console.log(this.data[0])
+            console.log(!this.data[0])
+        },
     },
+    computed: {
+        // условия отображения таблиц. 
+        // Сейчас оно выведется, если в пропсах переданы как имя раздела, 
+        // так и таблица с данными (есть хоть одна ячейка массива)
+        rulesForVisible(){
+            
+            // return !this.name || !this.data[0]
+            return this.name && this.data[0]
+        },
+
+    }
 
 
 };
@@ -165,13 +225,15 @@ box-shadow: none;
 border-bottom: none
 }
 
-#scrolling-techniques-2 > div > div > div > div > div > div > div > table > tbody > tr > td.text-left{
-    border-bottom: none;
-    color: transparent;
+
+#scrolling-techniques-2 > div > div > div.v-window-item.v-window-item--active > div > div > div > div > div.v-data-table.mb-10.theme--light > div > table > tbody > tr:nth-child(1) > td.text-left{
+   color: black;
+   border-bottom: thin solid rgba(0, 0, 0, 0.12);
 }
 
-#scrolling-techniques-2 > div > div > div > div > div > div > div > table > tbody > tr:first-child > td.text-left{
-    color: black;
+#scrolling-techniques-2 > div > div > div.v-window-item.v-window-item--active > div > div > div > div > div.v-data-table.mb-10.theme--light > div > table > tbody > tr > td.text-left{
+    border-bottom: none;
+    color: transparent;
 }
 
 </style>
