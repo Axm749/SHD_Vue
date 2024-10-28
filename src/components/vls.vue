@@ -279,6 +279,53 @@
     </v-card>
 
 
+    <!-- результаты вычислений -->
+    <v-card 
+      class="pa-5 mt-5"
+      v-show="started"
+    >
+        <h2>Результаты расчётов воздушных линий связи:</h2>
+        <!-- XD -->
+        <p></p>
+        <!-- Пункт 2.1 -->
+        <p>Вес кабеля: <strong>{{ DotToCommas(W_kab) }} Н/м;</strong> </p>
+        <!-- Пункт 2.2 -->
+        <p>Растягивающая нагрузка: <strong>{{ DotToCommas(H_nach) }} Н;</strong> </p>
+        <!-- Пункт 2.3 -->
+        <p>Малый эквивалентный пролет: <strong>{{ DotToCommas(L1) }} м;</strong> </p>
+        <!-- Пункт 2.3 -->
+        <p>Больший эквивалентный пролет: <strong>{{ DotToCommas(L2) }} м;</strong> </p>
+        <!-- Пункт 2.3 -->
+        <p>Малая стрела провеса: <strong>{{ DotToCommas(S1) }} м;</strong> </p>
+        <!-- Пункт 2.3 -->
+        <p>Большая стрела провеса: <strong>{{ DotToCommas(S2) }} м;</strong> </p>
+        <!-- Пункт 2.4 -->
+        <p>Длина подвешенного кабеля: <strong>{{ DotToCommas(L_kab) }} м;</strong> </p>
+        <!-- Пункт 2.5 -->
+        <p>Длина кабеля в ненагруженном состоянии: <strong>{{ DotToCommas(L_n0) }} м;</strong> </p>
+        <!-- Пункт 2.6 -->
+        <p>Длина кабеля в ненагруженном состоянии с учетом температуры: <strong>{{ DotToCommas(L_nk) }} м;</strong> </p>
+        <!-- Пункт 2.7 -->
+        <p>Вес кабеля при воздействии максимального гололеда: <strong>{{ DotToCommas(W_g) }} кг;</strong> </p>
+        <!-- Пункт 2.8 -->
+        <p>Ветровая нагрузка на кабель в режиме максимального гололеда: <strong>{{ DotToCommas(W_v_ice) }} Н/м;</strong> </p>
+        <!-- Пункт 2.8 -->
+        <p>Ветровая нагрузка на кабель в режиме максимального ветра: <strong>{{ DotToCommas(W_v_wind) }} Н/м;</strong> </p>
+        <!-- Пункт 2.9 -->
+        <p>Максимальная нагрузка, действующая на кабель: <strong>{{ DotToCommas(W_max) }} Н/м;</strong> </p>
+        <!-- Пункт 2.10 -->
+        <p>Максимальная стрела провиса: <strong>{{ DotToCommas(S_max) }} м;</strong> </p>
+        <!-- Пункт 2.11 -->
+        <p>Максимальная растягивающая нагрузка при наихудших условиях: <strong>{{ DotToCommas(H_max) }} Н;</strong> </p>
+        <v-btn
+          disabled
+          class="mt-2  mr-5"
+        >сохранить (WIP)</v-btn>
+        <v-btn
+          @click="started=false"
+          class="mt-2"
+        >скрыть</v-btn>
+    </v-card>
     
 
     <!-- уведомление об ошибке -->
@@ -302,9 +349,6 @@
 
   </div>
 
-  
-
-
 </template>
 
 <script>
@@ -323,6 +367,7 @@ export default {
   },
   data() {
     return {
+      started: false,
       snackbar: false,      // окошко об ошибке
       timeout: 2500,        // время высвечивания окна об ошибке
       errorText: 'Неверно введены данные или они отсутствуют',
@@ -332,19 +377,19 @@ export default {
 
       chooseCable: false,
       chosenCable: {
-        Mark: 'ДПТ до 48 ОВ (6х8)',
-        MDRN: 6, 
-        MRN: 1.5, 
-        MPR: 8.48, 
-        Weight: 115.6, 
-        Diameter: 12.2, 
-        Slice: 116.3, 
-        L_nach: 4.56, 
-        L_kon: 4.92, 
-        L_feat: 3.19, 
-        TLKR: 16.92
+        Mark: "ДПТС до 48ОВ (6x8)",
+        MDRN: 4,
+        MRN: 1.0,
+        MPR: 8.48,
+        Weight: 115.6,
+        Diameter: 40.2,
+        Slice: 116.3,
+        L_nach: 4.56,
+        L_Kon: 4.92,
+        L_feat: 3.19,
+        TKLR: 16.92,
       },
-      
+
       chooseZone: false,
 
       componentInfo: 
@@ -409,6 +454,7 @@ export default {
   // для примера берётся ДПТ до 48ОВ, с МДРН = 4
       E_kab: 4.56,        // модуль упругости кабеля (кН/мм^2)
       // ЗДЕСЬ Я ХЗ, КАКАЯ ИМЕННО УПРУГОСТЬ. ЛИБО НАЧАЛЬНАЯ, ЛИБО КОНЕЧНАЯ, ЛИБО ВЫТЯЖКИ... беру начальную
+      E_vit: 0,
       Diameter: 0,        // диаметр кабеля
       S_kab: 116.3,       // сечение кабеля (мм^2)
       TKLR: 0.00001692,   // Темпиратурный коэффициент линейного расширения (1/С*)
@@ -482,9 +528,14 @@ export default {
 
       L_kab: 0,   // Длина подвешенного кабеля
       L_n0: 0,    // Длина кабеля в ненагруженном состоянии
+      L_nk: 0,    // Длина кабеля с учетом температуры
       L_max: 0,   // Длина кабеля в нагруженном состоянии
 
       W_g: 0,     // Вес кабеля при воздействии максимального гололеда
+      W_v_ice: 0, // Нагрузка при максимальном гололеде
+      W_v_wind: 0,// Нагрузка при максимальном ветре
+      S_max: 0,
+
 
       K_l: 1.2,       // коэффициент учитывающий влияние длины пролета на ветровую нагрузку
       // определяется по табличке, интерполяцией
@@ -644,17 +695,22 @@ export default {
       this.chosenCable = data[0]
       console.log('Final get data', this.chosenCable)
       this.chooseCable = false
-
-      this.E_kab = this.chosenCable.L_nach    // модуль упругости кабеля (кН/мм^2)
-      // ЗДЕСЬ Я ХЗ, КАКАЯ ИМЕННО УПРУГОСТЬ. ЛИБО НАЧАЛЬНАЯ, ЛИБО КОНЕЧНАЯ, ЛИБО ВЫТЯЖКИ... беру начальную
-      this.E_vit = this.chosenCable.L_feat
-      this.S_kab=this.chosenCable.Slice
-      this.Diameter = this.chosenCable.Diameter
-      this.TKLR = this.chosenCable.TLKR * 0.000001
-      this.m = this.chosenCable.Weight
+      this.setCableParams(this.chosenCable)
     },
 
+    setCableParams(chosenCable){
+      this.E_kab = chosenCable.L_nach    // модуль упругости кабеля (кН/мм^2)
+      // ЗДЕСЬ Я ХЗ, КАКАЯ ИМЕННО УПРУГОСТЬ. ЛИБО НАЧАЛЬНАЯ, ЛИБО КОНЕЧНАЯ, ЛИБО ВЫТЯЖКИ... беру начальную
+      this.E_vit = chosenCable.L_feat
+      this.S_kab=chosenCable.Slice
+      this.Diameter = chosenCable.Diameter
+      this.TKLR = chosenCable.TKLR * 0.000001
+      this.m = chosenCable.Weight
+    },
 
+    DotToCommas(data){
+      return data.toString().replace(".",",")
+    },
 
     /**
      * Функция интерполяции, универсальная
@@ -747,6 +803,7 @@ export default {
     
     //Старт
     start() {
+      this.started = true
       // как работает этот раздел... хех...
       // Если бы я ещё знал, как он работает.
       // В документе есть много пунктов, я их стал делать по порядку
@@ -781,7 +838,9 @@ export default {
     
     // Вес кабеля
     task_2_1(){
-      this.W_kab = parseFloat(this.m * this.g / 1000).toFixed(this.decimalsRounding)
+      this.W_kab = parseFloat(
+        this.m * this.g / 1000
+        ).toFixed(this.decimalsRounding)
       console.log('2.1 вес кабеля, Н/м', this.W_kab)
     },
 
@@ -817,7 +876,7 @@ export default {
     // Длина подвешенного кабеля
     task_2_4(){
       this.L_kab = (
-        this.L + 4/3 * ( this.S1^2 / this.L1 + this.S2^2 / this.L2 )
+        this.L + 4/3 * ( (this.S1^2 / this.L1) + (this.S2^2 / this.L2) )
       ).toFixed(this.decimalsRounding)
       console.log('2.4 длина подвешенного кабеля, м', this.L_kab)
     },
@@ -832,7 +891,7 @@ export default {
 
     // Длина кабеля в ненагруженном состоянии с учетом температуры
     task_2_6(){
-      this.L_nk = (
+      this.L_nk = parseFloat(
         this.L_n0 * (1 + this.TKLR * (this.T - this.T_sr))
       ).toFixed(this.decimalsRounding)
       // console.log('2.6 ТКЛР', this.TKLR)
@@ -984,6 +1043,7 @@ export default {
     // Максимальная растягивающая нагрузка при наихудших условиях
     task_2_11(){
       this.H_max = (this.W_max * (this.L^2)) / (8 * this.S_max)
+      this.H_max = parseFloat(this.H_max.toFixed(this.decimalsRounding+2))
       console.log('2.11 Максимальная растягивающая нагрузка при наихудших условиях', this.H_max, 'Н')
       console.log('для сравнения, обычная растягивающая нагрузка из 2.2', this.H_nach, 'Н')
     },

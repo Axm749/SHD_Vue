@@ -1,31 +1,64 @@
 <!-- элемент для внесения сюда всех таблиц для выбора параметров кабеля -->
 <template>
     <div>
-        <div v-for="item in data" :key="item.name">
-            <v-data-table
-            v-bind:headers="headers"
-            v-bind:items="item.content"
-            hide-default-footer
-            @click:row="onClickRow"
-            
-            >
-                <template v-slot:header>
-                    <thead>
-                    <tr>
-                        <th style="border-bottom: none">Марка</th>
-                        <th colspan="3">Растягивающее усиление, кН</th>
-                        <th colspan="1" style="border-bottom: none">Вес, кг/км</th>
-                        <th colspan="1" style="border-bottom: none">Диаметр, мм</th>
-                        <th colspan="1" style="border-bottom: none">Сечение, мм<sup>2</sup></th>
-                        <th colspan="3">Модуль упругости, кН/мм<sup>2</sup></th>
-                        <th colspan="1" style="border-bottom: none">ТКЛР<sup>4</sup>, 1/°C, 10<sup>-6</sup></th>                 
-                    </tr>
-                    </thead>
-                </template>
-            </v-data-table>
-            <br>
-            <br>
+        <div v-if="name == 'ДПТ'">
+            <div v-for="item in data" :key="item.name">
+                <v-data-table
+                :headers="headers1"
+                v-bind:items="item.content"
+                hide-default-footer
+                @click:row="onClickRow"
+                
+                >
+                    <template v-slot:header>
+                        <thead>
+                        <tr>
+                            <th style="border-bottom: none">Марка</th>
+                            <th colspan="3">Растягивающее усиление, кН</th>
+                            <th colspan="1" style="border-bottom: none">Вес, кг/км</th>
+                            <th colspan="1" style="border-bottom: none">Диаметр, мм</th>
+                            <th colspan="1" style="border-bottom: none">Сечение, мм<sup>2</sup></th>
+                            <th colspan="3">Модуль упругости, кН/мм<sup>2</sup></th>
+                            <th colspan="1" style="border-bottom: none">ТКЛР<sup>4</sup>, 1/°C, 10<sup>-6</sup></th>                 
+                        </tr>
+                        </thead>
+                    </template>
+                </v-data-table>
+                <br>
+                <br>
+            </div>
         </div>
+
+
+
+        <div v-if="name == 'ДПТс'">
+            <div v-for="item in data" :key="item.name">
+                <v-data-table
+                v-bind:headers="headers2"
+                v-bind:items="item.content"
+                hide-default-footer
+                @click:row="onClickRow"
+                
+                >
+                    <template v-slot:header>
+                        <thead>
+                        <tr>
+                            <th style="border-bottom: none">Марка</th>
+                            <th colspan="2">Растягивающее усиление, кН</th>
+                            <th colspan="1" style="border-bottom: none">Вес, кг/км</th>
+                            <th colspan="1" style="border-bottom: none">Диаметр, мм</th>
+                            <th colspan="1" style="border-bottom: none">Сечение, мм<sup>2</sup></th>
+                            <th colspan="3">Модуль упругости, кН/мм<sup>2</sup></th>
+                            <th colspan="1" style="border-bottom: none">ТКЛР<sup>4</sup>, 1/°C, 10<sup>-6</sup></th>                 
+                        </tr>
+                        </thead>
+                    </template>
+                </v-data-table>
+                <br>
+                <br>
+            </div>
+        </div>
+        
             
     </div>
 </template>
@@ -37,6 +70,7 @@ export default {
     name: "cableTable",
     props:{
         data: Array,
+        name: String,
     },
     data: () => ({
         started: false, //Параметр, отвечающий за вывод результатов работы программы при нажатии "Старт"
@@ -45,7 +79,7 @@ export default {
         accept: false,
         search: "",
         selected: [],
-        headers: [
+        headers1: [
         { text: "", value: "Mark", sortable: false,  align: "left" },
         { text: "МДРН", value: "MDRN", sortable: false },
         { text: "МРН", value: "MRN", sortable: false },
@@ -57,7 +91,18 @@ export default {
         { text: "Конечный", value: "L_Kon", sortable: false },
         { text: "Вытяжки", value: "L_feat", sortable: false },
         { text: "", value: "TKLR", sortable: false },
-
+        ],
+        headers2: [
+        { text: "", value: "Mark", sortable: false,  align: "left" },
+        { text: "МДРН", value: "MDRN", sortable: false },
+        { text: "МРН", value: "MRN", sortable: false },
+        { text: "", value: "weight", sortable: false },
+        { text: "", value: "diameter", sortable: false },
+        { text: "", value: "Slice", sortable: false },
+        { text: "Начальный", value: "L_nach", sortable: false },
+        { text: "Конечный", value: "L_Kon", sortable: false },
+        { text: "Вытяжки", value: "L_feat", sortable: false },
+        { text: "", value: "TKLR", sortable: false },
         ],
 
 
@@ -77,12 +122,13 @@ export default {
                 L_nach: item.L_nach,
                 L_kon: item.L_Kon,
                 L_feat: item.L_feat,
-                TLKR: item.TKLR
+                TKLR: item.TKLR
 			}]
             // console.log('selected: ',this.selected)
             this.$emit('getVlsSelected', this.selected)
         }
     },
+
 
 };
 </script>
