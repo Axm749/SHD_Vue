@@ -184,7 +184,7 @@ export default {
   },
 
   data: () => ({
-    irregularView: true,
+    irregularView: false,
     noMargins: true,
     // panel: [0,1,2]
   }),
