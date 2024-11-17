@@ -2,7 +2,7 @@
   <div>
     <!-- заголовок -->
     <div class="header">
-        <headerTab title="Электроснабжение"></headerTab>
+        <headerTab title="расчет времени работы оборудования от аккумуляторных батарей"></headerTab>
     </div>
     
     <!-- поля ввода -->

@@ -2,7 +2,7 @@
     <div>
       <!-- заголовок -->
       <div class="header">
-        <headerTab title="Система охлаждения"></headerTab>
+        <headerTab title="расчет системы кондиционирования"></headerTab>
       </div>        
         <v-card class="pa-5" tile>
             <!-- <h1>Система охлаждения</h1> -->
