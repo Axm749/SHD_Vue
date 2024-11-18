@@ -70,6 +70,29 @@
             />
         </template>                
       </v-text-field>
+      
+      <v-text-field
+        class="mt-5"
+        flat
+        type="number"
+        required
+        outlined
+        clearable
+        :rules="rule"
+        hide-details="auto"
+        v-model.number="height"
+      >
+        <template v-slot:label>
+            <toolbarInfo
+                title="высота установки кабеля"
+                desc = "
+                таблицы для интерполяции есть не под все значения, но в пределах от 25 до 70 метров всё должно быть окей. 
+                В других случаях точность не гарантирована 
+                из-за отсутствия таблиц на такой случай
+                "
+            />
+        </template>                
+      </v-text-field> 
 
       <v-text-field
         flat
@@ -110,6 +133,7 @@
         </template>                
       </v-text-field>
 
+      <!-- средние темпрературы -->
       <v-row class="mt-2">
         
         <v-col>
@@ -156,29 +180,49 @@
         
       </v-row>
 
+      <!-- мин/макс температуры -->
+      <v-row class="mt-2">
+        
+        <v-col>
+          <v-text-field
+            flat
+            type="number"
+            required
+            outlined
+            clearable
+            :rules="rule"
+            hide-details="auto"
+            v-model.number="T_min"
+          >
+            <template v-slot:label>
+                <toolbarInfo
+                    title="минимальная температура эксплуатации (С*)"
+                />
+            </template>                
+          </v-text-field>
+        </v-col>
+        
+        <v-col>
+          <v-text-field
+            flat
+            type="number"
+            required
+            outlined
+            clearable
+            :rules="rule"
+            hide-details="auto"
+            v-model.number="T_max"
+          >
+            <template v-slot:label>
+                <toolbarInfo
+                    title="минимальная температура эксплуатации (С*)"
+                />
+            </template>                
+          </v-text-field>  
+        </v-col>
+        
+      </v-row>
 
-      <v-text-field
-        class="mt-5"
-        flat
-        type="number"
-        required
-        outlined
-        clearable
-        :rules="rule"
-        hide-details="auto"
-        v-model.number="height"
-      >
-        <template v-slot:label>
-            <toolbarInfo
-                title="высота установки кабеля"
-                desc = "
-                таблицы для интерполяции есть не под все значения, но в пределах от 25 до 70 метров всё должно быть окей. 
-                В других случаях точность не гарантирована 
-                из-за отсутствия таблиц на такой случай
-                "
-            />
-        </template>                
-      </v-text-field> 
       
 
       
@@ -295,6 +339,17 @@
         <p>Максимальная стрела провиса: <strong>{{ DotToCommas(S_max) }} м;</strong> </p>
         <!-- Пункт 2.11 -->
         <p>Максимальная растягивающая нагрузка при наихудших условиях: <strong>{{ DotToCommas(H_max) }} Н;</strong> </p>
+        
+        <p><strong>с этого момента пока не доделано</strong></p>
+        
+        <!-- Пункт 2.13 -->
+        <p>Расчет конечной стрелы провеса и нагрузки при нормальных условиях: <strong>{{ DotToCommas(H_n_vit) }} Н;</strong> </p>
+        <!-- Пункт 2.14 -->
+        <p>расчет стрел провеса и нагрузок при минимальной и максимальной температуре (пока нет полей ввода): 
+          при минимальной: <strong>{{ DotToCommas(L_n_minT) }}   С*</strong>, а при максимальной: <strong> {{ DotToCommas(L_n_minT) }} С*</strong> </p>
+        <!-- Пункт 2.15 -->
+        <p>Расчет стрелы провеса и нагрузки при максимальных условиях (гололед + ветер) после реализации вытяжки: <strong>пока не выведу</strong> </p>
+        
         <v-btn
           disabled
           class="mt-2  mr-5"
@@ -877,13 +932,8 @@ export default {
 
     // Растягивающая нагрузка, действующая на кабель
     task_2_2(){
-      if (this.L <= 1) {
-        this.H_nach = ((this.W_kab * 1) / ( 8 * this.S )).toFixed(this.decimalsRounding+2)
-      }
-      else {
-        this.H_nach = ((this.W_kab * this.L^2) / ( 8 * this.S )).toFixed(this.decimalsRounding+2)
-      }
 
+      this.H_nach = ((this.W_kab * this.L^2) / ( 8 * this.S )).toFixed(this.decimalsRounding+2)
       console.log('2.2 Растягивающая нагрузка, Н', this.H_nach)
     },
 
@@ -1145,8 +1195,8 @@ export default {
     // расчет стрел провеса и нагрузок при минимальной и максимальной температуре
     task_2_14(){
       this.L_n_minT = (this.L_n0 * (1+ this.TKLR * (this.T_min - this.T_sr))).toFixed(this.decimalsRounding)
-      this.L_n_maxxT = (this.L_n0 * (1+ this.TKLR * (this.T_max - this.T_sr))).toFixed(this.decimalsRounding)
-      console.log('2.14 расчет стрел провеса и нагрузок при минимальной и максимальной температуре', this.H_max)
+      this.L_n_maxT = (this.L_n0 * (1+ this.TKLR * (this.T_max - this.T_sr))).toFixed(this.decimalsRounding)
+      console.log('2.14 расчет стрел провеса и нагрузок при минимальной и максимальной температуре', this.L_n_minT, this.L_n_maxT)
     },
 
     // Расчет стрелы провеса и нагрузки при максимальных условиях (гололед + ветер) после реализации вытяжки
