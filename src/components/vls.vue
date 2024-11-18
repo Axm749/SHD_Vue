@@ -438,9 +438,10 @@ export default {
 
   // Получаемое из таблички кабеля
   // для примера берётся ДПТ до 48ОВ, с МДРН = 4
-      E_kab: 4.56,        // модуль упругости кабеля (кН/мм^2)
       // ЗДЕСЬ Я ХЗ, КАКАЯ ИМЕННО УПРУГОСТЬ. ЛИБО НАЧАЛЬНАЯ, ЛИБО КОНЕЧНАЯ, ЛИБО ВЫТЯЖКИ... беру начальную
+      E_kab: 4.56,        // модуль упругости кабеля (кН/мм^2)
       E_vit: 3.19,
+      E_kon: 4.92, 
       Diameter: 0,        // диаметр кабеля
       S_kab: 116.3,       // сечение кабеля (мм^2)
       TKLR: 0.00001692,   // Темпиратурный коэффициент линейного расширения (1/С*)
@@ -491,6 +492,9 @@ export default {
       L1: 0,      // Малый эквивалентный пролет
       L2: 0,      // Больший эквивалентный пролет
 
+      L1_max:0,
+      L2_max: 0,
+
 
       // используется для составления монтажной таблицы
       // L_n_MON_T: 0,  // длина кабеля в ненагруженном состоянии с учетом монтажной температуры
@@ -499,6 +503,13 @@ export default {
 
       S1: 0,      //
       S2: 0,      //
+      
+      S1_max: 0,
+      S2_max: 0,
+
+      S1_n_vit: 0,
+      S2_n_vit: 0,
+
       S_n_vit: 0, // Стрела провеса вытяжки
 
       L_kab: 0,   // Длина подвешенного кабеля
@@ -663,7 +674,8 @@ export default {
 
       L_n_minT: 0,      // длина кабеля в ненагруженом состоянии при минимальной темпиратуре
       L_n_maxT: 0,      // длина кабеля в ненагруженом состоянии при максимальной темпиратуре
-               
+      L_kab_vit: 0,     // длина кабеля после вытяжки
+      L_kab_vit_0: 0,
 
     };
   },
@@ -710,6 +722,7 @@ export default {
       this.E_kab = chosenCable.L_nach    // модуль упругости кабеля (кН/мм^2)
       // ЗДЕСЬ Я ХЗ, КАКАЯ ИМЕННО УПРУГОСТЬ. ЛИБО НАЧАЛЬНАЯ, ЛИБО КОНЕЧНАЯ, ЛИБО ВЫТЯЖКИ... беру начальную
       this.E_vit = chosenCable.L_feat
+      this.E_kon = chosenCable.L_kon
       this.S_kab=chosenCable.Slice
       this.Diameter = chosenCable.Diameter
       this.TKLR = chosenCable.TKLR * 0.000001
@@ -753,7 +766,7 @@ export default {
 
       // ниже минимума
       if (value <= minValueX){
-        if(this.debug) console.error(`
+        if(this.debug) console.warn(`
         при расчете ${searchableValue} по ${SearchThrough}=${value},
         введено меньше минимального, ${value}, '<', ${minValueX}
         `
@@ -763,7 +776,7 @@ export default {
       }
       // превышение максимума
       if (value >= maxValueX){
-        if(this.debug) console.error(`
+        if(this.debug) console.warn(`
         при расчете ${searchableValue} по ${SearchThrough}=${value},
         введено больше максимального, ${value}, '>', ${maxValueX}
         `
@@ -846,6 +859,12 @@ export default {
 
       this.task_2_13()
 
+      this.task_2_14()
+
+      this.task_2_15()
+
+      // this.task_2_16()
+
     },
     
     // Вес кабеля
@@ -880,14 +899,16 @@ export default {
       ).toFixed(this.decimalsRounding+2)
       console.log('2.3 Больший эквивалентный пролет', this.L2)
 
-      this.S1 = (
-        (this.W_kab * this.L1^2)/(8 * this.H_nach)
-      ).toFixed(this.decimalsRounding+2)
+      // this.S1 = (
+      //   (this.W_kab * this.L1^2)/(8 * this.H_nach)
+      // ).toFixed(this.decimalsRounding+2)
+      this.S1 = this.get_S1_or_S2(this.S, this.L1, this.L)
       console.log('2.3 Малая стрела провеса', this.S1)
 
-      this.S2 = (
-        (this.W_kab * this.L2^2)/(8 * this.H_nach)
-      ).toFixed(this.decimalsRounding+2)
+      // this.S2 = (
+      //   (this.W_kab * this.L2^2)/(8 * this.H_nach)
+      // ).toFixed(this.decimalsRounding+2)
+      this.S2 = this.get_S1_or_S2(this.S, this.L2, this.L)
       console.log('2.3 Большая стрела провеса', this.S2)
     },
 
@@ -1092,47 +1113,135 @@ export default {
     // Расчет конечной стрелы провеса и нагрузки при нормальных условиях
     task_2_13(){
       console.log('2.13 Расчет конечной стрелы провеса и нагрузки при нормальных условиях')
-      this.L_max
+      
+      // this.S1_max = 
+      // this.S2_max = 
+      // this.L1_max = 
+      // this.L2_max = 
+
+
+      // this.L_kab_k = this.get_strela_provesa(
+      //     this.L, this.S1_max, this.S2_max, this.L1_max, this.L2_max
+      //   )
 
       // стрела провеса вытяжки
       var a = this.makeA(this.L, this.h, this.L_nk)
       var b = this.makeB(this.W_kab, this.L, this.L_nk, this.E_vit, this.S_kab)
-      // console.error(
-      //   ` W_kab = ${this.W_kab}`, 
-      //   ` L = ${this.L}`, 
-      //  ` L_nk = ${this.L_nk}`, 
-      //   ` E_vit = ${this.E_vit}`, 
-      //   ` S_kab = ${this.S_kab}`,
-      //   b
-      // )
-      console.log('a =',a, 'and b =',b)
+      // console.log('a =',a, 'and b =',b)
       this.S_n_vit = this.kubicEquasion(a, b)
-      console.log('S_n_vit', this.S_n_vit)
+      // console.log('S_n_vit', this.S_n_vit)
 
 
       // нагрузка после вытяжки (она же усталось металла)
-      this.H_n_vit = (this.W_kab * (this.L^2)) / (8 * this.S_n_vit)
-      console.log('H_n_vit', this.H_n_vit)
+      this.H_n_vit = (
+          (this.W_kab * (this.L^2)) / (8 * this.S_n_vit)
+        ).toFixed(this.decimalsRounding)
+      // console.log('H_n_vit', this.H_n_vit)
       // console.log('для сравнения начальная нагрузка', this.H_nach)
       // console.log('для сравнения максимальная нагрузка', this.H_max)
 
     },
 
-
     // расчет стрел провеса и нагрузок при минимальной и максимальной температуре
     task_2_14(){
-      this.L_n_minT = this.L_n0(1+ this.TKLR * (this.T_min - this.T_sr))
-      this.L_n_maxxT = this.L_n0(1+ this.TKLR * (this.T_max - this.T_sr))
+      this.L_n_minT = (this.L_n0 * (1+ this.TKLR * (this.T_min - this.T_sr))).toFixed(this.decimalsRounding)
+      this.L_n_maxxT = (this.L_n0 * (1+ this.TKLR * (this.T_max - this.T_sr))).toFixed(this.decimalsRounding)
       console.log('2.14 расчет стрел провеса и нагрузок при минимальной и максимальной температуре', this.H_max)
     },
+
     // Расчет стрелы провеса и нагрузки при максимальных условиях (гололед + ветер) после реализации вытяжки
+    
+    /**
+     * функция составляющая коэффициент A
+     * @return {number} S1_n_vit     - длина без учета темпиратуры
+     * @return {number} S2_n_vit     - длина без учета темпиратуры
+     * @return {number} L     - длина без учета темпиратуры
+     * @return {number} L     - длина без учета темпиратуры
+     * @return {number} L     - длина без учета темпиратуры
+     * 
+     */
     task_2_15(){
-      this.L_kab_vit = this.L
-      // this.
-      // console.log('2.15 Расчет стрелы провеса и нагрузки при максимальных условиях (гололед + ветер) после реализации вытяжки', this.)
+
+
+
+
+      this.S1_n_vit = this.get_S1_or_S2(this.S, this.L1_n_vit, this.L_kab_vit) 
+      this.S2_n_vit = this.get_S1_or_S2(this.S, this.L2_n_vit, this.L_kab_vit) 
+      
+
+
+
+      this.S1 = parseFloat(
+        this.S*this.L1*this.L1/(this.L*this.L)
+      ).toFixed(this.decimalsRounding)
+
+      this.S2 = parseFloat(
+        this.S*((this.L2)^2)/((this.L)^2)
+      ).toFixed(this.decimalsRounding)
+      
+
+
+      this.L_kab_vit = (
+          this.L + 4/3 * ( (this.S1_n_vit^2 / this.L1_) + (this.S2_n_vit^2 / this.L2) )
+        ).toFixed(this.decimalsRounding)
+
+
+      this.L_kab_vit_0 = (
+          this.L_kab_vit / (1 + (this.H_n_vit / (this.E_kon * this.S_kab)))
+        ).toFixed(this.decimalsRounding)
+      console.log('2.15 Расчет стрелы провеса и нагрузки при максимальных условиях (гололед + ветер) после реализации вытяжки', this.L_kab_vit_0)
     },
 
     
+    /**
+     * получение параметра S, то бишь стрелы провеса
+     * @param {number} S      -
+     * @param {number} L1     -
+     * @param {number} L_big  -
+     * 
+     * @returns {number}      значение параметра S, формула из пункта 2.4
+     */
+    get_S1_or_S2(S, L1, L_big){
+      return parseFloat(
+        S*(L1^2)/(L_big^2)
+      ).toFixed(this.decimalsRounding+2)
+    },
+
+
+    /**
+     * Получение конечной стрелы провеса
+     * @param L 
+     * @param S1 
+     * @param S2 
+     * @param L1 
+     * @param L2 
+     */
+    get_strela_provesa(L, S1, S2, L1, L2){
+      return (
+        L + 4/3 * ( (S1^2 / L1) + (S2^2 / L2) )
+      ).toFixed(this.decimalsRounding)
+    },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     /**
      * функция составляющая коэффициент A
      * @param {number} L     - длина без учета темпиратуры
@@ -1173,19 +1282,11 @@ export default {
 
 
 
-
-
-
-
-
-
-
-
     /**
      * решение кубического уровнения для получения S_max
      * Для пункта 2.10
-     * @param a - первое вводное
-     * @param b - второе вводное
+     * @param {number} a - первое вводное
+     * @param {number} b - второе вводное
      */
     kubicEquasion(a, b){
       
