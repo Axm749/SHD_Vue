@@ -63,7 +63,18 @@
             src="./images/cameraTips/Максимальная_длина_обзора_камеры.png" 
           />
 
+
+          <!-- VLS tips -->
+
+
+          <v-img 
+            v-if="imageUrl=='strelaProvesa'" 
+            src="./images/vlsTips/strelaProvesa.jpg" 
+          />
+
         </div>
+
+
 
         <!-- если нет изображения -->
         <p class="text-center" v-if="imageUrl==''">Нет изображения</p>

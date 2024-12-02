@@ -51,7 +51,7 @@
       </v-dialog>
       
 
-
+      <!-- расстояние вежду опорами -->
       <v-text-field
         flat
         type="number"
@@ -66,11 +66,15 @@
         <template v-slot:label>
             <toolbarInfo
                 title="расстояние вежду опорами (м)"
-                imageUrl=''
+                imageUrl='strelaProvesa'
+                desc = "
+                Расстояние между соседними опорами, в метрах. Рекомендуется не брать меньше 1м
+                "
             />
         </template>                
       </v-text-field>
       
+      <!-- высота установки кабеля -->
       <v-text-field
         class="mt-5"
         flat
@@ -84,11 +88,11 @@
       >
         <template v-slot:label>
             <toolbarInfo
-                title="высота установки кабеля"
+                title="высота установки кабеля (м)"
                 desc = "
-                таблицы для интерполяции есть не под все значения, но в пределах от 25 до 70 метров всё должно быть окей. 
-                В других случаях точность не гарантирована 
-                из-за отсутствия таблиц на такой случай
+                Высота установки кабеля от земли, в метрах. От этого будут зависить нагрузки,
+                связанные с погодными условиями (гололёд, ветровая нагрузка и другие).
+                Рекомендуется не брать сильно больше 70 метров, так как там значения будут уже менее точными.
                 "
             />
         </template>                
@@ -108,12 +112,15 @@
         <template v-slot:label>
             <toolbarInfo
                 title="Стрела провеса, м"
-                imageUrl=''
-                v-bind:desc = "componentInfo.incomes[2]"
+                imageUrl='strelaProvesa'
+                desc = "Стрела провеса, в метрах. Мера того, насколько прогибается 
+                кабель в своей нижайшей точке. В реальности берутся относительно небольшие 
+                значения, но и меньше единицы лучше не ставить"
             />
         </template>                
       </v-text-field>
 
+      <!-- перепад высот соседних опор -->
       <v-text-field
         flat
         type="number"
@@ -150,7 +157,6 @@
             <template v-slot:label>
                 <toolbarInfo
                     title="средняя температура эксплуатации (С*)"
-                    imageUrl=''
                     v-bind:desc = "componentInfo.incomes[4]"
                 />
             </template>                
@@ -170,8 +176,7 @@
           >
             <template v-slot:label>
                 <toolbarInfo
-                    title="темпиретура кабеля в условиях эксплуатации (С*)"
-                    imageUrl=''
+                    title="температура кабеля в условиях эксплуатации (С*)"
                     v-bind:desc = "componentInfo.incomes[5]"
                 />
             </template>                
@@ -196,7 +201,9 @@
           >
             <template v-slot:label>
                 <toolbarInfo
-                    title="минимальная температура эксплуатации (С*)"
+                    title="мин. температура эксплуатации (С*)"
+                    desc = "минимальная темпиратура эксплуатации, в градусах. можно вводить 
+                    любые значения, но меньше -273 градусов не будет иметь смысла"
                 />
             </template>                
           </v-text-field>
@@ -215,7 +222,9 @@
           >
             <template v-slot:label>
                 <toolbarInfo
-                    title="минимальная температура эксплуатации (С*)"
+                    title="макс. температура эксплуатации (С*)"
+                    desc = "максимальная темпиратура эксплуатации, в градусах. можно вводить 
+                    любые значения."
                 />
             </template>                
           </v-text-field>  
@@ -234,41 +243,77 @@
 
 
       
+      <v-row >
+        <!-- выбор районов гололеда -->
+        <v-col>
+          <v-dialog
+              v-model="chooseZoneIce"
+              transition="dialog-bottom-transition"
+              width="80%"
+              :scrollable="false"
+              aria-hidden="true"
+            >
+            <template v-slot:activator="{ props3 }">
+              <v-btn
+                class="mt-2"
+                width="100%"
+                color="primary"
+                v-bind="props3"
+                @click="chooseZoneIce = true"
+                ><v-icon>mdi-cable-data</v-icon>
+                выбрать зону по гололеду
+              </v-btn>
 
-      <!-- выбор районов гололеда -->
-      <v-dialog
-          v-model="chooseZone"
-          transition="dialog-bottom-transition"
-          width="80%"
-          :scrollable="false"
-          aria-hidden="true"
-        >
-        <template v-slot:activator="{ props3 }">
-          <p class="mt-5">выбранная зона по ветру: {{ windField }}</p>
-          <p class="mt-5">выбранная зона по гололеду: {{ iceField }}</p>
-          <!-- здесь можно сделать сам вывод выбранных значений -->
-          <v-btn
-            class="mt-5"
-            width="100%"
-            color="primary"
-            v-bind="props3"
-            @click="chooseZone = true"
-            ><v-icon>mdi-cable-data</v-icon>
-            выбрать зону
-          </v-btn>
-          
-        </template>
+              <p class="mt-2">выбранная зона по гололеду: {{ iceField }}</p>
+              <!-- здесь можно сделать сам вывод выбранных значений -->
+            </template>
 
-        <climateTable
-          @windGetVlsSelected="windWriteSelected"
-          @iceGetVlsSelected="iceWriteSelected"
-        />    
+            <IceZoneTable
+                  @getIceZoneSelected="iceWriteSelected"
+                />
 
-      </v-dialog>
+          </v-dialog>
+        </v-col>
+        <!-- выбор районов ветра -->
+        <v-col>
+          <v-dialog
+            v-model="chooseZoneWind"
+            transition="dialog-bottom-transition"
+            width="80%"
+            :scrollable="false"
+            aria-hidden="true"
+          >
+            <template v-slot:activator="{ props3 }">
+              <v-btn
+                class="mt-2"
+                width="100%"
+                color="primary"
+                v-bind="props3"
+                @click="chooseZoneWind = true"
+                ><v-icon>mdi-cable-data</v-icon>
+                выбрать зону по ветру
+              </v-btn>
+
+              <p class="mt-2">выбранная зона по ветру: {{ windField }}</p>
+              <!-- здесь можно сделать сам вывод выбранных значений -->
+              
+            </template>
+
+            <AirZoneTable
+                  @getAirZoneSelected="windWriteSelected"
+                />
+
+          </v-dialog>
+        </v-col>
+      </v-row>
+
+
+      
+      
       
         
       <!-- кнопки -->
-      <v-row class="mt-5">
+      <v-row class="mt-2">
         <v-col>
           <v-btn 
             @click="start" 
@@ -293,11 +338,7 @@
         </v-col>
           
       </v-row>
-      
 
-
-
-      
     </v-card>
 
 
@@ -388,15 +429,19 @@
 import headerTab from './ui/commonUi/header.vue';
 import tableSpace from './ui/forVls/tableSpace.vue';
 import toolbarInfo from './ui/commonUi/tooltip.vue';
-import climateTable from './ui/forVls/climateTable.vue';
+// import climateTable from './ui/forVls/climateTable.vue';
+import AirZoneTable from './ui/forVls/ClimateTables/AirZoneTable.vue';
+import IceZoneTable from './ui/forVls/ClimateTables/IceZoneTable.vue';
 
 export default {
   name: "vls_vue",
   components: {
     headerTab,
     tableSpace,
-    climateTable,
-    toolbarInfo
+    // climateTable,
+    toolbarInfo,
+    AirZoneTable,
+		IceZoneTable
   },
   data() {
     return {
@@ -423,7 +468,8 @@ export default {
         TKLR: 16.92,
       },
 
-      chooseZone: false,
+      chooseZoneIce: false,
+      chooseZoneWind: false,
 
       componentInfo: 
       {
@@ -433,8 +479,9 @@ export default {
         'L, расстояние между столбами (м)',
         'S, стрела провиса - насколько кабель провисает в нижайшей точке (м)',
         'h – перепад высот между точками подвеса кабеля (м)',
-        'T_sr – средняя температура эксплуатации (С*)',
-        'T – температура кабеля в условиях эксплуатации (С*)',
+        'Тср – средняя температура эксплуатации (С*)',
+        'TкабСр – температура кабеля в условиях эксплуатации (С*)', 
+
         ],
         outcomes: [
         'выходная величина',
@@ -759,7 +806,7 @@ export default {
       console.log('ice data', `${JSON.stringify(data[0])}`)
         // потом это будет получаться из табличек о климате, но пока так
         this.C = data[0].iceWidth     // нормативное ветровое давление, Па
-        this.iceField = data[0].iceField
+        this.iceField = data[0].Icearea
 
     },
     

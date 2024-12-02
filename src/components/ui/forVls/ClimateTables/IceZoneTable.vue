@@ -1,23 +1,37 @@
 <template>
     <div>
-        <v-img src="../images/climateIceMap.jpg"></v-img>
-        <br>
-            <v-data-table
-            v-bind:headers="headers"
-            v-bind:items="item"
-            hide-default-footer
-            @click:row="onClickRow"
-            >
-            </v-data-table>
-            <br>
-            <br>
+        <div class="header">
+          <headerTab title="расчет опор линии связи" v-bind:info="componentInfo"></headerTab>
+        </div>
+
+		<v-card class="overflow-hidden">
+			
+			<v-img src="../images/climateIceMap.jpg"></v-img>
+			<br>
+				<v-data-table
+				v-bind:headers="headers"
+				v-bind:items="item"
+				hide-default-footer
+				@click:row="onClickRow"
+				>
+				</v-data-table>
+				<br>
+				<br>
+
+		</v-card>
+			
             
     </div>
 </template>
 
 <script>
+import headerTab from '@/components/ui/commonUi/header.vue';
+
     export default{
     name: "IceZoneTable",
+	components: {
+		headerTab
+	},
     props:{
         data:Array
     },
@@ -61,7 +75,21 @@
 				Icearea: 'SPECIAL',
 				iceWidth: 50,
 			},
-		]
+		],
+
+		componentInfo: {
+			name: 'выбор зоны по гололеду',
+			incomes: [
+				'выбранная зона'
+				],
+			outcomes: [
+			'толщина льда для рассчетов и номер этой зоны',
+			], 
+			description: 'для ознакомления представлена карта РФ с обозначениями по соответствующим стандартам',
+			disclaimers: [
+			'дисклеймер'
+			]
+		}
     }),
     methods: {
         async onClickRow(item) {
