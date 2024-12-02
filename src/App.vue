@@ -12,7 +12,7 @@
       <!-- основной вид -->
       <div 
         v-if="!irregularView"
-        :class="noMargins === true ? 'ma-0' : 'ma-2'"
+        :class="noMargins === true ? 'ma-0' : 'ma-10'"
       >
         <div 
           :class="noMargins === true ? 'mt-2' : 'mt-2 module_bg'"
@@ -113,7 +113,7 @@
       
       <!-- настройки -->
       <div 
-        :class="noMargins === true ? 'ma-0' : 'ma-2 module_bg'"
+        :class="noMargins === true ? 'ma-0' : 'mx-10 mb-10 module_bg'"
       >
         <v-expansion-panels
             accordion
@@ -130,7 +130,6 @@
               </v-expansion-panel-header>
               <v-expansion-panel-content
               >
-                
                 <v-checkbox
                   info
                   hide-details
@@ -184,9 +183,9 @@ export default {
   },
 
   data: () => ({
+    // здесь разве что настройки
     irregularView: false,
-    noMargins: true,
-    // panel: [0,1,2]
+    noMargins: true
   }),
 
   methods:{

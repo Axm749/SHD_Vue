@@ -344,7 +344,7 @@
             if (rimeNum == 'V')         return 5
             if (rimeNum == 'VI')        return 6
             if (rimeNum == 'VII')       return 7
-            if (rimeNum == 'SPECIAL')   return 6
+            if (rimeNum == 'SPECIAL')   return 8
         },
 
         zoneNumToWindPressure(zoneNum){

@@ -1394,11 +1394,7 @@ export default {
     test(){
       console.log("lets test")
       console.log(this.W)
-
     },
-
-
-
   },
 };
 </script>
