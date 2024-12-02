@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="module_bg">
       <v-card class="overflow-hidden">
         <div class="header">
           <headerTab title="расчет опор линии связи" v-bind:info="componentInfo"></headerTab>

@@ -796,6 +796,8 @@ export default {
       this.windField = data[0].airZone
       this.W_0 = data[0].windPressure
       this.v_0 = data[0].windSpeed
+      // закрыть окно
+      this.chooseZoneWind = false
     },
 
 
@@ -807,7 +809,8 @@ export default {
         // потом это будет получаться из табличек о климате, но пока так
         this.C = data[0].iceWidth     // нормативное ветровое давление, Па
         this.iceField = data[0].Icearea
-
+        // закрыть окно
+        this.chooseZoneIce = false
     },
     
     
