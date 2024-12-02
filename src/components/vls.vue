@@ -589,6 +589,7 @@ export default {
       W_kab: 0,   // Вес кабеля (Н/м)
       H_nach: 0,  // Растягивающая нагрузка (Н)
       H_max: 0,   // Максимальная растягивающая нагрузка
+      H_max_vit: 0, // Максимальная растягивающая нагрузка после вытяжки
       H_n_vit: 0, // Растягивающая нагрузка вытяжки
 
       L1: 0,      // Малый эквивалентный пролет
@@ -1270,7 +1271,11 @@ export default {
       // this.S2 = parseFloat(
       //   this.S*((this.L2)^2)/((this.L)^2)
       // ).toFixed(this.decimalsRounding)
-      
+
+
+
+      this.S1_n_vit = this.get_S1_or_S2(this.S, this.L1_n_vit, this.L_kab_vit) 
+      this.S2_n_vit = this.get_S1_or_S2(this.S, this.L2_n_vit, this.L_kab_vit) 
 
 
       this.L_kab_vit = (
@@ -1283,13 +1288,56 @@ export default {
         ).toFixed(this.decimalsRounding)
 
 
-      this.S1_n_vit = this.get_S1_or_S2(this.S, this.L1_n_vit, this.L_kab_vit) 
-      this.S2_n_vit = this.get_S1_or_S2(this.S, this.L2_n_vit, this.L_kab_vit) 
+      
 
       
       console.log(`2.15 Расчет стрелы провеса и нагрузки при 
       максимальных условиях (гололед + ветер) после реализации вытяжки ${this.L_kab_vit_0}`)
     },
+
+
+    // Определение роли вытяжки при расчете максимальных нагрузок
+    task_2_16(){
+      
+      this.H_max_vit = (this.W_max_vit * this.L_kab_vit ^ this.L_kab_vit) / (8 * this.S_max_vit)
+
+
+      
+      if (this.H_max_vit > this.H_max){
+        this.H_max = this.H_n_vit
+      }
+
+
+    },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     
     /**
