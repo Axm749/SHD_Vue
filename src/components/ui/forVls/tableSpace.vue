@@ -107,7 +107,7 @@ export default {
                 name: "ДПТ до 48ОВ",
                 content: [
                     {
-                        Mark: "ДПТ до 48ОВ (6x8)",
+                        Mark: `ДПТ до 48ОВ`,
                         MDRN: 4,
                         MRN: 1.0,
                         MPR: 8.48,
@@ -120,7 +120,7 @@ export default {
                         TKLR: 16.92,
                     },
                     {
-                        Mark: "ДПТ до 48ОВ (6x8)",
+                        Mark: "ДПТ до 48ОВ",
                         MDRN: 6,
                         MRN: 1.5,
                         MPR: 8.48,
@@ -133,7 +133,7 @@ export default {
                         TKLR: 16.92,
                     },
                     {
-                        Mark: "ДПТ до 48ОВ (6x8)",
+                        Mark: "ДПТ до 48ОВ",
                         MDRN: 7,
                         MRN: 1.75,
                         MPR: 9.45,
@@ -146,7 +146,7 @@ export default {
                         TKLR: 14.89,
                     },
                     {
-                        Mark: "ДПТ до 48ОВ (6x8)",
+                        Mark: "ДПТ до 48ОВ",
                         MDRN: 8,
                         MRN: 2.0,
                         MPR: 10.82,
@@ -159,7 +159,7 @@ export default {
                         TKLR: 12.65,
                     },
                     {
-                        Mark: "ДПТ до 48ОВ (6x8)",
+                        Mark: "ДПТ до 48ОВ",
                         MDRN: 10,
                         MRN: 2.5,
                         MPR: 13.36,
@@ -172,7 +172,7 @@ export default {
                         TKLR: 9.72,
                     },
                     {
-                        Mark: "ДПТ до 48ОВ (6x8)",
+                        Mark: "ДПТ до 48ОВ",
                         MDRN: 12,
                         MRN: 3.0,
                         MPR: 16.1,
@@ -185,7 +185,7 @@ export default {
                         TKLR: 7.60,
                     },
                     {
-                        Mark: "ДПТ до 48ОВ (6x8)",
+                        Mark: "ДПТ до 48ОВ",
                         MDRN: 15,
                         MRN: 3.75,
                         MPR: 20.4,
@@ -198,7 +198,7 @@ export default {
                         TKLR: 5.42,
                     },
                     {
-                        Mark: "ДПТ до 48ОВ (6x8)",
+                        Mark: "ДПТ до 48ОВ",
                         MDRN: 20,
                         MRN: 5.0,
                         MPR: 27.06,
@@ -211,7 +211,7 @@ export default {
                         TKLR: 3.47,
                     },
                     {
-                        Mark: "ДПТ до 48ОВ (6x8)",
+                        Mark: "ДПТ до 48ОВ",
                         MDRN: 25,
                         MRN: 6.25,
                         MPR: 33.71,
@@ -224,7 +224,7 @@ export default {
                         TKLR: 2.26,
                     },
                     {
-                        Mark: "ДПТ до 48ОВ (6x8)",
+                        Mark: "ДПТ до 48ОВ",
                         MDRN: 30,
                         MRN: 7.5,
                         MPR: 40.35,
@@ -243,7 +243,7 @@ export default {
                 name: "ДПТ до 72ОВ",
                 content: [
                     { 
-                        Mark: "ДПТ до 72ОВ (6x12)",
+                        Mark: "ДПТ до 72ОВ",
                         MDRN: 4, 
                         MRN: 1.0, 
                         MPR: 9.55, 
@@ -256,7 +256,7 @@ export default {
                         TKLR: 16.35 
                     }, 
                     {
-                        Mark: "ДПТ до 72ОВ (6x12)",
+                        Mark: "ДПТ до 72ОВ",
                         MDRN: 6,
                         MRN: 1.5,
                         MPR: 9.55,
@@ -269,7 +269,7 @@ export default {
                         TKLR: 16.35 
                     },
                     {
-                        Mark: "ДПТ до 72ОВ (6x12)",
+                        Mark: "ДПТ до 72ОВ",
                         MDRN: 7,
                         MRN: 1.75,
                         MPR: 9.55,
@@ -282,7 +282,7 @@ export default {
                         TKLR: 16.35 
                     },
                     {
-                        Mark: "ДПТ до 72ОВ (6x12)",
+                        Mark: "ДПТ до 72ОВ",
                         MDRN: 8,
                         MRN: 2.0,
                         MPR: 10.14,
@@ -295,7 +295,7 @@ export default {
                         TKLR: 15.24 
                     },
                     {
-                        Mark: "ДПТ до 72ОВ (6x12)",
+                        Mark: "ДПТ до 72ОВ",
                         MDRN: 10,
                         MRN: 2.5,
                         MPR: 12.88,
@@ -308,7 +308,7 @@ export default {
                         TKLR: 11.41 
                     },
                     {
-                        Mark: "ДПТ до 72ОВ (6x12)",
+                        Mark: "ДПТ до 72ОВ",
                         MDRN: 12,
                         MRN: 3.0,
                         MPR: 15.22,
@@ -321,7 +321,7 @@ export default {
                         TKLR: 9.23 
                     },
                     {
-                        Mark: "ДПТ до 72ОВ (6x12)",
+                        Mark: "ДПТ до 72ОВ",
                         MDRN: 15,
                         MRN: 3.75,
                         MPR: 19.13,
@@ -334,7 +334,7 @@ export default {
                         TKLR: 6.77 
                     },
                     {
-                        Mark: "ДПТ до 72ОВ (6x12)",
+                        Mark: "ДПТ до 72ОВ",
                         MDRN: 20,
                         MRN: 5.0,
                         MPR: 25.4,
@@ -347,7 +347,7 @@ export default {
                         TKLR: 4.48 
                     },
                     {
-                        Mark: "ДПТ до 72ОВ (6x12)",
+                        Mark: "ДПТ до 72ОВ",
                         MDRN: 25,
                         MRN: 6.25,
                         MPR: 32.04,
@@ -360,7 +360,7 @@ export default {
                         TKLR: 2.99 
                     },
                     {
-                        Mark: "ДПТ до 72ОВ (6x12)",
+                        Mark: "ДПТ до 72ОВ",
                         MDRN: 30,
                         MRN: 7.5,
                         MPR: 38.30,
@@ -380,7 +380,7 @@ export default {
                 name: "ДПТ до 96ОВ",
                 content: [
                     { 
-                        Mark: "ДПТ до 96ОВ (6x16)",
+                        Mark: "ДПТ до 96ОВ",
                         MDRN: 4, 
                         MRN: 1.0, 
                         MPR: 11.2, 
@@ -393,7 +393,7 @@ export default {
                         TKLR: 15.32 
                     },
                     { 
-                        Mark: "ДПТ до 96ОВ (6x16)",
+                        Mark: "ДПТ до 96ОВ",
                         MDRN: 6, 
                         MRN: 1.5, 
                         MPR: 11.2, 
@@ -406,7 +406,7 @@ export default {
                         TKLR: 15.32 
                     },
                     { 
-                        Mark: "ДПТ до 96ОВ (6x16)",
+                        Mark: "ДПТ до 96ОВ",
                         MDRN: 7, 
                         MRN: 1.75, 
                         MPR: 11.2, 
@@ -419,7 +419,7 @@ export default {
                         TKLR: 15.32 
                     },
                     { 
-                        Mark: "ДПТ до 96ОВ (6x16)",
+                        Mark: "ДПТ до 96ОВ",
                         MDRN: 8, 
                         MRN: 2.0, 
                         MPR: 11.2, 
@@ -432,7 +432,7 @@ export default {
                         TKLR: 15.32 
                     },
                     { 
-                        Mark: "ДПТ до 96ОВ (6x16)",
+                        Mark: "ДПТ до 96ОВ",
                         MDRN: 10, 
                         MRN: 2.5, 
                         MPR: 12.18, 
@@ -445,7 +445,7 @@ export default {
                         TKLR: 13.87 
                     },
                     { 
-                        Mark: "ДПТ до 96ОВ (6x16)",
+                        Mark: "ДПТ до 96ОВ",
                         MDRN: 12, 
                         MRN: 3.0, 
                         MPR: 14.72, 
@@ -458,7 +458,7 @@ export default {
                         TKLR: 10.99 
                     },
                     { 
-                        Mark: "ДПТ до 96ОВ (6x16)",
+                        Mark: "ДПТ до 96ОВ",
                         MDRN: 15, 
                         MRN: 3.75, 
                         MPR: 18.24, 
@@ -471,7 +471,7 @@ export default {
                         TKLR: 8.34 
                     },
                     { 
-                        Mark: "ДПТ до 96ОВ (6x16)",
+                        Mark: "ДПТ до 96ОВ",
                         MDRN: 20, 
                         MRN: 5.0, 
                         MPR: 24.49, 
@@ -484,7 +484,7 @@ export default {
                         TKLR: 5.49 
                     },
                     { 
-                        Mark: "ДПТ до 96ОВ (6x16)",
+                        Mark: "ДПТ до 96ОВ",
                         MDRN: 25, 
                         MRN: 6.25, 
                         MPR: 30.76, 
@@ -497,7 +497,7 @@ export default {
                         TKLR: 3.87 
                     },
                     { 
-                        Mark: "ДПТ до 96ОВ (6x16)",
+                        Mark: "ДПТ до 96ОВ",
                         MDRN: 30, 
                         MRN: 7.5, 
                         MPR: 36.62, 
@@ -517,7 +517,7 @@ export default {
                 name: "ДПТ до 144ОВ",
                 content: [
                     { 
-                        Mark: "ДПТ до 144ОВ (6x24)",
+                        Mark: "ДПТ до 144ОВ",
                         MDRN: 4, 
                         MRN: 1.0, 
                         MPR: 11.67, 
@@ -530,7 +530,7 @@ export default {
                         TKLR: 15.70 
                     },
                     { 
-                        Mark: "ДПТ до 144ОВ (6x24)",
+                        Mark: "ДПТ до 144ОВ",
                         MDRN: 6, 
                         MRN: 1.5, 
                         MPR: 11.67, 
@@ -543,7 +543,7 @@ export default {
                         TKLR: 15.70 
                     },
                     { 
-                        Mark: "ДПТ до 144ОВ (6x24)",
+                        Mark: "ДПТ до 144ОВ",
                         MDRN: 7, 
                         MRN: 1.75, 
                         MPR: 11.67, 
@@ -556,7 +556,7 @@ export default {
                         TKLR: 15.70 
                     },
                     { 
-                        Mark: "ДПТ до 144ОВ (6x24)",
+                        Mark: "ДПТ до 144ОВ",
                         MDRN: 8, 
                         MRN: 2.0, 
                         MPR: 12.25, 
@@ -569,7 +569,7 @@ export default {
                         TKLR: 14.81 
                     },
                     { 
-                        Mark: "ДПТ до 144ОВ (6x24)",
+                        Mark: "ДПТ до 144ОВ",
                         MDRN: 10, 
                         MRN: 2.5, 
                         MPR: 15.58, 
@@ -582,7 +582,7 @@ export default {
                         TKLR: 11.06 
                     },
                     { 
-                        Mark: "ДПТ до 144ОВ (6x24)",
+                        Mark: "ДПТ до 144ОВ",
                         MDRN: 12, 
                         MRN: 3.0, 
                         MPR: 18.31, 
@@ -595,7 +595,7 @@ export default {
                         TKLR: 8.99 
                     },
                     { 
-                        Mark: "ДПТ до 144ОВ (6x24)",
+                        Mark: "ДПТ до 144ОВ",
                         MDRN: 15, 
                         MRN: 3.75, 
                         MPR: 23.0, 
@@ -608,7 +608,7 @@ export default {
                         TKLR: 6.58 
                     },
                     { 
-                        Mark: "ДПТ до 144ОВ (6x24)",
+                        Mark: "ДПТ до 144ОВ",
                         MDRN: 20, 
                         MRN: 5.0, 
                         MPR: 30.44, 
@@ -621,7 +621,7 @@ export default {
                         TKLR: 4.34 
                     },
                     { 
-                        Mark: "ДПТ до 144ОВ (6x24)",
+                        Mark: "ДПТ до 144ОВ",
                         MDRN: 25, 
                         MRN: 6.25, 
                         MPR: 38.26, 
@@ -634,7 +634,7 @@ export default {
                         TKLR: 2.9 
                     },
                     { 
-                        Mark: "ДПТ до 144ОВ (6x24)",
+                        Mark: "ДПТ до 144ОВ",
                         MDRN: 30, 
                         MRN: 7.5, 
                         MPR: 45.69, 
