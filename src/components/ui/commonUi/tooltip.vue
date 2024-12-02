@@ -72,6 +72,11 @@
             src="./images/vlsTips/strelaProvesa.jpg" 
           />
 
+          <v-img 
+            v-if="imageUrl=='perepadVisot'" 
+            src="./images/vlsTips/perepadVisot.jpg" 
+          />
+
         </div>
 
 

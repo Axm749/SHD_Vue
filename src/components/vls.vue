@@ -134,7 +134,7 @@
         <template v-slot:label>
             <toolbarInfo
                 title="перепад высот соседних опор, м"
-                imageUrl=''
+                imageUrl='perepadVisot'
                 v-bind:desc = "componentInfo.incomes[3]"
             />
         </template>                
@@ -321,7 +321,7 @@
             width="100%"
           >Старт</v-btn>
         </v-col>
-        <v-col>
+        <!-- <v-col>
           <v-btn 
             @click="test" 
             color="primary" 
@@ -335,7 +335,7 @@
             :label="`debug: ${debug.toString()}`"
           >
           </v-checkbox>
-        </v-col>
+        </v-col> -->
           
       </v-row>
 
@@ -377,19 +377,19 @@
         <!-- Пункт 2.9 -->
         <p>Максимальная нагрузка, действующая на кабель: <strong>{{ DotToCommas(W_max) }} Н/м;</strong> </p>
         <!-- Пункт 2.10 -->
-        <p>Максимальная стрела провиса: <strong>{{ DotToCommas(S_max) }} м;</strong> </p>
+        <p>Максимальная стрела провеса: <strong>{{ DotToCommas(S_max) }} м;</strong> </p>
         <!-- Пункт 2.11 -->
         <p>Максимальная растягивающая нагрузка при наихудших условиях: <strong>{{ DotToCommas(H_max) }} Н;</strong> </p>
         
-        <p><strong>с этого момента пока не доделано</strong></p>
+        
         
         <!-- Пункт 2.13 -->
-        <p>Расчет конечной стрелы провеса и нагрузки при нормальных условиях: <strong>{{ DotToCommas(H_n_vit) }} Н;</strong> </p>
+        <p>Расчет конечной стрелы провеса и нагрузки при нормальных условиях: <strong>{{ DotToCommas(H_n_vit) }} м;</strong> </p>
         <!-- Пункт 2.14 -->
         <p>расчет стрел провеса и нагрузок при минимальной и максимальной температуре (пока нет полей ввода): 
-          при минимальной: <strong>{{ DotToCommas(L_n_minT) }}   С*</strong>, а при максимальной: <strong> {{ DotToCommas(L_n_minT) }} С*</strong> </p>
+          при минимальной: <strong>{{ DotToCommas(L_n_minT) }}   м</strong>, а при максимальной: <strong> {{ DotToCommas(L_n_minT) }} м</strong> </p>
         <!-- Пункт 2.15 -->
-        <p>Расчет стрелы провеса и нагрузки при максимальных условиях (гололед + ветер) после реализации вытяжки: <strong>пока не выведу</strong> </p>
+        <p>Расчет стрелы провеса и нагрузки при максимальных условиях (гололед + ветер) после реализации вытяжки: <strong>{{ DotToCommas(L_kab_vit_0) }} м (в чем сильно сомневаюсь)</strong> </p>
         
         <v-btn
           disabled
@@ -477,7 +477,7 @@ export default {
         incomes: [
         'm, погонный вес кабеля (кг/км)', 
         'L, расстояние между столбами (м)',
-        'S, стрела провиса - насколько кабель провисает в нижайшей точке (м)',
+        'S, стрела провеса - насколько кабель провесает в нижайшей точке (м)',
         'h – перепад высот между точками подвеса кабеля (м)',
         'Тср – средняя температура эксплуатации (С*)',
         'TкабСр – температура кабеля в условиях эксплуатации (С*)', 
@@ -1149,7 +1149,7 @@ export default {
       console.warn('2.9 Максимальная нагрузка, действующая на кабель ???', this.W_max)
     },
 
-    // Расчет максимальной стрела провиса
+    // Расчет максимальной стрела провеса
     task_2_10(){
       
       // длина кабеля в нагруженом состоянии
@@ -1177,7 +1177,7 @@ export default {
 
       this.S_max = this.kubicEquasion(a,b)
       this.S_max = parseFloat(this.S_max.toFixed(this.decimalsRounding+2))
-      console.log('2.10 максимальная стрела провиса =',this.S_max)
+      console.log('2.10 максимальная стрела провеса =',this.S_max)
       console.log('2.10 для сравнения обычная стрела провеса =',this.S)
     },
 
@@ -1263,21 +1263,13 @@ export default {
     task_2_15(){
 
 
+      // this.S1 = parseFloat(
+      //   this.S*this.L1*this.L1/(this.L*this.L)
+      // ).toFixed(this.decimalsRounding)
 
-
-      this.S1_n_vit = this.get_S1_or_S2(this.S, this.L1_n_vit, this.L_kab_vit) 
-      this.S2_n_vit = this.get_S1_or_S2(this.S, this.L2_n_vit, this.L_kab_vit) 
-      
-
-
-
-      this.S1 = parseFloat(
-        this.S*this.L1*this.L1/(this.L*this.L)
-      ).toFixed(this.decimalsRounding)
-
-      this.S2 = parseFloat(
-        this.S*((this.L2)^2)/((this.L)^2)
-      ).toFixed(this.decimalsRounding)
+      // this.S2 = parseFloat(
+      //   this.S*((this.L2)^2)/((this.L)^2)
+      // ).toFixed(this.decimalsRounding)
       
 
 
@@ -1289,7 +1281,14 @@ export default {
       this.L_kab_vit_0 = (
           this.L_kab_vit / (1 + (this.H_n_vit / (this.E_kon * this.S_kab)))
         ).toFixed(this.decimalsRounding)
-      console.log('2.15 Расчет стрелы провеса и нагрузки при максимальных условиях (гололед + ветер) после реализации вытяжки', this.L_kab_vit_0)
+
+
+      this.S1_n_vit = this.get_S1_or_S2(this.S, this.L1_n_vit, this.L_kab_vit) 
+      this.S2_n_vit = this.get_S1_or_S2(this.S, this.L2_n_vit, this.L_kab_vit) 
+
+      
+      console.log(`2.15 Расчет стрелы провеса и нагрузки при 
+      максимальных условиях (гололед + ветер) после реализации вытяжки ${this.L_kab_vit_0}`)
     },
 
     
@@ -1299,11 +1298,17 @@ export default {
      * @param {number} L1     -
      * @param {number} L_big  -
      * 
-     * @returns {number}      значение параметра S, формула из пункта 2.4
+     * @return {number} S_n  -  значение параметра S, формула из пункта 2.4
      */
     get_S1_or_S2(S, L1, L_big){
       return parseFloat(
         S*(L1^2)/(L_big^2)
+      ).toFixed(this.decimalsRounding+2)
+    },
+
+    another_get_S1_or_S2(W, L_n, H){
+      return parseFloat(
+        (W*L_n*L_n) / (8*H)
       ).toFixed(this.decimalsRounding+2)
     },
 
