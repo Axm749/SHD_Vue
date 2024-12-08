@@ -74,7 +74,7 @@
 
           <!-- Электропитание -->
           <v-expansion-panel eager>
-            <v-expansion-panel-header><h2>электропитание</h2></v-expansion-panel-header>
+            <v-expansion-panel-header><h2>Электропитание</h2></v-expansion-panel-header>
             <v-expansion-panel-content>
               <div :class="noMargins=== true ? 'module_bg' : 'mx-n5'">
                 <power
@@ -86,7 +86,7 @@
 
           <!-- Охлаждение -->
           <v-expansion-panel eager>
-            <v-expansion-panel-header><h2>охлаждение</h2></v-expansion-panel-header>
+            <v-expansion-panel-header><h2>Охлаждение</h2></v-expansion-panel-header>
             <v-expansion-panel-content>
               <div :class="noMargins=== true ? 'module_bg mx-n2' : 'mx-n5'">
                 <cooling
