@@ -9,14 +9,18 @@
         incomes: ['string', 'string', 'string'],
         outcomes: ['string', 'string', 'string'],
         description: 'string',
-        disclaimers: ['string', 'string', 'string']
+        disclaimers: ['string', 'string', 'string'],
+        constants: [
+          { name: 'string:', 
+            massive: [ 'string', 'string', 'string' ]
+          },
+          { name: 'string:', 
+            massive: [ 'string', 'string', 'string' ]
+          }
       },
     
     
     Названия разделов передаются через пропсы 
-    
-    
-    
     -->
   
     <div>
@@ -77,16 +81,6 @@ export default {
     props: {
         title: String,
         info: Object
-    },
-    methods: {
-        
-        
-        //Старт
-        start() {
-
-        }, 
-
-        
     },
 };
 </script>

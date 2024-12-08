@@ -26,7 +26,14 @@
         hide-details="auto"
         v-model.number="users"
         class="mt-5"
-      />
+      >
+        <template v-slot:label>
+          <toolbarInfo
+            title="Количество устройств (шт)"
+            desc = "число устройств, отправляющий информацию на вход системы хранения данных. Они все принимаются идентичными, усредненными"
+          />
+        </template> 
+      </v-text-field>
       
       <v-text-field
         flat
@@ -39,7 +46,15 @@
         hide-details="auto"
         v-model.number="days"
         class="mt-5"
-      />
+      >
+        <template v-slot:label>
+          <toolbarInfo
+            title="Дни хранения (сутки)"
+            desc = "число дней, которое поступающая информация должна сохраняться внутри системы хранения данных. Далее, она удаляется, освобождая память под новые данные"
+          />
+        </template> 
+      
+      </v-text-field>
       <!-- стандратный ли узел -->
       <v-checkbox
         info
@@ -62,7 +77,7 @@
         <v-dialog
           v-model="dialog2"
           transition="dialog-bottom-transition"
-          width="80%"
+          min-width="80%"
           :scrollable="false"
           aria-hidden="true"
         >
@@ -83,7 +98,7 @@
               class="pa-5"
             >
 
-            <h1>параметры дисковых хранилищ узлов</h1>
+              <h1>параметры дисковых хранилищ узлов</h1>
 
               <v-text-field
                 flat
@@ -96,7 +111,14 @@
                 hide-details="auto"
                 v-model.number="capacity"
                 class="mt-5"
-              />
+              >
+                <template v-slot:label>
+                  <toolbarInfo
+                    title="Объём диска (Тбайт)"
+                    desc = "Мера того, сколько информации способен вместить один диск данного узла."
+                  />
+                </template> 
+              </v-text-field>
               
               <v-text-field
                 flat
@@ -104,12 +126,28 @@
                 required
                 outlined
                 clearable
-                label="Количество дисков"
+                label="Количество дисков (шт)"
                 :rules="rule"
                 hide-details="auto"
                 v-model.number="discs"
                 class="mt-5"
-              />
+              >
+                <template v-slot:label>
+                  <toolbarInfo
+                    title="Количество дисков (шт)"
+                    desc = "Число дисков указанного выше объёма, установленных внутри одного узла."
+                  />
+                </template> 
+              </v-text-field>
+              
+              <v-btn
+                class="mt-2 mt-5"
+                width="100%"
+                color="primary"
+                @click="dialog2 = false"
+                >
+                  готово
+              </v-btn>
             </v-card>
           </div>
           
@@ -148,7 +186,7 @@
               class="pa-5"
             >
               
-              <h1>Доп. сервера</h1>
+              <h1>Дополнительные сервера</h1>
               
 
               <div 
@@ -169,7 +207,14 @@
                   :rules="rule"
                   hide-details="auto"
                   class="mt-2"
-                />
+                >
+                  <template v-slot:label>
+                    <toolbarInfo
+                      title="название"
+                      desc = "название сервера или комплекта серверов внутри гиперконвергентной системы, которые требуют дискового пространства."
+                    />
+                  </template>
+                </v-text-field>
                 
                 <v-text-field
                   v-model="server.count"
@@ -182,7 +227,14 @@
                   :rules="rule"
                   hide-details="auto"
                   class="mt-5"
-                />
+                >
+                  <template v-slot:label>
+                    <toolbarInfo
+                      title="количество (шт)"
+                      desc = "количество указанных серверов внутри гиперконвергентной системы."
+                    />
+                  </template>
+                </v-text-field>
                 
                 <v-text-field
                   v-model="server.volume"
@@ -195,12 +247,22 @@
                   :rules="rule"
                   hide-details="auto"
                   class="mt-5"
-                />
+                >
+                  <template v-slot:label>
+                    <toolbarInfo
+                      title="объём (ГБ)"
+                      desc = "Объём, требуемый для работы указанного сервера. Измеряется в Гигабайтах."
+                    />
+                  </template> 
+                </v-text-field>
+                
                 <v-btn
                   color="error"
                   @click="deleteItem(server, index)"
-                  class="mt-5 ml-2 mb-2"
-                >  <v-icon>mdi-trash-can</v-icon>  удалить </v-btn>
+                  class="mt-5 mx-2 mb-2"
+                >  
+                  <v-icon>mdi-trash-can</v-icon>  удалить 
+                </v-btn>
 
               </div>
 
@@ -239,7 +301,8 @@
         label="Выберите режим"
         class="mt-5"
       />
-      
+
+      <!-- ручная установка битрейта -->
       <v-text-field
         ref="mBRRef"
         required
@@ -249,38 +312,23 @@
         flat
         outlined
         clearable
-        label="Мбит/сек"
+        label="Мбит/с"
         :rules="rule"
         hide-details="auto"
         v-model.number="mBR"
         class="mt-5"
-      ></v-text-field>
+      >
+        <template v-slot:label>
+          <toolbarInfo
+            title="Битрейт (Мбит/с)"
+            desc = "Объём передаваемой информации на выходе устройства в единицу времени. Исчисляется в мегабит на секунду."
+          />
+        </template> 
+      </v-text-field>
 
 
       <!-- доступ к вычислениям видеонаблюдения -->
       <template v-if="options.value == 'video'">
-        
-        <!-- <v-btn
-          max-width="100%"
-          color="primary"
-          v-bind="dialog"
-          @click="getVideo"
-          class="mt-5 mr-5"
-          ><v-icon>mdi-cog</v-icon>
-          Дополнительно
-        </v-btn> -->
-
-        <!-- <v-navigation-drawer
-          v-model="dialog"
-          absolute
-          temporary
-          height="1200px"
-        >
-          <video1 @cam_bitrate="getMbrVideo" />
-        </v-navigation-drawer> -->
-        
-        
-        
         <v-dialog
           v-model="dialog"
           novalidate
@@ -290,13 +338,13 @@
         >
           <template v-slot:activator="{ props }">
             <v-btn
-              max-width="100%"
+              width="100%"
               color="primary"
               v-bind="props"
               @click="getVideo"
               class="mt-5 mr-5"
               ><v-icon>mdi-cog</v-icon>
-              Дополнительно
+              настройки видеонаблюдения
             </v-btn>
           </template>
 
@@ -312,6 +360,7 @@
         @click="start" 
         color="primary" 
         class="mt-5"
+        width="100%"
       >Старт</v-btn>
     </v-card>
 
@@ -373,12 +422,13 @@
 <script>
 import video1 from "./video1.vue";
 import headerTab from "./ui/commonUi/header.vue";
-
+import toolbarInfo from './ui/commonUi/tooltip.vue';
 export default {
   name: "shd_vue",
   components: {
     video1,
     headerTab,
+    toolbarInfo
   },
   data() {
     return {
@@ -389,20 +439,51 @@ export default {
 
       // для пункта с информацией о модуле
       componentInfo: {
-        name: 'СХД',
+        name: 'Системы хранения данных (СХД)',
         incomes: [
-          'число устройств выдающих усреднённое значение битрейта', 'Количество дней (суток) на протяжении которых информация должна храниться', 
-          'Значение битрейта выбирается из предустановленных, рассчитывается в соответствующем модуле для видеокамер или вводится вручную при необходимости',
+          'число устройств выдающих усреднённое значение битрейта;', 
+          'Количество дней (суток) на протяжении которых информация должна храниться;', 
+          'Значение битрейта выбирается из предустановленных, рассчитывается в соответствующем модуле для видеокамер или вводится вручную при необходимости.',
         ],
         outcomes: [
-          'Число узлов необходимое для удовлетворения данных условий',
-          'Объём хранимой информации',
-          'Прочие данные, что могут пригодиться профессионалам'], 
-        description: 'Первый созданный модуль. Представляет из себя расчет объёма системы хранения данных для систем с усреднённым входным битрейтом',
+          'Число узлов необходимое для удовлетворения данных условий (шт.);',
+          'Число узлов с учетом резервирования (на 2 больше);',
+          'Объём хранимой информации в Тбайт (Терабайт) и в TiB (Тебибайт).'], 
+        description: `Модуль расчета объёма системы хранения данных для систем с усреднённым входным битрейтом. В ответ на введенные требования, определяет число узлов, необходимых для их выполнения. Параметры узлов можно задавать вручную, а также предусмотрены гиперконвергентные системы.`,
         disclaimers: [
-          'округления идут в большую сторону, предполагается наихудший сценарий'
+          'Гиперконвергентные системы - СХД, способные не только хранить информацию, но и обрабатывать её в реальном времени. Используют больше вычислительных ресурсов и потому зачастую делаются меньшего объёма, что приводит к увеличению числа узлов для покрытия того же объёма информации;',
+          'Округления идут в большую сторону, предполагается наихудший сценарий;',
+          "Все значения должны быть не отрицательными, а время хранения больше нуля;",
+          "Другие характеристики узлов указаны в документации."
+        ],
+        constants: [
+          {
+            name: 'Объёмы стандартных узлов:', 
+            massive: [ 
+                'Для гиперконвергентных - 7 дисков по 4 Тб',
+                'для дисковых систем - 15 дисков по 8 Тб'
+              ]
+          },
+          {
+            name: 'Усредненный битрейт в режимах:', 
+            massive: [ 
+                'Локальная вычислительная сеть    - 5 мбит/с; ',
+                'Системы телефонии (ip-телефония) - 0,1 мбит/с; ',
+                'Системы видеонаблюдения          - 8 мбит/с или вычисленное в соответствующем разделе;',
+                'Свой режим - указываемое пользователем значение.'
+              ]
+          },
+          {
+            name: 'Набор серверов в гиперконвергентных системах:', 
+            massive: [ 
+                'Сервер управления                    - 300 Гб, 1 шт; ',
+                'Сервер архивного управления          - 300 Гб, 1 шт; ',
+                'Сервер сопряжения                    - 600 Гб, 3 шт; ',
+                'Сервер ситуационного видеонаблюдения - 300 Гб, 1 шт; ',
+                'Сервер другой                        - 7680 Гб, 3 шт;',
+              ]
+          },
         ]
-      
       },
 
       convServParam: [
@@ -485,12 +566,7 @@ export default {
       console.log( `${this.sumItUpAnswer} ГБ      ${this.sumItUpAnswer/1024} ТБ`)
       return this.sumItUpAnswer
     }, // суммарный объём всех серверов в гиперконвергентной вкладке
-    
-
-
-
-    
-    
+        
     getMbrVideo() {
       // console.log("cams_Mbr", (this.mBr = localStorage.getItem("Bitrate")));
       this.video = true;
@@ -533,10 +609,6 @@ export default {
         this.Converg();
 
       this.Standart();
-      
-
-
-      
     }, //Старт
 
     Power() {
@@ -569,23 +641,15 @@ export default {
     }, //Ф-ция, рассчитывающая объём СХД без учёта резерва
 
     Converg() {
-        let server_volume =0
-        let disc_group =0
+        let server_volume = 0
+        let disc_group = 0
         if(this.convergChecked){
 
         server_volume = this.sumItUp()/1024
-        // console.log('объём сервера (ТБ)', server_volume)
-        
         disc_group = Math.ceil(server_volume*2 / 0.85);
         this.volume2 = Math.ceil(disc_group+2*this.volume1)
-        // console.log('Объём с резервным копированием', this.volume2)
 
         this.volume3= Math.ceil(2*this.volume1 + disc_group)/0.8
-        // console.log(
-        //   "С учетом резерва требуемая от СХД полезная ёмкость",
-        //   this.volume3,
-        //   " Тбайт"
-        // )
         }
         else{
             this.volume2= Math.ceil(this.volume1*2)

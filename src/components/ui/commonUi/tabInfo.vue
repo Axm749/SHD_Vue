@@ -8,7 +8,14 @@
         incomes: ['string', 'string', 'string'],
         outcomes: ['string', 'string', 'string'],
         description: 'string',
-        disclaimers: ['string', 'string', 'string']
+        disclaimers: ['string', 'string', 'string'],
+        constants: [
+          { name: 'string:', 
+            massive: [ 'string', 'string', 'string' ]
+          },
+          { name: 'string:', 
+            massive: [ 'string', 'string', 'string' ]
+          }
       },
     
     Информация из разделов передаются через пропсы, проходя через header.vue
@@ -80,6 +87,26 @@
             <li v-for="disclaimer in info.disclaimers" :key="disclaimer.disclaimers">
               {{ disclaimer }}
             </li>
+          </div>
+
+
+          <!-- константы -->
+          <div class="mt-5">
+            <h3 class="subheading">
+              Предустановленные значения
+            </h3>
+            <div v-for="constant in info.constants" :key="constant.constants">
+              
+              <h4>{{ constant["name"] }}</h4> 
+               <!-- {{ constant["massive"] }} -->
+               <div v-for="value in constant['massive']" :key="value">
+                <li>
+                  {{ value }}
+                </li>
+               </div>
+               <br>
+            </div>
+            
           </div>
 
         </div>

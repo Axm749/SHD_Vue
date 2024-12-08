@@ -381,17 +381,9 @@
         <p>Максимальная стрела провеса: <strong>{{ DotToCommas(S_max) }} м;</strong> </p>
         <!-- Пункт 2.11 -->
         <p>Максимальная растягивающая нагрузка при наихудших условиях: <strong>{{ DotToCommas(H_max) }} Н;</strong> </p>
-        
-        
-        
         <!-- Пункт 2.13 -->
         <p>Расчет конечной стрелы провеса и нагрузки при нормальных условиях: <strong>{{ DotToCommas(H_n_vit) }} м;</strong> </p>
-        <!-- Пункт 2.14 -->
-        <p>расчет стрел провеса и нагрузок при минимальной и максимальной температуре (пока нет полей ввода): 
-          при минимальной: <strong>{{ DotToCommas(L_n_minT) }}   м</strong>, а при максимальной: <strong> {{ DotToCommas(L_n_minT) }} м</strong> </p>
-        <!-- Пункт 2.15 -->
-        <p>Расчет стрелы провеса и нагрузки при максимальных условиях (гололед + ветер) после реализации вытяжки: <strong>{{ DotToCommas(L_kab_vit_0) }} м (в чем сильно сомневаюсь)</strong> </p>
-        
+
         <v-btn
           disabled
           class="mt-2  mr-5"
@@ -968,9 +960,9 @@ export default {
 
       this.task_2_14()
 
-      this.task_2_15()
+      // this.task_2_15()
 
-      this.task_2_16()
+      // this.task_2_16()
 
     },
     
@@ -1250,94 +1242,6 @@ export default {
       this.L_n_maxT = (this.L_n0 * (1+ this.TKLR * (this.T_max - this.T_sr))).toFixed(this.decimalsRounding)
       console.log('2.14 расчет стрел провеса и нагрузок при минимальной и максимальной температуре', this.L_n_minT, this.L_n_maxT)
     },
-
-    // Расчет стрелы провеса и нагрузки при максимальных условиях (гололед + ветер) после реализации вытяжки
-    
-    /**
-     * функция составляющая коэффициент A
-     * @return {number} S1_n_vit     - длина без учета темпиратуры
-     * @return {number} S2_n_vit     - длина без учета темпиратуры
-     * @return {number} L     - длина без учета темпиратуры
-     * @return {number} L     - длина без учета темпиратуры
-     * @return {number} L     - длина без учета темпиратуры
-     * 
-     */
-    task_2_15(){
-
-
-      // this.S1 = parseFloat(
-      //   this.S*this.L1*this.L1/(this.L*this.L)
-      // ).toFixed(this.decimalsRounding)
-
-      // this.S2 = parseFloat(
-      //   this.S*((this.L2)^2)/((this.L)^2)
-      // ).toFixed(this.decimalsRounding)
-
-
-
-      this.S1_n_vit = this.get_S1_or_S2(this.S, this.L1_n_vit, this.L_kab_vit) 
-      this.S2_n_vit = this.get_S1_or_S2(this.S, this.L2_n_vit, this.L_kab_vit) 
-
-
-      this.L_kab_vit = (
-          this.L + 4/3 * ( (this.S1_n_vit^2 / this.L1_) + (this.S2_n_vit^2 / this.L2) )
-        ).toFixed(this.decimalsRounding)
-
-
-      this.L_kab_vit_0 = (
-          this.L_kab_vit / (1 + (this.H_n_vit / (this.E_kon * this.S_kab)))
-        ).toFixed(this.decimalsRounding)
-
-
-      
-
-      
-      console.log(`2.15 Расчет стрелы провеса и нагрузки при 
-      максимальных условиях (гололед + ветер) после реализации вытяжки ${this.L_kab_vit_0}`)
-    },
-
-
-    // Определение роли вытяжки при расчете максимальных нагрузок
-    task_2_16(){
-      
-      this.H_max_vit = (this.W_max_vit * this.L_kab_vit ^ this.L_kab_vit) / (8 * this.S_max_vit)
-
-
-      
-      if (this.H_max_vit > this.H_max){
-        this.H_max = this.H_n_vit
-      }
-
-
-    },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     

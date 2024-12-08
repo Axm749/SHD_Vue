@@ -3,7 +3,7 @@
     
       <v-tooltip
         left
-        max-width="80%"
+        max-width="300px"
         min-width="50%"
       >
         <template v-slot:activator="{ on }">
@@ -18,6 +18,9 @@
 
         <!-- библиотека изображений -->
         <div>
+          <!-- <v-img  
+            v-bind:src="`@/components/ui/commonUi/images/vlsTips/${imageUrl.toString()}`" 
+          /> -->
           
           <!-- общие картинки -->
           <v-img v-if="imageUrl=='autumnBg'" src="./images/autumnBg.jpg" />
@@ -94,6 +97,8 @@
 </template>
 
 <script>
+// import a from '@/components/ui/commonUi/images/vlsTips/'
+
 export default {
     name: "toolbarInfo",
     data() {
