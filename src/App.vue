@@ -149,7 +149,7 @@
                   v-model="$vuetify.theme.dark"
                   inset
                   @change="saveTheme"
-                  label="Тёмная тема"
+                  label="альтернативная тема"
                   persistent-hint
                 />
 

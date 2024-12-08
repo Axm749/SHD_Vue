@@ -91,14 +91,14 @@
 
 
           <!-- константы -->
-          <div class="mt-5">
+          <div class="mt-5" v-if="info.constants">
             <h3 class="subheading">
               Предустановленные значения
             </h3>
             <div v-for="constant in info.constants" :key="constant.constants">
               
               <h4>{{ constant["name"] }}</h4> 
-               <!-- {{ constant["massive"] }} -->
+
                <div v-for="value in constant['massive']" :key="value">
                 <li>
                   {{ value }}

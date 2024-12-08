@@ -93,32 +93,38 @@
 
         </v-text-field>
 
-      <v-text-field
-          type="number"
-          :disabled="self === false "
-          outlined
-          clearable
-          label="Макс. суммарная мощность нагрузой (Вт)"
-          :rules="rule"
-          hide-details="auto"
-          v-model.number="power"
-          class="mt-5"
-        >
-            <template v-slot:label>
-            <toolbarInfo
-                title="Макс. суммарная мощность нагрузой (Вт)"
-                desc = "Максимальная суммарная мощность нагрузой. Измеряется в ваттах. Вставляется автоматически на основании числа узлов и их типа, рассчитанных в разделе системы хранения данных. Перевод происходит по следующему принципу: дисковые узлы = 700 Вт на узел, а гиперконвергентные = 1000 Вт на узел."
-            />
-            </template> 
+        <v-row class="mx-0 my-2">
 
-        </v-text-field>
-      <v-checkbox 
-          info
-          hide-details
-          label="Ввести вручную?" 
-          v-model="self"
-          class="mt-5"
-      />
+        
+            <v-text-field
+                type="number"
+                :disabled="self === false "
+                outlined
+                clearable
+                label="Макс. суммарная мощность нагрузой (Вт)"
+                :rules="rule"
+                hide-details="auto"
+                v-model.number="power"
+                class="mt-5"
+            >
+                <template v-slot:label>
+                    <toolbarInfo
+                        title="Макс. суммарная мощность нагрузой (Вт)"
+                        desc = "Максимальная суммарная мощность нагрузой. Измеряется в ваттах. Вставляется автоматически на основании числа узлов и их типа, рассчитанных в разделе системы хранения данных. Перевод происходит по следующему принципу: дисковые узлы = 700 Вт на узел, а гиперконвергентные = 1000 Вт на узел."
+                    />
+                </template> 
+
+            </v-text-field>
+
+            <v-checkbox 
+                info
+                hide-details
+                label="Ввести вручную?" 
+                v-model="self"
+                class="mt-8 ml-2"
+            />
+
+        </v-row>
       <v-btn 
           @click="start" 
           color="primary"

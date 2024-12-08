@@ -2,9 +2,9 @@
     <div>
     
       <v-tooltip
-        left
+        right
         max-width="300px"
-        min-width="50%"
+        min-width="40%"
       >
         <template v-slot:activator="{ on }">
           <p>
