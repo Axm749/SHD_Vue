@@ -13,7 +13,8 @@
 			<template v-slot:img="{ props }">
 				<v-img
 				v-bind="props"
-				src="../commonUi/images/autumnBg.jpg"
+				
+                :src="$vuetify.theme.dark ? require('../commonUi/images/theme/autumnBg.jpg') : require('../commonUi/images/theme/winterBg2.jpg')"
 				></v-img>
 			</template>
 

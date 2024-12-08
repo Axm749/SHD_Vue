@@ -239,9 +239,9 @@ body{
 }
 
 .body_light{
-  background-image: linear-gradient( 0deg, #4e1600, #a07236);
+  /* background-image: linear-gradient( 0deg, #4e1600, #a07236); */
 
-  /* background-image: linear-gradient( 0deg, #2ebf91, #4286f4); */
+  background-image: linear-gradient( 0deg, #165f48, #275298);
 
   /* background-image: linear-gradient( 120deg, #33691E, #4DD0E1); */
   height: 100%;
@@ -250,9 +250,9 @@ body{
 }
 
 .body_dark{
-  /* background-image: linear-gradient( 120deg, #1f0000, #1e0013); */
-  background-image: linear-gradient( 120deg, #000000, #2b0000);
-  color: #111;
+  /* background-image: linear-gradient( 120deg, #000000, #2b0000); */
+  background-image: linear-gradient( 0deg, #3e1100, #6c4d23);
+  /* color: #111; */
 
 
   /* background-color: #000000; */
@@ -260,13 +260,15 @@ body{
   background-size: 200% 200%;
   animation: bg 5s ease infinite;
 
-  background-color: rgb(46, 46, 46);
+  /* background-color: rgb(46, 46, 46); */
   /* color: #8f3900; */
   height: 100%;
 }
 
 .theme--dark.v-card{
   background-color: #000000;
+  
+  /* если захочу фон карточек сделать градиентом */
   /* background-image: linear-gradient( 120deg, #000000, #370000);
   background-size: 200% 200%;
   animation: bg 5s ease infinite; */

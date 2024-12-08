@@ -17,14 +17,14 @@ export default new Vuetify({
             // error: colors.red.darken2,
             // success: colors.lightGreen.lighten2, 
             
-            primary: "#8f3900",
+            primary: colors.lightBlue.darken2,
             secondary: colors.lightGreen.lighten2, // #FFCDD2
             accent: colors.green.accent1, // #3F51B5
             error: colors.red.darken2,
             success: colors.lightGreen.lighten2, 
           },
           dark:{
-            primary: colors.red.darken4, // #E53935
+            primary: "#8f3900", // #E53935
             secondary: colors.red.darken1, // #FFCDD2
             accent: colors.red.accent1, // #3F51B5
             error: colors.grey.darken2,

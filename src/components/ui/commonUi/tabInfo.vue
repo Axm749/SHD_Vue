@@ -34,7 +34,7 @@
       <!-- если информация есть -->
       <div v-if="this.info">
         <v-toolbar
-          src="./images/sunsetForestBg.webp"
+          :src="$vuetify.theme.dark ? require('./images/theme/sunsetForestBg.webp') : require('./images/theme/winterBg2.jpg')"
           dark
           flat
           prominent

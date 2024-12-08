@@ -23,11 +23,11 @@
           /> -->
           
           <!-- общие картинки -->
-          <v-img v-if="imageUrl=='autumnBg'" src="./images/autumnBg.jpg" />
+          <v-img v-if="imageUrl=='autumnBg'" src="./images/theme/autumnBg.jpg" />
           
-          <v-img v-if="imageUrl=='forestBg'" src="./images/forestBg.jpg"/>
+          <v-img v-if="imageUrl=='forestBg'" src="./images/theme/forestBg.jpg"/>
 
-          <v-img v-if="imageUrl=='sunsetForestBg'" src="./images/sunsetForestBg.webp" />
+          <v-img v-if="imageUrl=='sunsetForestBg'" src="./images/theme/sunsetForestBg.webp" />
 
           <!-- подсказки для видеонаблюдения -->
 

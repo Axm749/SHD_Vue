@@ -26,15 +26,9 @@
     <div>
       <v-toolbar
         dark
-        src='./images/autumnBg.jpg'
+        :src="$vuetify.theme.dark ? require('./images/theme/autumnBg.jpg') : require('./images/theme/winterBg2.jpg')"
       >
-        <!-- <v-app-bar-nav-icon/> -->
-        <!-- <v-btn 
-        icon
-        >
-          <v-icon>mdi-help</v-icon>
-        </v-btn> -->
-
+      
         <v-toolbar-title> {{this.title}} </v-toolbar-title>
 
         <v-spacer/>
@@ -65,6 +59,7 @@
 
 <script>
 import tabInfo from './tabInfo.vue';
+// import anotherWinterBg from '@/components/ui/commonUi/images'
 
 export default {
     name: "headerTab",
