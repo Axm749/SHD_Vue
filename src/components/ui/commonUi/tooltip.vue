@@ -7,21 +7,25 @@
         min-width="40%"
       >
         <template v-slot:activator="{ on }">
-          <p>
-            <v-icon small v-on="on">
-                mdi-help-circle-outline
-            </v-icon>
-              {{ title }}     
-          </p>
+          <v-row>
+            <v-col class="mr-n5">
+              <v-icon small v-on="on">mdi-help-circle-outline
+              </v-icon>
+            </v-col>
+            <v-col>
+              {{ title }} 
+            </v-col>
+               
+          </v-row>
         </template>
 
 
         <!-- библиотека изображений -->
         <div>
           <!-- <v-img  
-            v-bind:src="`@/components/ui/commonUi/images/vlsTips/${imageUrl.toString()}`" 
-          /> -->
-          
+            :src="`@/components/ui/commonUi/images/${imageUrl.toString()}`" 
+          />
+           -->
           <!-- общие картинки -->
           <v-img v-if="imageUrl=='autumnBg'" src="./images/theme/autumnBg.jpg" />
           

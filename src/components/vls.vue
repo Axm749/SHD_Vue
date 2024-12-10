@@ -352,11 +352,6 @@
 
         
         <h2>Результаты расчётов воздушных линий связи:</h2>
-
-
-
-
-
         <v-simple-table>
         <template v-slot:default>
           <thead>
@@ -367,7 +362,7 @@
               <th class="text-left">
                 Значение:
               </th>
-              <th class="text-left">
+              <th class="text-left" v-if="rulesViolation">
                 Примечания:
               </th>
               </tr>
@@ -376,32 +371,51 @@
             <!-- 2.1 -->
             <tr>
               <td>Вес кабеля </td>
-              <td> {{ DotToCommas(W_kab) }} Н/м; </td>
-              <td v-if="W_kab<=0"> что-то пошло не так </td>
+              <td> 
+                <v-chip
+                  :color="getColorBinary(violation_2_1)"
+                  dark
+                ><toolbarInfo
+                      :title="DotToCommas(W_kab) + '  Н/м'"
+                      :desc = "componentInfo.outcomes[0] + `. Значение ${(violation_2_1 ? ' не' : '')} находится в допустимых пределах пределах`"
+                />
+                <!-- {{ DotToCommas(W_kab)}} Н/м -->
+                </v-chip>
+              </td>
+              <td v-if="violation_2_1"> что-то пошло не так </td>
             </tr>
 
             <!-- 2.2 -->
             <tr>
               <td>Растягивающая нагрузка </td>
-              <td> {{ DotToCommas(H_nach) }} Н; </td>
-              <td v-if="H_nach<=0"> что-то пошло не так </td>
+              <td> 
+                <v-chip
+                  :color="getColorBinary(violation_2_2)"
+                  dark
+                ><toolbarInfo
+                      :title="DotToCommas(H_nach) + '  Н'"
+                      :desc = "componentInfo.outcomes[1] + `. Значение ${(violation_2_2 ? ' не' : '')} находится в допустимых пределах пределах`"
+                /></v-chip>
+                <!-- {{ DotToCommas(H_nach) }} Н;  -->
+              </td>
+              <td v-if="violation_2_2"> что-то пошло не так </td>
             </tr>
 
             <!-- 2.3 -->
             <tr>
               <td>Малый эквивалентный пролет </td>
               <td> {{ DotToCommas(L1) }} м; </td>
-              <td v-if="L1<=0"> что-то пошло не так </td>
+              <td v-if="violation_2_3"> что-то пошло не так </td>
             </tr>
             <tr>
               <td>Больший эквивалентный пролет </td>
               <td> {{ DotToCommas(L2) }} м; </td>
-              <td v-if="L2<=0"> что-то пошло не так </td>
+              <td v-if="violation_2_3"> что-то пошло не так </td>
             </tr>
             <tr>
               <td>Малая стрела провеса </td>
               <td> {{ DotToCommas(S1) }} м; </td>
-              <td v-if="S1<=0"> что-то пошло не так </td>
+              <td v-if="violation_2_3"> что-то пошло не так </td>
             </tr>
             <tr>
               <td>Большая стрела провеса </td>
@@ -956,12 +970,21 @@ export default {
     // example_limit_1 - уровень, выше которого желтый
     //  example_limit_2 - уровень, выше которого красный
     getColor(data, example_limit_1, example_limit_2){
-      if (data <= example_limit_1) {
+      if (data <= example_limit_1) 
+      {
         return 'green'
-      } else if (data <= example_limit_2){
+      } 
+      else if (data <= example_limit_2) 
+      {
         return 'orange'
       }
       return 'red'
+    },
+
+    // функция возвращающая цвет, но только красный при ошибке и серый при нормальной работе
+    getColorBinary( violation ){
+      if (violation) return 'red'
+      return 'grey'
     },
 
 // // Из таблицы района по ветру         (за предустановленные взял 1 район)
@@ -1564,6 +1587,76 @@ export default {
       console.log(this.W)
     },
   },
+  computed: {
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // для таблицы ответа
+    rulesViolation () {
+      return (
+        // 2.1
+        this.violation_2_1
+        // 2.2
+        || this.violation_2_2
+        // 2.3
+        || this.violation_2_3
+        // 2.4
+        || this.violation_2_4
+        // 2.5
+        || this.violation_2_5
+        // 2.6
+        || this.violation_2_6
+        // 2.7
+        || this.violation_2_7
+      )
+    },
+
+    violation_2_1 () {
+      return (this.W_kab<=0 && !! this.W_kab )
+    },
+    violation_2_2 () {
+      return (this.H_nach<=0 && !!this.H_nach )
+    },
+    violation_2_3 () {
+      return ((this.L1>this.L2) || (this.L2<this.L1) || (this.S1<=0) || (this.S2<=0 && this.S2>this.height))
+    },
+    violation_2_4 () {
+      return (this.L_kab<this.L)
+    },
+    violation_2_5 () {
+      return (this.L_n0<this.L)
+    },
+    violation_2_6 () {
+      return (this.L_nk<this.L)
+    },
+    violation_2_7 () {
+      return (this.W_g>50)
+    },
+    // violation_2_ () {
+    //   return ()
+    // },
+    // violation_2_ () {
+    //   return ()
+    // },
+    // violation_2_ () {
+    //   return ()
+    // },
+    // violation_2_ () {
+    //   return ()
+    // },
+    // violation_2_ () {
+    //   return ()
+    // },
+    
+
+  }
 };
 </script>
 
