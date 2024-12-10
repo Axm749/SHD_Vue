@@ -3,7 +3,7 @@
   >
     <!-- заголовок -->
     <div class="header">
-      <headerTab title="расчет опор линии связи" v-bind:info="componentInfo"></headerTab>
+      <headerTab title="Расчет опор линии связи" v-bind:info="componentInfo"></headerTab>
     </div>
 
 
@@ -99,6 +99,7 @@
         </template>                
       </v-text-field> 
 
+      <!-- Стрела провеса -->
       <v-text-field
         flat
         type="number"
@@ -348,35 +349,13 @@
       class="pa-5 mt-5"
       v-show="started"
     >
+
+        
         <h2>Результаты расчётов воздушных линий связи:</h2>
-        <!-- XD -->
-        <p></p>
-        <!-- Пункт 2.1 -->
-        <p>Вес кабеля: <strong>{{ DotToCommas(W_kab) }} Н/м;</strong> </p>
-        <!-- Пункт 2.2 -->
-        <p>Растягивающая нагрузка: <strong>{{ DotToCommas(H_nach) }} Н;</strong> </p>
-        <!-- Пункт 2.3 -->
-        <p>Малый эквивалентный пролет: <strong>{{ DotToCommas(L1) }} м;</strong> </p>
-        <!-- Пункт 2.3 -->
-        <p>Больший эквивалентный пролет: <strong>{{ DotToCommas(L2) }} м;</strong> </p>
-        <!-- Пункт 2.3 -->
-        <p>Малая стрела провеса: <strong>{{ DotToCommas(S1) }} м;</strong> </p>
-        <!-- Пункт 2.3 -->
-        <p>Большая стрела провеса: <strong>{{ DotToCommas(S2) }} м;</strong> </p>
-        <!-- Пункт 2.4 -->
-        <p>Длина подвешенного кабеля: <strong>{{ DotToCommas(L_kab) }} м;</strong> </p>
-        <!-- Пункт 2.5 -->
-        <p>Длина кабеля в ненагруженном состоянии: <strong>{{ DotToCommas(L_n0) }} м;</strong> </p>
-        <!-- Пункт 2.6 -->
-        <p>Длина кабеля в ненагруженном состоянии с учетом температуры: <strong>{{ DotToCommas(L_nk) }} м;</strong> </p>
-        <!-- Пункт 2.7 -->
-        <p>Вес кабеля при воздействии максимального гололеда: <strong>{{ DotToCommas(W_g) }} кг;</strong> </p>
-        <!-- Пункт 2.8 -->
-        <p>Ветровая нагрузка на кабель в режиме максимального гололеда: <strong>{{ DotToCommas(W_v_ice) }} Н/м;</strong> </p>
-        <!-- Пункт 2.8 -->
-        <p>Ветровая нагрузка на кабель в режиме максимального ветра: <strong>{{ DotToCommas(W_v_wind) }} Н/м;</strong> </p>
+
         <!-- Пункт 2.9 -->
         <p>Максимальная нагрузка, действующая на кабель: <strong>{{ DotToCommas(W_max) }} Н/м;</strong> </p>
+        
         <!-- Пункт 2.10 -->
         <p>Максимальная стрела провеса: <strong>{{ DotToCommas(S_max) }} м;</strong> </p>
         <!-- Пункт 2.11 -->
@@ -384,14 +363,167 @@
         <!-- Пункт 2.13 -->
         <p>Расчет конечной стрелы провеса и нагрузки при нормальных условиях: <strong>{{ DotToCommas(H_n_vit) }} м;</strong> </p>
 
-        <v-btn
-          disabled
-          class="mt-2  mr-5"
-        >сохранить (WIP)</v-btn>
-        <v-btn
-          @click="started=false"
-          class="mt-2"
-        >скрыть</v-btn>
+
+
+
+
+        <v-simple-table>
+        <template v-slot:default>
+          <thead>
+            <tr>
+              <th class="text-left">
+                Параметр
+              </th>
+              <th class="text-left">
+                Значение:
+              </th>
+              <th class="text-left">
+                Примечания:
+              </th>
+              </tr>
+          </thead>
+          <tbody>
+            <!-- 2.1 -->
+            <tr>
+              <td>Вес кабеля </td>
+              <td> {{ DotToCommas(W_kab) }} Н/м; </td>
+              <td v-if="W_kab<=0"> что-то пошло не так </td>
+            </tr>
+
+            <!-- 2.2 -->
+            <tr>
+              <td>Растягивающая нагрузка </td>
+              <td> {{ DotToCommas(H_nach) }} Н; </td>
+              <td v-if="H_nach<=0"> что-то пошло не так </td>
+            </tr>
+
+            <!-- 2.3 -->
+            <tr>
+              <td>Малый эквивалентный пролет </td>
+              <td> {{ DotToCommas(L1) }} м; </td>
+              <td v-if="L1<=0"> что-то пошло не так </td>
+            </tr>
+            <tr>
+              <td>Больший эквивалентный пролет </td>
+              <td> {{ DotToCommas(L2) }} м; </td>
+              <td v-if="L2<=0"> что-то пошло не так </td>
+            </tr>
+            <tr>
+              <td>Малая стрела провеса </td>
+              <td> {{ DotToCommas(S1) }} м; </td>
+              <td v-if="S1<=0"> что-то пошло не так </td>
+            </tr>
+            <tr>
+              <td>Большая стрела провеса </td>
+              <td> {{ DotToCommas(S2) }} м; </td>
+              <td v-if="S2<=0 || S2>height"> что-то пошло не так, ваша высота кабеля равна {{ height }} </td>
+            </tr>
+
+            <!-- 2.4 -->
+            <tr>
+              <td>Длина подвешенного кабеля </td>
+              <td> {{ DotToCommas(L_kab) }} м. </td>
+              <td v-if="L_kab<L"> кабель не может быть короче расстояния между опорами </td>
+            </tr>
+
+            <!-- 2.5 -->
+            <tr>
+              <td>Длина кабеля в ненагруженном состоянии </td>
+              <td> {{ DotToCommas(L_n0) }} м. </td>
+              <td v-if="L_n0<L"> кабель не может быть короче расстояния между опорами </td>
+            </tr>
+
+            <!-- 2.6 -->
+            <tr>
+              <td>Длина кабеля в ненагруженном состоянии с учетом температуры </td>
+              <td> {{ DotToCommas(L_nk) }} м. </td>
+              <td v-if="L_nk<L"> кабель не может быть короче расстояния между опорами </td>
+            </tr>
+
+            <!-- 2.7 -->
+            <tr>
+              <td>Вес кабеля при воздействии максимального гололеда </td>
+              <td> 
+                <v-chip
+                  :color="getColor(W_g, 20, 50)"
+                  dark
+                >
+                {{ DotToCommas(W_g) }} Н/м. 
+                </v-chip>
+              </td>
+              <td v-if="W_g>50"> вес кабеля огромен </td>
+            </tr>
+
+            <!-- 2.8 -->
+            <tr>
+              <td>Ветровая нагрузка на кабель в режиме максимального гололеда </td>
+              <td> 
+                <v-chip
+                  :color="getColor(W_v_ice, 10, 30)"
+                  dark
+                >
+                  {{ DotToCommas(W_v_ice) }} Н/м. 
+                </v-chip>
+              </td>
+              <td v-if="W_v_ice>10"> нагрузка огромна </td>
+            </tr>
+            <tr>
+              <td>Ветровая нагрузка на кабель в режиме максимального ветра </td>
+              <td> 
+                <v-chip
+                  :color="getColor(W_v_wind, 20, 50)"
+                  dark
+                >
+                  {{ DotToCommas(W_v_wind) }} Н/м. 
+                </v-chip>
+              </td>
+              <td v-if="W_v_wind>50"> нагрузка огромна </td>
+            </tr>
+
+            <!-- 2.9 -->
+            <tr>
+              <td>Максимальная нагрузка, действующая на кабель </td>
+              <td> 
+                <v-chip
+                  :color="getColor(W_max, 20, 50)"
+                  dark
+                >
+                  {{ DotToCommas(W_max) }} Н/м. 
+                </v-chip>
+              </td>
+              <td v-if="W_max>50"> нагрузка огромна </td>
+            </tr>
+
+            <!-- 2.10 -->
+            <tr>
+              <td>Максимальная стрела провеса </td>
+              <td> 
+                <v-chip
+                  :color="getColor(S_max, (height/2), height)"
+                  dark
+                >
+                  {{ DotToCommas(S_max) }} м. 
+                </v-chip>
+              </td>
+              <td v-if="S_max>height"> кабель будет лежать на земле </td>
+            </tr>
+
+            
+
+          </tbody>
+        </template>
+      </v-simple-table>
+
+      <v-btn
+        disabled
+        class="mt-2  mr-5"
+      >сохранить (WIP)</v-btn>
+      <v-btn
+        @click="started=false"
+        class="mt-2"
+      >скрыть</v-btn>
+
+
     </v-card>
     
 
@@ -422,7 +554,6 @@
 import headerTab from './ui/commonUi/header.vue';
 import tableSpace from './ui/forVls/tableSpace.vue';
 import toolbarInfo from './ui/commonUi/tooltip.vue';
-// import climateTable from './ui/forVls/climateTable.vue';
 import AirZoneTable from './ui/forVls/ClimateTables/AirZoneTable.vue';
 import IceZoneTable from './ui/forVls/ClimateTables/IceZoneTable.vue';
 
@@ -431,7 +562,6 @@ export default {
   components: {
     headerTab,
     tableSpace,
-    // climateTable,
     toolbarInfo,
     AirZoneTable,
 		IceZoneTable
@@ -777,6 +907,17 @@ export default {
   },
   methods: {
 
+    // функция возвращающая цвет
+    // example_limit_1 - уровень, выше которого желтый
+    //  example_limit_2 - уровень, выше которого красный
+    getColor(data, example_limit_1, example_limit_2){
+      if (data <= example_limit_1) {
+        return 'green'
+      } else if (data <= example_limit_2){
+        return 'orange'
+      }
+      return 'red'
+    },
 
 // // Из таблицы района по ветру         (за предустановленные взял 1 район)
 //     W: 0,     // нормативное ветровое давление, Па
