@@ -36,7 +36,7 @@
           <!-- подсказки для видеонаблюдения -->
 
           <v-img 
-            v-if="imageUrl=='verticalFOV'" 
+            v-if="imageUrl=='verticalFOV' "  
             src="./images/cameraTips/Вертикальный_угол_обзора.png" 
           />
 
