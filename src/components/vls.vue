@@ -352,14 +352,6 @@
 
         
         <h2>Результаты расчётов воздушных линий связи:</h2>
-
-        <!-- Пункт 2.9 -->
-        <p>Максимальная нагрузка, действующая на кабель: <strong>{{ DotToCommas(W_max) }} Н/м;</strong> </p>
-        
-        <!-- Пункт 2.10 -->
-        <p>Максимальная стрела провеса: <strong>{{ DotToCommas(S_max) }} м;</strong> </p>
-        <!-- Пункт 2.11 -->
-        <p>Максимальная растягивающая нагрузка при наихудших условиях: <strong>{{ DotToCommas(H_max) }} Н;</strong> </p>
         <!-- Пункт 2.13 -->
         <p>Расчет конечной стрелы провеса и нагрузки при нормальных условиях: <strong>{{ DotToCommas(H_n_vit) }} м;</strong> </p>
 
@@ -508,6 +500,46 @@
               <td v-if="S_max>height"> кабель будет лежать на земле </td>
             </tr>
 
+            <!-- 2.11 -->
+            <tr>
+              <td>Максимальная растягивающая нагрузка при наихудших условиях </td>
+              <td> 
+                <v-chip
+                  :color="getColor(H_max, 40, 50)"
+                  dark
+                >
+                  {{ DotToCommas(H_max) }} Н. 
+                </v-chip>
+              </td>
+              <td v-if="H_max>50"> больше предельно допусимых 50 Н </td>
+            </tr>
+
+            <!-- 2.13 -->
+            <tr>
+              <td>конечная стрела провеса при нормальных условиях </td>
+              <td> 
+                <v-chip
+                  :color="getColor(S_n_vit, (height/2), height)"
+                  dark
+                >
+                  {{ DotToCommas(S_n_vit) }} м. 
+                </v-chip>
+              </td>
+              <td v-if="S_n_vit>height"> кабель будет лежать на земле </td>
+            </tr>
+
+            <tr>
+              <td>нагрузка после вытяжки при нормальных условиях </td>
+              <td> 
+                <v-chip
+                  :color="getColor(H_n_vit, 30, 50)"
+                  dark
+                >
+                  {{ DotToCommas(H_n_vit) }} Н. 
+                </v-chip>
+              </td>
+              <td v-if="H_n_vit>50"> нагрузка очень высока </td>
+            </tr>
             
 
           </tbody>
@@ -1324,26 +1356,6 @@ export default {
       console.log('для сравнения, обычная растягивающая нагрузка из 2.2', this.H_nach, 'Н')
     },
 
-    // Расчет монтажной стрелы провеса, нагрузки и монтажной таблицы
-    // НЕ ИСПОЛЬЗУЕТСЯ
-    task_2_12(){
-      console.warn('2.12 Давайте пока не будем, пожалуйста. Можем даже отдельный расчетик под это сделать, но если надо будет')
-
-
-
-      this.L_MON_nk = this.L_n0*(1+this.TKLR * (this.T_mon - this.T_sr))
-      console.log('L_MON_nk =', this.L_MON_nk)
-
-      var a = 3*((this.L^2) + (((this.h)^2)/2) - this.L*this.L_nk)/8
-      a = parseFloat(a.toFixed(this.decimalsRounding+2))
-
-      var b = (-3*this.W_max*((this.L)^3)*this.L_nk)/(64*this.E_kab*this.S_kab)
-      b = parseFloat(b.toFixed(this.decimalsRounding+2))
-      console.log('a =',a, 'and b =',b)
-
-      this.S_mon = this.kubicEquasion(a, b)
-
-    },
 
     // Расчет конечной стрелы провеса и нагрузки при нормальных условиях
     task_2_13(){
@@ -1360,10 +1372,10 @@ export default {
       //   )
 
       // стрела провеса вытяжки
-      var a = this.makeA(this.L, this.h, this.L_nk)
+      var a = this.makeA(this.L, this.height, this.L_nk)
       var b = this.makeB(this.W_kab, this.L, this.L_nk, this.E_vit, this.S_kab)
       // console.log('a =',a, 'and b =',b)
-      this.S_n_vit = this.kubicEquasion(a, b)
+      this.S_n_vit = this.kubicEquasion(a, b).toFixed(this.decimalsRounding)
       // console.log('S_n_vit', this.S_n_vit)
 
 
@@ -1377,12 +1389,6 @@ export default {
 
     },
 
-    // расчет стрел провеса и нагрузок при минимальной и максимальной температуре
-    task_2_14(){
-      this.L_n_minT = (this.L_n0 * (1+ this.TKLR * (this.T_min - this.T_sr))).toFixed(this.decimalsRounding)
-      this.L_n_maxT = (this.L_n0 * (1+ this.TKLR * (this.T_max - this.T_sr))).toFixed(this.decimalsRounding)
-      console.log('2.14 расчет стрел провеса и нагрузок при минимальной и максимальной температуре', this.L_n_minT, this.L_n_maxT)
-    },
 
 
     
