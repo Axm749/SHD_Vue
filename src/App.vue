@@ -61,22 +61,17 @@
         >
           <!-- СХД -->
           <v-expansion-panel eager>
-            <v-expansion-panel-header><h2> Системы хранения данных </h2></v-expansion-panel-header>
+            <v-expansion-panel-header expand-icon="mdi-menu-down"><h2> Системы хранения данных </h2></v-expansion-panel-header>
             <v-expansion-panel-content>
               <div class="mx-n6">
                 <shd
                   @Power="getpower"
                   @Usli="getUsli"
                 />
-                <br>
-                <br>
-                <v-divider/>
+                <v-spacer/>
                 <power
                   ref="npower"
                 />
-                <br>
-                <br>
-                <v-divider/>
                 <cooling
                   ref="nusli"
                 />
@@ -110,7 +105,11 @@
 
           <!-- ВЛС -->
           <v-expansion-panel eager>
-            <v-expansion-panel-header><h2>Опоры линии связи</h2></v-expansion-panel-header>
+            <v-expansion-panel-header
+              expand-icon="mdi-menu-down"
+            >
+              <h2>Опоры линии связи</h2>
+            </v-expansion-panel-header>
             <v-expansion-panel-content>
               <div class="mx-n6">
                 <vls

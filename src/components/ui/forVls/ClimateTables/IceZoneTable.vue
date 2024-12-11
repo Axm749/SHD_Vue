@@ -104,7 +104,3 @@ import headerTab from '@/components/ui/commonUi/header.vue';
 }
 
 </script>
-
-<style>
-
-</style>
