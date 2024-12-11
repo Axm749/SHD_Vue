@@ -61,46 +61,58 @@
         >
           <!-- СХД -->
           <v-expansion-panel eager>
-            <v-expansion-panel-header>
-              <h2> СХД </h2>
-            </v-expansion-panel-header>
+            <v-expansion-panel-header><h2> Системы хранения данных </h2></v-expansion-panel-header>
             <v-expansion-panel-content>
-              <div :class="noMargins=== true ? 'module_bg' : 'mx-n5'">
+              <div class="mx-n6">
                 <shd
-              />
+                  @Power="getpower"
+                  @Usli="getUsli"
+                />
+                <br>
+                <br>
+                <v-divider/>
+                <power
+                  ref="npower"
+                />
+                <br>
+                <br>
+                <v-divider/>
+                <cooling
+                  ref="nusli"
+                />
               </div> 
             </v-expansion-panel-content>
           </v-expansion-panel>
 
           <!-- Электропитание -->
-          <v-expansion-panel eager>
-            <v-expansion-panel-header><h2>Электропитание</h2></v-expansion-panel-header>
+          <!-- <v-expansion-panel eager>
+            <v-expansion-panel-header><h2>Время работы оборудования от аккумуляторных батарей</h2></v-expansion-panel-header>
             <v-expansion-panel-content>
-              <div :class="noMargins=== true ? 'module_bg' : 'mx-n5'">
+              <div class="mx-n6">
                 <power
                   ref="npower"
                 />
               </div>
             </v-expansion-panel-content>
-          </v-expansion-panel>
+          </v-expansion-panel> -->
 
           <!-- Охлаждение -->
-          <v-expansion-panel eager>
-            <v-expansion-panel-header><h2>Охлаждение</h2></v-expansion-panel-header>
+          <!-- <v-expansion-panel eager>
+            <v-expansion-panel-header><h2>Система кондиционирования</h2></v-expansion-panel-header>
             <v-expansion-panel-content>
-              <div :class="noMargins=== true ? 'module_bg mx-n2' : 'mx-n5'">
+              <div class="mx-n6">
                 <cooling
                   ref="nusli"
                 />
               </div>
             </v-expansion-panel-content>
-          </v-expansion-panel>
+          </v-expansion-panel> -->
 
           <!-- ВЛС -->
           <v-expansion-panel eager>
-            <v-expansion-panel-header><h2>ВЛС</h2></v-expansion-panel-header>
+            <v-expansion-panel-header><h2>Опоры линии связи</h2></v-expansion-panel-header>
             <v-expansion-panel-content>
-              <div :class="noMargins=== true ? 'module_bg mx-n2' : 'mx-n5'">
+              <div class="mx-n6">
                 <vls
                   ref="vls"
                 />

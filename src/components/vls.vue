@@ -13,7 +13,26 @@
       flat
       class="pa-5" 
     >
-      <!-- <h1>Воздушные линии связи</h1> -->
+      <!-- проверка подсказок, можно не обращать внимания -->
+      <!-- <div>
+        <v-chip>
+          <toolbarInfo
+            title="img by raw src"
+            srcUrl="./images/cameraTips/Горизонтальный_уол_камеры.png"
+          />
+        </v-chip>
+        <v-divider class="my-2"></v-divider>
+        <v-chip>
+          <toolbarInfo
+            title="img by role & name"
+            desc="здесь я могу написать любую подсказу"
+            imgRole="cameraTips"
+            tipUrl="Горизонтальный_уол_камеры.png"
+          />
+        </v-chip>
+      </div>  -->
+      
+      
       
       <!-- выбор марки кабеля -->
       <v-dialog
@@ -144,7 +163,6 @@
 
       <!-- средние темпрературы -->
       <v-row class="mt-2">
-        
         <v-col>
           <v-text-field
             flat
@@ -155,10 +173,11 @@
             :rules="rule"
             hide-details="auto"
             v-model.number="T_sr"
+            label="температура эксплуатации (С*)"
           >
             <template v-slot:label>
                 <toolbarInfo
-                    title="средняя температура эксплуатации (С*)"
+                    title="температура эксплуатации (С*)"
                     v-bind:desc = "componentInfo.incomes[4]"
                 />
             </template>                
@@ -173,7 +192,6 @@
             outlined
             clearable
             :rules="rule"
-            hide-details="auto"
             v-model.number="T"
           >
             <template v-slot:label>
@@ -183,13 +201,11 @@
                 />
             </template>                
           </v-text-field>  
-        </v-col>
-        
+        </v-col>       
       </v-row>
 
       <!-- мин/макс температуры -->
       <v-row class="mt-2">
-        
         <v-col>
           <v-text-field
             flat
@@ -224,27 +240,16 @@
           >
             <template v-slot:label>
                 <toolbarInfo
-                    title="макс. температура эксплуатации (С*)"
+                    title="макс температура эксплуатации (С*)"
                     desc = "максимальная темпиратура эксплуатации, в градусах. можно вводить 
                     любые значения."
                 />
             </template>                
           </v-text-field>  
         </v-col>
-        
       </v-row>
 
-      
 
-      
-
-
-
-
-      
-
-
-      
       <v-row >
         <!-- выбор районов гололеда -->
         <v-col>
@@ -309,11 +314,6 @@
         </v-col>
       </v-row>
 
-
-      
-      
-      
-        
       <!-- кнопки -->
       <v-row class="mt-2">
         <v-col>
@@ -551,7 +551,6 @@
               </td>
               <td v-if="H_n_vit>50"> нагрузка очень высока </td>
             </tr>
-            
 
           </tbody>
         </template>
@@ -1016,15 +1015,12 @@ export default {
         this.chooseZoneIce = false
     },
     
-    
     cableWriteSelected(data){
       this.chosenCable = data[0]
       console.log('Final get data', this.chosenCable)
       this.chooseCable = false
       this.setCableParams(this.chosenCable)
     },
-
-    
 
     setCableParams(chosenCable){
       this.E_kab = chosenCable.L_nach    // модуль упругости кабеля (кН/мм^2)
@@ -1129,50 +1125,26 @@ export default {
       return (y1 + (value-x1)* ((y2-y1)/(x2-x1))).toFixed(this.decimalsRounding+1)
     },
 
-    
-    //Старт
     start() {
       this.started = true
       // как работает этот раздел... хех...
       // Если бы я ещё знал, как он работает.
       // В документе есть много пунктов, я их стал делать по порядку
-
       if(this.L < 1){
         this.L = 1
       }
-
       this.task_2_1()
-
       this.task_2_2()
-
       this.task_2_3()
-
       this.task_2_4()
-
       this.task_2_5()
-
       this.task_2_6()
-
       this.task_2_7()
-
       this.task_2_8()
-
       this.task_2_9()
-
       this.task_2_10()
-
       this.task_2_11()
-
-      // this.task_2_12()
-
       this.task_2_13()
-
-      this.task_2_14()
-
-      // this.task_2_15()
-
-      // this.task_2_16()
-
     },
     
     // Вес кабеля
@@ -1392,42 +1364,21 @@ export default {
       console.log('для сравнения, обычная растягивающая нагрузка из 2.2', this.H_nach, 'Н')
     },
 
-
     // Расчет конечной стрелы провеса и нагрузки при нормальных условиях
     task_2_13(){
       console.log('2.13 Расчет конечной стрелы провеса и нагрузки при нормальных условиях')
-      
-      // this.S1_max = 
-      // this.S2_max = 
-      // this.L1_max = 
-      // this.L2_max = 
-
-
-      // this.L_kab_k = this.get_strela_provesa(
-      //     this.L, this.S1_max, this.S2_max, this.L1_max, this.L2_max
-      //   )
-
       // стрела провеса вытяжки
       var a = this.makeA(this.L, this.height, this.L_nk)
       var b = this.makeB(this.W_kab, this.L, this.L_nk, this.E_vit, this.S_kab)
-      // console.log('a =',a, 'and b =',b)
       this.S_n_vit = this.kubicEquasion(a, b).toFixed(this.decimalsRounding)
-      // console.log('S_n_vit', this.S_n_vit)
-
-
+      console.log('стрела провеса вытяжки', this.S_n_vit)
       // нагрузка после вытяжки (она же усталось металла)
       this.H_n_vit = (
           (this.W_kab * (this.L^2)) / (8 * this.S_n_vit)
         ).toFixed(this.decimalsRounding)
-      // console.log('H_n_vit', this.H_n_vit)
-      // console.log('для сравнения начальная нагрузка', this.H_nach)
-      // console.log('для сравнения максимальная нагрузка', this.H_max)
-
+      console.log('нагрузка после вытяжки', this.H_n_vit)
     },
 
-
-
-    
     /**
      * получение параметра S, то бишь стрелы провеса
      * @param {number} S      -
@@ -1448,7 +1399,6 @@ export default {
       ).toFixed(this.decimalsRounding+2)
     },
 
-
     /**
      * Получение конечной стрелы провеса
      * @param L 
@@ -1463,26 +1413,6 @@ export default {
       ).toFixed(this.decimalsRounding)
     },
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     /**
      * функция составляющая коэффициент A
      * @param {number} L     - длина без учета темпиратуры
@@ -1493,8 +1423,7 @@ export default {
       var result = 3*((L^2) + (((h)^2)/2) - L*L_nk)/8
       if(this.debug) console.log('a from makeA',result)
       return result
-    },
-    
+    },   
 
     /**
      * функция составляющая коэффициент B
@@ -1518,10 +1447,6 @@ export default {
       if(this.debug) console.log('b from makeB',result)
       return result
     },
-
-
-
-
 
     /**
      * решение кубического уровнения для получения S_max
@@ -1590,14 +1515,6 @@ export default {
   computed: {
     
     
-    
-    
-    
-    
-    
-    
-    
-    
     // для таблицы ответа
     rulesViolation () {
       return (
@@ -1654,8 +1571,6 @@ export default {
     // violation_2_ () {
     //   return ()
     // },
-    
-
   }
 };
 </script>

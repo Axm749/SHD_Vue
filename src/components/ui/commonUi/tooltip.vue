@@ -1,31 +1,87 @@
+<!-- 
+ 
+  Микромодуль для показа подсказок.
+  Какую в него передавать информацию (пропсы)
+
+
+  title: String,    - то, что будет написано рядом со знаком вопроса
+  
+  desc: String,     - текстовое описание, которое нужно вывести под изображением или вместо него
+
+  imgRole:String,   - нужна для понимания, о какой категории (директории) речь
+
+  tipUrl: String,   - название самого файла в категории
+
+  srcUrl: String,   - если есть способ вбить адрес изображения напрямую (например ссылка)
+
+  imageUrl: String, - уже не актуальная штука, нужно будет переделать
+
+-->
 <template>
-    <div>
-    
+  <div>
       <v-tooltip
         right
         max-width="300px"
         min-width="40%"
+        color="primary"
       >
         <template v-slot:activator="{ on }">
-          <v-row>
-            <v-col class="mr-n5">
               <v-icon small v-on="on">mdi-help-circle-outline
               </v-icon>
-            </v-col>
-            <v-col>
               {{ title }} 
-            </v-col>
-               
-          </v-row>
         </template>
+
+
+        <!-- img by role & name -->
+        <div v-if="tipUrl">
+          <v-img
+            :src="require(`${getImgUrl}`)" 
+            aspect-ratio="1"
+            gradient="to top right, rgba(100,115,201,.1), rgba(0,0,0,.1)"
+          >
+            <template v-slot:placeholder>
+              <v-row
+                class="fill-height ma-0"
+                align="center"
+                justify="center"
+              >
+                <v-progress-circular
+                  indeterminate
+                  color="grey lighten-5"
+                ></v-progress-circular>
+              </v-row>
+            </template>
+          </v-img>
+        </div>
+
+        <!-- img by raw src -->
+        <div v-if="srcUrl">
+            <v-img
+              :src="require(`${srcUrl}`)" 
+              aspect-ratio="1"
+              gradient="to top right, rgba(100,115,201,.1), rgba(0,0,0,.1)"
+            >
+              <template v-slot:placeholder>
+                <v-row
+                  class="fill-height ma-0"
+                  align="center"
+                  justify="center"
+                >
+                  <v-progress-circular
+                    indeterminate
+                    color="grey lighten-5"
+                  ></v-progress-circular>
+                </v-row>
+              </template>
+            </v-img>
+          </div>
+
+
 
 
         <!-- библиотека изображений -->
         <div>
-          <!-- <v-img  
-            :src="`@/components/ui/commonUi/images/${imageUrl.toString()}`" 
-          />
-           -->
+   
           <!-- общие картинки -->
           <v-img v-if="imageUrl=='autumnBg'" src="./images/theme/autumnBg.jpg" />
           
@@ -33,6 +89,7 @@
 
           <v-img v-if="imageUrl=='sunsetForestBg'" src="./images/theme/sunsetForestBg.webp" />
 
+          
           <!-- подсказки для видеонаблюдения -->
 
           <v-img 
@@ -83,6 +140,7 @@
             v-if="imageUrl=='perepadVisot'" 
             src="./images/vlsTips/perepadVisot.jpg" 
           />
+          
 
         </div>
 
@@ -107,13 +165,38 @@ export default {
     name: "toolbarInfo",
     data() {
         return {          
+          defaultImage: 'autumnBg',
+          imageRoles: [
+
+          ],
         };
     },
     props: {
         title: String,
-        imageUrl: String,
+
+        imageUrl: String, // уже не актуальная штука, нужно будет переделать
+
+        imgRole:String,
+
+        tipUrl: String,
+
+        srcUrl: String,
+
         desc: String,
     },
+    computed: {
+      getImgRole (){
+        if (this.imgRole == 'vlsTips' ) return './images/vlsTips/'
+        // для подсказок раздела ВЛС
+        else if (this.imgRole == 'cameraTips' ) return './images/cameraTips/'
+        // для подсказок раздела видеонаблюдения
+        return './images/theme/'
+        // if no role, then default
+      },
+      getImgUrl () {
+        return `${this.getImgRole}${this.tipUrl}`
+      }
+    }
 };
 </script>
   

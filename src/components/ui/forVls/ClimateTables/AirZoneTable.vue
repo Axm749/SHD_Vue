@@ -6,7 +6,7 @@
         </div>
 
 
-        <v-img src="../images/climateWindMap.gif"></v-img>
+        <v-img :src="require(`../images/climateWindMap.gif`)"></v-img>
         <br />
         <v-data-table
           v-bind:headers="headers"

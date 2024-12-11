@@ -6,7 +6,7 @@
 
 		<v-card class="overflow-hidden">
 			
-			<v-img src="../images/climateIceMap.jpg"></v-img>
+			<v-img :src="require(`../images/climateIceMap.jpg`)"></v-img>
 			<br>
 				<v-data-table
 				v-bind:headers="headers"
