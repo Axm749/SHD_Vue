@@ -316,7 +316,9 @@
 
       <!-- кнопки -->
       <v-row class="mt-2">
-        <v-col>
+        <v-col
+          cols="100%"
+        >
           <v-btn 
             @click="start" 
             color="primary" 
@@ -338,7 +340,54 @@
           >
           </v-checkbox>
         </v-col> -->
+        <v-col
+          cols="auto"
+        >
+          <v-menu 
+            top 
+            offset-y 
+            :close-on-content-click="false" 
+            v-model="menu"
+          >
           
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                color="primary"
+                dark
+                v-bind="attrs"
+                v-on="on"
+              ><v-icon>mdi-cog</v-icon>
+                настройки
+              </v-btn>
+            </template>
+            <v-card>
+              <v-list>
+                  <v-list-item>
+                    <v-list-item-content>
+                      <v-list-item-title>Число знаков после запятой</v-list-item-title>
+                      <v-list-item-subtitle>Определяет точность расчетов и вид выходных значений</v-list-item-subtitle>
+                    </v-list-item-content>
+                    <v-list-item-action>
+                      <v-text-field
+                        outlined
+                        clearable
+                        label="число знаков после запятой"
+                        v-model.number="decimalsRounding"
+                        type="number"
+                      />
+                    </v-list-item-action>
+                  </v-list-item>
+                <v-btn
+                  color="primary"
+                  text
+                  @click="menu = false"
+                >
+                  закрыть
+                </v-btn>
+              </v-list>
+            </v-card>
+          </v-menu>
+        </v-col>
       </v-row>
 
     </v-card>
@@ -377,7 +426,7 @@
                   dark
                 ><toolbarInfo
                       :title="DotToCommas(W_kab) + '  Н/м'"
-                      :desc = "componentInfo.outcomes[0] + `. Значение ${(violation_2_1 ? ' не' : '')} находится в допустимых пределах пределах`"
+                      :desc = "componentInfo.outcomes[0] + `. Значение ${(violation_2_1 ? ' не' : '')} находится в допустимых пределах`"
                 />
                 <!-- {{ DotToCommas(W_kab)}} Н/м -->
                 </v-chip>
@@ -394,7 +443,7 @@
                   dark
                 ><toolbarInfo
                       :title="DotToCommas(H_nach) + '  Н'"
-                      :desc = "componentInfo.outcomes[1] + `. Значение ${(violation_2_2 ? ' не' : '')} находится в допустимых пределах пределах`"
+                      :desc = "componentInfo.outcomes[1] + `. Значение ${(violation_2_2 ? ' не' : '')} находится в допустимых пределах`"
                 /></v-chip>
                 <!-- {{ DotToCommas(H_nach) }} Н;  -->
               </td>
@@ -404,44 +453,88 @@
             <!-- 2.3 -->
             <tr>
               <td>Малый эквивалентный пролет </td>
-              <td> {{ DotToCommas(L1) }} м; </td>
+              <td>
+                <v-chip
+                  :color="getColorBinary(violation_2_3)"
+                  dark
+                ><toolbarInfo
+                      :title="DotToCommas(L1) + '  м'"
+                      :desc = "componentInfo.outcomes[2] + `. Значение ${(violation_2_3 ? ' не' : '')} находится в допустимых пределах`"
+                /></v-chip>
+              </td>
               <td v-if="violation_2_3"> что-то пошло не так </td>
             </tr>
             <tr>
               <td>Больший эквивалентный пролет </td>
-              <td> {{ DotToCommas(L2) }} м; </td>
+              <td> <v-chip
+                  :color="getColorBinary(violation_2_3)"
+                  dark
+                ><toolbarInfo
+                      :title="DotToCommas(L2) + '  м'"
+                      :desc = "componentInfo.outcomes[3] + `. Значение ${(violation_2_3 ? ' не' : '')} находится в допустимых пределах`"
+                /></v-chip></td>
               <td v-if="violation_2_3"> что-то пошло не так </td>
             </tr>
             <tr>
               <td>Малая стрела провеса </td>
-              <td> {{ DotToCommas(S1) }} м; </td>
+              <td><v-chip
+                  :color="getColorBinary(violation_2_3)"
+                  dark
+                ><toolbarInfo
+                      :title="DotToCommas(S1) + '  м'"
+                      :desc = "componentInfo.outcomes[4] + `. Значение ${(violation_2_3 ? ' не' : '')} находится в допустимых пределах`"
+                /></v-chip></td>
               <td v-if="violation_2_3"> что-то пошло не так </td>
             </tr>
             <tr>
               <td>Большая стрела провеса </td>
-              <td> {{ DotToCommas(S2) }} м; </td>
-              <td v-if="S2<=0 || S2>height"> что-то пошло не так, ваша высота кабеля равна {{ height }} </td>
+              <td><v-chip
+                  :color="getColorBinary(violation_2_3)"
+                  dark
+                ><toolbarInfo
+                      :title="DotToCommas(S2) + '  м'"
+                      :desc = "componentInfo.outcomes[5] + `. Значение ${(violation_2_3 ? ' не' : '')} находится в допустимых пределах`"
+                /></v-chip></td>
+              <td v-if="violation_2_3"> что-то пошло не так, ваша высота кабеля равна {{ height }} </td>
             </tr>
 
             <!-- 2.4 -->
             <tr>
               <td>Длина подвешенного кабеля </td>
-              <td> {{ DotToCommas(L_kab) }} м. </td>
-              <td v-if="L_kab<L"> кабель не может быть короче расстояния между опорами </td>
+              <td><v-chip
+                  :color="getColorBinary(violation_2_4)"
+                  dark
+                ><toolbarInfo
+                      :title="DotToCommas(L_kab) + '  м'"
+                      :desc = "componentInfo.outcomes[6] + `. Значение ${(violation_2_4 ? ' не' : '')} находится в допустимых пределах`"
+                /></v-chip></td>
+              <td v-if="violation_2_4"> кабель не может быть короче расстояния между опорами </td>
             </tr>
 
             <!-- 2.5 -->
             <tr>
               <td>Длина кабеля в ненагруженном состоянии </td>
-              <td> {{ DotToCommas(L_n0) }} м. </td>
-              <td v-if="L_n0<L"> кабель не может быть короче расстояния между опорами </td>
+              <td><v-chip
+                  :color="getColorBinary(violation_2_5)"
+                  dark
+                ><toolbarInfo
+                      :title="DotToCommas(L_n0) + '  м'"
+                      :desc = "componentInfo.outcomes[7] + `. Значение ${(violation_2_5 ? ' не' : '')} находится в допустимых пределах`"
+                /></v-chip></td>
+              <td v-if="violation_2_5"> кабель не может быть короче расстояния между опорами </td>
             </tr>
 
             <!-- 2.6 -->
             <tr>
               <td>Длина кабеля в ненагруженном состоянии с учетом температуры </td>
-              <td> {{ DotToCommas(L_nk) }} м. </td>
-              <td v-if="L_nk<L"> кабель не может быть короче расстояния между опорами </td>
+              <td><v-chip
+                  :color="getColorBinary(violation_2_6)"
+                  dark
+                ><toolbarInfo
+                      :title="DotToCommas(L_nk) + '  м'"
+                      :desc = "componentInfo.outcomes[8] + `. Значение ${(violation_2_6 ? ' не' : '')} находится в допустимых пределах`"
+                /></v-chip></td>
+              <td v-if="violation_2_6"> кабель не может быть короче расстояния между опорами </td>
             </tr>
 
             <!-- 2.7 -->
@@ -451,37 +544,44 @@
                 <v-chip
                   :color="getColor(W_g, 20, 50)"
                   dark
-                >
-                {{ DotToCommas(W_g) }} Н/м. 
-                </v-chip>
+                ><toolbarInfo
+                      :title="DotToCommas(W_g) + '  Н/м'"
+                      :desc = "componentInfo.outcomes[9] + '.' + getWarning(getColor(W_g, 20, 50))"
+                /></v-chip>
               </td>
-              <td v-if="W_g>50"> вес кабеля огромен </td>
+              <td v-if="violation_2_7"> вес кабеля огромен </td>
             </tr>
 
             <!-- 2.8 -->
+            <!-- ice -->
             <tr>
               <td>Ветровая нагрузка на кабель в режиме максимального гололеда </td>
               <td> 
                 <v-chip
                   :color="getColor(W_v_ice, 10, 30)"
                   dark
-                >
-                  {{ DotToCommas(W_v_ice) }} Н/м. 
+                ><toolbarInfo
+                      :title="DotToCommas(W_v_ice) + '  Н/м'"
+                      :desc = "componentInfo.outcomes[10] + '.' + getWarning(getColor(W_v_ice, 10, 30))"
+                /> 
                 </v-chip>
               </td>
-              <td v-if="W_v_ice>30"> нагрузка огромна, больше 30 Н </td>
+              <td v-if="violation_2_8_ice"> нагрузка огромна, больше 30 Н </td>
             </tr>
+            <!-- wind -->
             <tr>
               <td>Ветровая нагрузка на кабель в режиме максимального ветра </td>
               <td> 
                 <v-chip
                   :color="getColor(W_v_wind, 20, 50)"
                   dark
-                >
-                  {{ DotToCommas(W_v_wind) }} Н/м. 
+                ><toolbarInfo
+                      :title="DotToCommas(W_v_wind) + '  Н/м'"
+                      :desc = "componentInfo.outcomes[11] + '.' + getWarning(getColor(W_v_wind, 20, 50))"
+                />
                 </v-chip>
               </td>
-              <td v-if="W_v_wind>50"> нагрузка огромна, больше 50 Н </td>
+              <td v-if="violation_2_8_wind"> нагрузка огромна, больше 50 Н </td>
             </tr>
 
             <!-- 2.9 -->
@@ -491,11 +591,12 @@
                 <v-chip
                   :color="getColor(W_max, 20, 50)"
                   dark
-                >
-                  {{ DotToCommas(W_max) }} Н/м. 
-                </v-chip>
+                ><toolbarInfo
+                      :title="DotToCommas(W_max) + '  Н/м'"
+                      :desc = "componentInfo.outcomes[12] + '.' + getWarning(getColor(W_max, 20, 50))"
+                /></v-chip>
               </td>
-              <td v-if="W_max>50"> нагрузка огромна, больше 50 Н </td>
+              <td v-if="getColor(W_max, 20, 50) == 'red'"> нагрузка огромна, больше 50 Н </td>
             </tr>
 
             <!-- 2.10 -->
@@ -505,11 +606,13 @@
                 <v-chip
                   :color="getColor(S_max, (height/2), height)"
                   dark
-                >
-                  {{ DotToCommas(S_max) }} м. 
+                ><toolbarInfo
+                      :title="DotToCommas(S_max) + '  м'"
+                      :desc = "componentInfo.outcomes[13] + '.' + getWarning(getColor(S_max, (height/2), height))"
+                /> 
                 </v-chip>
               </td>
-              <td v-if="S_max>height"> кабель будет лежать на земле </td>
+              <td v-if="violation_2_10"> кабель будет лежать на земле </td>
             </tr>
 
             <!-- 2.11 -->
@@ -519,25 +622,44 @@
                 <v-chip
                   :color="getColor(H_max, 40, 50)"
                   dark
-                >
-                  {{ DotToCommas(H_max) }} Н. 
+                ><toolbarInfo
+                      :title="DotToCommas(H_max) + '  Н'"
+                      :desc = "componentInfo.outcomes[14] + '.' + getWarning(getColor(H_max, 40, 50))"
+                />
                 </v-chip>
               </td>
-              <td v-if="H_max>50"> больше предельно допусимых 50 Н </td>
+              <td v-if="violation_2_11"> больше предельно допусимых 50 Н </td>
             </tr>
 
             <!-- 2.13 -->
             <tr>
-              <td>конечная стрела провеса при нормальных условиях </td>
+              <td>
+                Конечная стрела провеса при нормальных условиях 
+                <v-chip
+                  v-if="violation_2_13_S"
+                  color="grey"
+                  dark
+                ><toolbarInfo
+                      title="Как исправить"
+                      desc = "Увеличить высоту установки или уменьшить стрелу провеса. 
+                  Также можно изменить климатические условия."
+                  /> 
+                </v-chip>
+              </td>
               <td> 
                 <v-chip
                   :color="getColor(S_n_vit, (height/2), height)"
                   dark
-                >
-                  {{ DotToCommas(S_n_vit) }} м. 
+                ><toolbarInfo
+                      :title="DotToCommas(S_n_vit) + '  м'"
+                      :desc = "
+                        componentInfo.outcomes[15] 
+                        + '.' + getWarning(getColor(S_n_vit, (height/2), height)) 
+                        + (violation_2_13_S ? ' Кабель лежит на земле' : '')
+                        "
+                /> 
                 </v-chip>
               </td>
-              <td v-if="S_n_vit>height"> кабель будет лежать на земле </td>
             </tr>
             <tr>
               <td>нагрузка после вытяжки при нормальных условиях </td>
@@ -545,11 +667,16 @@
                 <v-chip
                   :color="getColor(H_n_vit, 30, 50)"
                   dark
-                >
-                  {{ DotToCommas(H_n_vit) }} Н. 
+                ><toolbarInfo
+                      :title="DotToCommas(H_n_vit) + '  Н'"
+                      :desc = "
+                      componentInfo.outcomes[16] 
+                      + '.' + getWarning(getColor(H_n_vit, 30, 50))
+                      + (violation_2_13_H ? ' Нагрузка очень высока и превышает 50 Н.' : '')
+                      "
+                />
                 </v-chip>
               </td>
-              <td v-if="H_n_vit>50"> нагрузка очень высока </td>
             </tr>
 
           </tbody>
@@ -565,7 +692,7 @@
         class="mt-2"
       >скрыть</v-btn>
 
-
+      
     </v-card>
     
 
@@ -610,6 +737,7 @@ export default {
   },
   data() {
     return {
+      menu: false,
       started: false,
       snackbar: false,      // окошко об ошибке
       timeout: 2500,        // время высвечивания окна об ошибке
@@ -984,6 +1112,15 @@ export default {
     getColorBinary( violation ){
       if (violation) return 'red'
       return 'grey'
+    },
+
+    // функция на основании вывода getColor() выдаёт предупреждение о близости предела
+    getWarning(color){
+      if (color == 'red') return ' Значение не находится в допустимых пределах.'
+      else if (color == 'orange') return ' Значение находится в допустимых пределах, но очень близко к выходу за них.'
+      else if (color == 'green') return ' Значение находится в допустимых пределах.'
+      else if (color == 'grey') return ' Параметр не имеет как таковых строго определенных пределов, но оно имеет физический смысл.'
+      return 'ну здесь я не придумал, что написать, либо цвет не тот'
     },
 
 // // Из таблицы района по ветру         (за предустановленные взял 1 район)
@@ -1532,6 +1669,18 @@ export default {
         || this.violation_2_6
         // 2.7
         || this.violation_2_7
+        // 2.8
+        || this.violation_2_8_ice
+        || this.violation_2_8_wind
+        // 2.9
+        || this.violation_2_9
+        // 2.10
+        || this.violation_2_10
+        // 2.11
+        || this.violation_2_11
+        // 2.13
+        || this.violation_2_13_S
+        || this.violation_2_13_H
       )
     },
 
@@ -1539,10 +1688,19 @@ export default {
       return (this.W_kab<=0 && !! this.W_kab )
     },
     violation_2_2 () {
-      return (this.H_nach<=0 && !!this.H_nach )
+      return ((this.H_nach<=0 && !!this.H_nach) || (this.H_nach.toString() == 'Infinity'))
     },
     violation_2_3 () {
-      return ((this.L1>this.L2) || (this.L2<this.L1) || (this.S1<=0) || (this.S2<=0 && this.S2>this.height))
+      return (
+        (this.L1>this.L2) 
+        || (this.L2<this.L1) 
+        || (this.S1<=0) 
+        || (this.S2<=0 && this.S2>this.height) 
+        || (
+          (this.L1.toString() == 'Infinity')  
+          || (this.L1.toString() == '-Infinity')
+        )
+      )
     },
     violation_2_4 () {
       return (this.L_kab<this.L)
@@ -1554,23 +1712,29 @@ export default {
       return (this.L_nk<this.L)
     },
     violation_2_7 () {
-      return (this.W_g>50)
+      return (this.getColor(this.W_g, 20, 50) == 'red')
     },
-    // violation_2_ () {
-    //   return ()
-    // },
-    // violation_2_ () {
-    //   return ()
-    // },
-    // violation_2_ () {
-    //   return ()
-    // },
-    // violation_2_ () {
-    //   return ()
-    // },
-    // violation_2_ () {
-    //   return ()
-    // },
+    violation_2_8_ice () {
+      return (this.getColor(this.W_v_ice, 10, 30) == 'red')
+    },
+    violation_2_8_wind () {
+      return (this.getColor(this.W_v_wind, 20, 50)=='red')
+    },
+    violation_2_9 () {
+      return (this.getColor(this.W_max, 20, 50) == 'red')
+    },
+    violation_2_10 () {
+      return (this.getColor(this.S_max, (this.height/2), this.height) == 'red')
+    },
+    violation_2_11 () {
+      return (this.getColor(this.H_max, 40, 50) == 'red')
+    },
+    violation_2_13_S () {
+      return (this.getColor(this.S_n_vit, (this.height/2), this.height) == 'red')
+    },
+    violation_2_13_H () {
+      return (this.getColor(this.H_n_vit, 30, 50) == 'red')
+    },
   }
 };
 </script>

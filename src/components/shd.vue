@@ -332,7 +332,7 @@
         <v-dialog
           v-model="dialog"
           novalidate
-          width="auto"
+          width="90%"
           aria-hidden="true"
           class="mt-5"
         >

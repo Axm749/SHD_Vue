@@ -208,6 +208,7 @@
                 @click="start" 
                 color="primary"
                 class="mt-2"
+                width="100%"
             >Старт</v-btn>
 
         </v-card>

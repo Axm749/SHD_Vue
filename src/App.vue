@@ -132,7 +132,7 @@
           >
             <v-expansion-panel>
               <v-expansion-panel-header>
-                <h2>Расчет СХД</h2>
+                <h2>Глобальные настройки</h2>
                 <template v-slot:actions>
                   <v-icon>
                     mdi-cog
