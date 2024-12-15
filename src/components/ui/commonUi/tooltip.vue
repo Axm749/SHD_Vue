@@ -36,7 +36,6 @@
         <div v-if="tipUrl">
           <v-img
             :src="require(`${getImgUrl}`)" 
-            aspect-ratio="1"
             gradient="to top right, rgba(100,115,201,.1), rgba(0,0,0,.1)"
           >
             <template v-slot:placeholder>

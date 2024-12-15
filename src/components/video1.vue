@@ -33,9 +33,10 @@
                     <template v-slot:label>
                         <toolbarInfo
                             title="Число зон PPM"
-                            imageUrl='PPMZones'
+                            :desc="componentInfo.incomes[0]"
+                            imgRole="cameraTips"
+                            tipUrl="Зоны_PPM.png"
                         />
-                        
                     </template>
                 </v-text-field>
 
@@ -53,9 +54,10 @@
                     <template v-slot:label>
                         <toolbarInfo
                             title="Высота установки камеры (м)"
-                            imageUrl='placementHeight'
+                            :desc="componentInfo.incomes[1]"
+                            imgRole="cameraTips"
+                            tipUrl="Высота_установки_камеры.png"
                         />
-                        
                     </template>
                 </v-text-field>
 
@@ -73,8 +75,11 @@
                     <template v-slot:label>
                         <toolbarInfo
                             title="Угол наклона камеры (градусы)"
-                            imageUrl='cameraTilt'
+                            :desc="componentInfo.incomes[2]"
+                            imgRole="cameraTips"
+                            tipUrl="Угол_наклона_камеры.png"
                         />
+                        <!-- Угол_наклона_камеры.png -->
                     </template>
                 </v-text-field>
 
@@ -92,7 +97,9 @@
                     <template v-slot:label>
                         <toolbarInfo
                             title="Вертикальный угол обзора объектива (градусы)"
-                            imageUrl='verticalFOV'
+                            :desc="componentInfo.incomes[3]"
+                            imgRole="cameraTips"
+                            tipUrl="Вертикальный_угол_обзора.png"
                         />
                     </template>
                 </v-text-field>
@@ -112,7 +119,9 @@
                     <template v-slot:label>
                         <toolbarInfo
                             title="Горизонтальный угол обзора объектива (градусы)"
-                            imageUrl='horizontalFOV'
+                            :desc="componentInfo.incomes[4]"
+                            imgRole="cameraTips"
+                            tipUrl="Горизонтальный_уол_камеры.png"
                         />
                     </template>
                 </v-text-field>
@@ -131,7 +140,9 @@
                     <template v-slot:label>
                         <toolbarInfo
                             title="Дальность обзора (м)"
-                            imageUrl='viewDistance'
+                            :desc="componentInfo.incomes[5]"
+                            imgRole="cameraTips"
+                            tipUrl="Максимальная_длина_обзора_камеры.png"
                         />
                     </template>
                 </v-text-field>
@@ -175,136 +186,103 @@
                     </template>                
                 </v-text-field>
 
-                <v-text-field
-                    type="number"
-                    :disabled="self === false "
-                    outlined
-                    clearable
-                    label="Средняя доля сжатия с кодаком (0,0 - 1,0)"
-                    :rules="rule"
-                    hide-details="auto"
-                    v-model="kodak"
-                    class="mt-5"
-                >
+                <v-row>
+                    <v-col cols="100%">
+                        <v-text-field
+                            type="number"
+                            :disabled="self === false "
+                            outlined
+                            clearable
+                            label="Средняя доля сжатия с кодаком (0,0 - 1,0)"
+                            :rules="rule"
+                            hide-details="auto"
+                            v-model="kodak"
+                            class="mt-5"
+                        />
+                    </v-col>
+                    <v-col cols="4">
+                        <v-checkbox 
+                        info
+                        hide-details
+                        label="Ввести вручную?"
+                        v-model="self"
+                        class="mt-5"
+                        />
+                    </v-col>
+                </v-row>
                 
-                </v-text-field>
 
-                <v-checkbox 
-                info
-                hide-details
-                label="Ввести вручную?"
-                v-model="self"
-                class="mt-5"
-                />
+                
                 
                 <v-btn 
                     @click="start" 
                     color="primary"
                     class="mt-5"
+                    width="100%"
                 >Старт</v-btn>
-            </v-card>
-
-
-            <!-- вывод результата -->
-            <v-card
-                v-if="started"
-                class="pa-5 mt-5"
-            >
-                <h2>Вывод для раздела видео</h2>
-
-                <!-- здесь перерисовать -->
-                <div v-for="i in PPM_zones" :key="i">
-                    <p>PPM в зоне номер {{i}} равняется {{PPM[i]}}, а пикселей в этой зоне {{(result[i]).toFixed(0)}}</p>
-                    <p>Покрываемая площадь {{ (+S[i]).toFixed(0) }} м^2</p>
-                </div>
-
-
-                <p>Полученный битрейт для камеры: {{final_mBR}} Mb/s</p>
-                <v-btn 
-                    @click="started=false" 
-                    class="mt-5"
-                >скрыть</v-btn>
-            </v-card>
-        </div>
-
-        <div class="module_bg mt-5">
-            <v-card
-                class="pa-5"
-            >
-                <h2>Обратный расчет битрейта</h2>
-                <v-text-field
-                    flat
-                    type="number"
-                    required
-                    outlined
-                    clearable
-                    label="Плотность изображения (пикселей/м^2)"
-                    :rules="rule"
-                    hide-details="auto"
-                    v-model.number="plot"
-                    class="mt-5"
-                />
-                <v-text-field
-                    flat
-                    type="number"
-                    required
-                    outlined
-                    clearable
-                    label="Покрываемая площадь (м^2)"
-                    :rules="rule"
-                    hide-details="auto"
-                    v-model.number="square"
-                    class="mt-5"
-                />
-                <v-btn 
-                    @click="addZone" 
-                    color="primary" 
-                    class="mt-5"
-                >Добавить</v-btn>
-                <v-btn 
-                    @click="resetZone" 
-                    color="primary" 
-                    class="mt-5 ml-2"
-                >Сброс</v-btn>
-
-            </v-card>
-            <!-- вывод -->
-            <v-card
-                class="mt-5 pa-5"
-                v-show="analog"
-            >
-                <h2>Вывод для аналогового расчета видеонаблюдения</h2>
-                <p>Битрейт при аналоговом расчете видеонаблюдения {{ (final_mBR) }} Mb/s</p>
-                <v-btn 
-                    @click="analog=false" 
-                    class="mt-5"
-                >скрыть</v-btn>
-            </v-card>
-        </div>
-    </div>
 
 
 
-
-    <!-- 
-        <template v-slot:label>
-                        <v-tooltip
-                            left
-                            min-width="200px"
-                            max-width="800px"
+                <br>
+                <br>
+                <v-divider/>
+                <v-row>
+                    <v-col  cols="100%">
+                    <p class="text-left pt-3">
+                        <v-icon>
+                            mdi-camera
+                        </v-icon>
+                        Полученный битрейт для камеры: 
+                        <v-chip>
+                            {{ final_mBR_visualised }}
+                        </v-chip> 
+                    </p>
+                    </v-col>
+                    <v-col cols="5">
+                        <v-btn
+                        class="mt-3"
+                        @click="started=false"
+                        v-if="started"
                         >
-                            <template v-slot:activator="{ on }">
-                                <p>
-                                    <v-icon v-on="on">
-                                        mdi-help-circle-outline
-                                    </v-icon>
-                                    Высота установки камеры (м)
-                                </p>
-                            </template>
-                            <v-img src="./ui/commonUi/images/forestBg.jpg"></v-img>
-                        </v-tooltip>
-                    </template>
-     -->
+                            скрыть
+                        </v-btn>
+                    </v-col>
+                </v-row>
+                
+
+                <v-divider/>
+
+                <v-simple-table
+                v-if="started" 
+                fixed-header
+                height="200px">
+                    <thead>
+                        <tr>
+                        <th class="text-left">
+                            Номер зоны
+                        </th>
+                        <th class="text-left">
+                            PPM (пикселей/м^2)
+                        </th>
+                        <th class="text-left">
+                            Покрываемая площадь (м^2)
+                        </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="i in PPM_zones" :key="i">
+                            <td>{{i}} </td>
+                            <td> 
+                                {{PPM[i]}}
+                            </td>
+                            <td> {{ (+S[i]).toFixed(1) }} </td>
+                        </tr>
+                    </tbody>
+                </v-simple-table>
+            </v-card>
+        </div>
+ 
+    </div>
 </template>
 
 <script>
@@ -340,8 +318,8 @@ export default {
             'Площадь, покрываемая этой зоной'
             ], 
             description: `Программа на основании только входных данных пользователя о видеокамере рассчитывает следующие параметры: PPM(пикселей/м2), Битрейт (мб/с) и количество пикселей на каждой зоне обзора. 
-Для расчета битрейта на выходе видеокамеры необходимо знать ряд различных параметров. От характеристик камер, например числа мегапикселей матрицы или частоты съёмки, до геометрических параметров расположения камеры и характеристик объектива.
-В программе для расчета битрейта устройства учитываются данные, вводимые пользователем и, по необходимости, изменяемые, для удовлетворения реалистичности вычислений (невозможные в реальности параметры не допускаются).`,
+                Для расчета битрейта на выходе видеокамеры необходимо знать ряд различных параметров. От характеристик камер, например числа мегапикселей матрицы или частоты съёмки, до геометрических параметров расположения камеры и характеристик объектива.
+                В программе для расчета битрейта устройства учитываются данные, вводимые пользователем и, по необходимости, изменяемые, для удовлетворения реалистичности вычислений (невозможные в реальности параметры не допускаются).`,
             disclaimers: [
                 'За основу взяты условия, что камера статична, не перемещается, не поворачивается и не ведет дополнительных замеров кроме съемки изображения с кадровой частотой в формате H2643. Участок обзора камеры имеет ограниченную дистанцию и всё, что находится дальше, в расчете не учитывается. На участке нет преграждающих обзор стен, и камера не направлена выше линии горизонта.',
                 'округления идут в большую сторону, предполагается наихудший сценарий'
@@ -395,6 +373,9 @@ export default {
 
     methods:{
         start(){
+            if (this.PPM_zones>=10) this.PPM_zones = 10
+            if (this.PPM_zones.toFixed(0) != this.PPM_zones) this.PPM_zones = this.PPM_zones.toFixed(0)
+            
             this.Total = 0
             this.result[this.i]=0
             this.mBr = 0
@@ -532,22 +513,14 @@ export default {
             }
         },
 
-        addZone(){
-            this.started = false
-            this.analog = true
-            let FPS = 30
-            this.pixelscount = +this.plot * +this.square
-            this.final_mBR += (this.pixelscount* FPS*+this.kodak)/1048576
-            localStorage.setItem('Bitrate', +this.final_mBR)
-        },
-
-        resetZone(){
-            this.started = false
-            localStorage.setItem('Bitrate', Number('0'))
-            this.final_mBR = 0
-            this.pixelscount = 0
+    },
+    computed: {
+        final_mBR_visualised(){
+            if((this.final_mBR/1024) <= 1){
+                return `${this.final_mBR } Мбит/с`
+            }
+            return `${(Math.round(this.final_mBR/1024 * 100) / 100 )} Гбит/с`
         }
-
     },
 
     }
@@ -573,9 +546,9 @@ export default {
   } */
 
   /* Handle on hover */
-  /* ::-webkit-scrollbar-thumb:hover {
+  ::-webkit-scrollbar-thumb:hover {
     background: #555;
-  } */
+  }
   
 .v-dialog{
     box-shadow: none;

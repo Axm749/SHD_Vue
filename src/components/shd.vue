@@ -349,6 +349,7 @@
           </template>
 
           <video1 @cam_bitrate="getMbrVideo" />
+          <video_revers_vue/>
 
         </v-dialog>
       </template>
@@ -421,12 +422,14 @@
 
 <script>
 import video1 from "./video1.vue";
+import video_revers_vue from "./video2.vue";
 import headerTab from "./ui/commonUi/header.vue";
 import toolbarInfo from './ui/commonUi/tooltip.vue';
 export default {
   name: "shd_vue",
   components: {
     video1,
+    video_revers_vue,
     headerTab,
     toolbarInfo
   },

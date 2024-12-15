@@ -14,7 +14,7 @@
       class="pa-5" 
     >
       <!-- проверка подсказок, можно не обращать внимания -->
-      <!-- <div>
+      <div>
         <v-chip>
           <toolbarInfo
             title="img by raw src"
@@ -30,7 +30,7 @@
             tipUrl="Горизонтальный_уол_камеры.png"
           />
         </v-chip>
-      </div>  -->
+      </div> 
       
       
       
