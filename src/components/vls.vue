@@ -607,10 +607,13 @@
                   dark
                 ><toolbarInfo
                       :title="DotToCommas(W_max) + '  Н/м'"
-                      :desc = "componentInfo.outcomes[12] + '.' + getWarning(getColor(W_max, 20, 50))"
+                      :desc = "componentInfo.outcomes[12] 
+                        + '.' + getWarning(getColor(W_max, 20, 50))
+                        + (violation_2_9 ? ' Нагрузка огромна, больше 50 Н. Для исправления рекомендуется увеличить высоту установки или уменьшить расстояние между опорами.' : '')
+                        "
                 /></v-chip>
               </td>
-              <td v-if="getColor(W_max, 20, 50) == 'red'"> нагрузка огромна, больше 50 Н </td>
+              <!-- <td v-if="violation_2_9"> нагрузка огромна, больше 50 Н </td> -->
             </tr>
 
             <!-- 2.10 -->
@@ -622,26 +625,18 @@
                   dark
                 ><toolbarInfo
                       :title="DotToCommas(S_max) + '  м'"
-                      :desc = "componentInfo.outcomes[13] + '.' + getWarning(getColor(S_max, (height/2), height))"
+                      :desc = "componentInfo.outcomes[13] 
+                      + '.' + getWarning(getColor(S_max, (height/2), height))
+                      + (violation_2_10 ? ' Кабель будет лежать на земле. Для исправления рекомендуется смягчить условия, увеличить высоту установки или уменьшить расстояние между опорами.' : '')
+                      "
                 /> 
                 </v-chip>
               </td>
-              <td v-if="violation_2_10"> кабель будет лежать на земле </td>
             </tr>
 
             <!-- 2.11 -->
             <tr>
-              <td>Максимальная растягивающая нагрузка при наихудших условиях 
-
-                <v-chip
-                  v-if="violation_2_11"
-                  color="grey"
-                  dark
-                ><toolbarInfo
-                      title="Как исправить"
-                      desc = "Смягчить условия, снизить высоту установки или расстояние между опорами."
-                  /> 
-                </v-chip>
+              <td>Максимальная растягивающая нагрузка при наихудших условиях
 
               </td>
               <td> 
@@ -652,7 +647,7 @@
                       :title="DotToCommas(H_max) + '  Н'"
                       :desc = "componentInfo.outcomes[14] 
                         + '.' + getWarning(getColor(H_max, 40, 50))
-                        + (violation_2_11 ? ' больше предельно допусимых 50 Н.' : '')
+                        + (violation_2_11 ? ' Больше предельно допусимых 50 Н. Для исправления рекомендуется смягчить условия, снизить высоту установки или расстояние между опорами.' : '')
                       "
                 />
                 </v-chip>
@@ -663,16 +658,6 @@
             <tr>
               <td>
                 Конечная стрела провеса при нормальных условиях 
-                <v-chip
-                  v-if="violation_2_13_S"
-                  color="grey"
-                  dark
-                ><toolbarInfo
-                      title="Как исправить"
-                      desc = "Увеличить высоту установки или уменьшить стрелу провеса. 
-                  Также можно изменить климатические условия."
-                  /> 
-                </v-chip>
               </td>
               <td> 
                 <v-chip
@@ -683,7 +668,7 @@
                       :desc = "
                         componentInfo.outcomes[15] 
                         + '.' + getWarning(getColor(S_n_vit, (height/2), height)) 
-                        + (violation_2_13_S ? ' Кабель лежит на земле' : '')
+                        + (violation_2_13_S ? ' Кабель лежит на земле. Для исправления рекомендуется величить высоту установки или уменьшить стрелу провеса. Также можно изменить климатические условия ' : '')
                         "
                 /> 
                 </v-chip>
@@ -1126,13 +1111,17 @@ export default {
     //  example_limit_2 - уровень, выше которого красный
     getColor(data, example_limit_1, example_limit_2){
       if (data <= example_limit_1) 
-      {
+      { 
+        if (data <= 0) 
+        {
+          return 'red'
+        } 
         return 'green'
       } 
       else if (data <= example_limit_2) 
       {
         return 'orange'
-      }
+      } 
       return 'red'
     },
 
@@ -1764,19 +1753,19 @@ export default {
       return (this.getColor(this.W_v_ice, 10, 30) == 'red')
     },
     violation_2_8_wind () {
-      return (this.getColor(this.W_v_wind, 20, 50)=='red')
+      return (this.getColor(this.W_v_wind, 20, 50)=='red')|| this.W_v_wind<=0
     },
     violation_2_9 () {
-      return (this.getColor(this.W_max, 20, 50) == 'red')
+      return (this.getColor(this.W_max, 20, 50) == 'red') || this.W_max<=0
     },
     violation_2_10 () {
-      return (this.getColor(this.S_max, (this.height/2), this.height) == 'red')
+      return (this.getColor(this.S_max, (this.height/2), this.height) == 'red') || this.S_max<=0
     },
     violation_2_11 () {
-      return (this.getColor(this.H_max, 40, 50) == 'red')
+      return (this.getColor(this.H_max, 40, 50) == 'red') || this.H_max<=0
     },
     violation_2_13_S () {
-      return (this.getColor(this.S_n_vit, (this.height/2), this.height) == 'red')
+      return (this.getColor(this.S_n_vit, (this.height/2), this.height) == 'red') || this.S_n_vit<=0
     },
     violation_2_13_H () {
       return (this.getColor(this.H_n_vit, 30, 50) == 'red')
