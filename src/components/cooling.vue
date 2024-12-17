@@ -12,11 +12,11 @@
             
             <!-- <v-checkbox 
                 label="Расчёт в Вт?" 
-                v-model="WatOpt"
+                v-model="WattOption"
                 class="mt-2"
             /> -->
             <v-switch
-                v-model="WatOpt"
+                v-model="WattOption"
                 :label="`расчет в: ${measureUnit}`"
             ></v-switch>
 
@@ -279,7 +279,7 @@ export default {
 
         K_sred: '...',          // Усреднённое тепловыделение в процентах (0-100)
 
-        WatOpt: true,           // использование ваттов как единиц измерения
+        WattOption: true,           // использование ваттов как единиц измерения
         Heat: '...',            // тепловыделение одного узла
         komutat_yadr:'...',     // Тепловыделение коммутатора ядра
         count_yadr:'...',       // Количество коммутаторов ядра
@@ -324,8 +324,8 @@ export default {
                 this.komutat_klast=0
             }
 
-            console.log(this.WatOpt)
-            if(this.WatOpt==false){
+            console.log(this.WattOption)
+            if(this.WattOption==false){
 
                 result = (
                     (this.Heat*this.K_sred/100*this.Usli_shd)/3.41 
@@ -397,7 +397,7 @@ export default {
     },
     computed: {
         measureUnit: function () {
-            if (this.WatOpt) return 'Вт'
+            if (this.WattOption) return 'Вт'
             else return 'BTU/hr'
         },
 

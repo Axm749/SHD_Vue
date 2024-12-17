@@ -77,7 +77,8 @@
         type="number"
         required
         outlined
-        clearable
+        clearable 
+        
         :rules="rule"
         hide-details="auto"
         v-model.number="L"
@@ -101,7 +102,8 @@
         type="number"
         required
         outlined
-        clearable
+        clearable 
+        
         :rules="rule"
         hide-details="auto"
         v-model.number="height"
@@ -124,7 +126,8 @@
         type="number"
         required
         outlined
-        clearable
+        clearable 
+        
         :rules="rule"
         hide-details="auto"
         v-model.number="S"
@@ -147,7 +150,8 @@
         type="number"
         required
         outlined
-        clearable
+        clearable 
+        
         hide-details="auto"
         v-model.number="h"
         class="mt-5"
@@ -169,7 +173,8 @@
             type="number"
             required
             outlined
-            clearable
+            clearable 
+            
             :rules="rule"
             hide-details="auto"
             v-model.number="T_sr"
@@ -190,7 +195,8 @@
             type="number"
             required
             outlined
-            clearable
+            clearable 
+            
             :rules="rule"
             v-model.number="T"
           >
@@ -212,7 +218,7 @@
             type="number"
             required
             outlined
-            clearable
+            clearable 
             :rules="rule"
             hide-details="auto"
             v-model.number="T_min"
@@ -233,7 +239,7 @@
             type="number"
             required
             outlined
-            clearable
+            clearable 
             :rules="rule"
             hide-details="auto"
             v-model.number="T_max"
@@ -320,26 +326,11 @@
           cols="100%"
         >
           <v-btn 
-            @click="start" 
+            @click="started_manual" 
             color="primary" 
             width="100%"
           >Старт</v-btn>
         </v-col>
-        <!-- <v-col>
-          <v-btn 
-            @click="test" 
-            color="primary" 
-            width="100%"
-          >тест</v-btn>
-        </v-col>
-        
-        <v-col>
-          <v-checkbox
-            v-model="debug"
-            :label="`debug: ${debug.toString()}`"
-          >
-          </v-checkbox>
-        </v-col> -->
         <v-col
           cols="auto"
         >
@@ -368,7 +359,7 @@
                     <v-list-item-action>
                       <v-text-field
                         outlined
-                        clearable
+                        clearable 
                         label="число знаков после запятой"
                         v-model.number="decimalsRounding"
                         type="number"
@@ -387,18 +378,43 @@
           </v-menu>
         </v-col>
       </v-row>
-
-    </v-card>
-
+<!-- 
+      </v-card> -->
+      <br>
+      <v-divider/>
+      
 
     <!-- результаты вычислений -->
-    <v-card 
+    <!-- <v-card 
       class="pa-5 mt-5"
       v-show="started"
-    >
+    > -->
+    <div v-show="started">
 
+      <v-row>
+          <v-col  cols="100%">
+          <p class="text-left pt-3">
+              <v-icon :color="rulesViolation ? 'red' : 'green'">
+                {{rulesViolationIcon}}
+              </v-icon>
+              {{ rulesViolationText }} 
+          </p>
+          </v-col>
+          <v-col cols="3">
+              <v-btn
+              class="mt-3"
+              @click="started=false"
+              v-if="start"
+              >
+                  скрыть
+              </v-btn>
+          </v-col>
+      </v-row>
+      
+
+      <v-divider/>
         
-        <h2>Результаты расчётов воздушных линий связи:</h2>
+      <!-- <h2>Результаты расчётов воздушных линий связи:</h2> -->
         <v-simple-table>
         <template v-slot:default>
           <thead>
@@ -409,9 +425,9 @@
               <th class="text-left">
                 Значение:
               </th>
-              <th class="text-left" v-if="rulesViolation">
+              <!-- <th class="text-left" v-if="rulesViolation">
                 Примечания:
-              </th>
+              </th> -->
               </tr>
           </thead>
           <tbody>
@@ -615,18 +631,32 @@
 
             <!-- 2.11 -->
             <tr>
-              <td>Максимальная растягивающая нагрузка при наихудших условиях </td>
+              <td>Максимальная растягивающая нагрузка при наихудших условиях 
+
+                <v-chip
+                  v-if="violation_2_11"
+                  color="grey"
+                  dark
+                ><toolbarInfo
+                      title="Как исправить"
+                      desc = "Смягчить условия, снизить высоту установки или расстояние между опорами."
+                  /> 
+                </v-chip>
+
+              </td>
               <td> 
                 <v-chip
                   :color="getColor(H_max, 40, 50)"
                   dark
                 ><toolbarInfo
                       :title="DotToCommas(H_max) + '  Н'"
-                      :desc = "componentInfo.outcomes[14] + '.' + getWarning(getColor(H_max, 40, 50))"
+                      :desc = "componentInfo.outcomes[14] 
+                        + '.' + getWarning(getColor(H_max, 40, 50))
+                        + (violation_2_11 ? ' больше предельно допусимых 50 Н.' : '')
+                      "
                 />
                 </v-chip>
               </td>
-              <td v-if="violation_2_11"> больше предельно допусимых 50 Н </td>
             </tr>
 
             <!-- 2.13 -->
@@ -690,7 +720,7 @@
         class="mt-2"
       >скрыть</v-btn>
 
-      
+    </div>
     </v-card>
     
 
@@ -1135,6 +1165,7 @@ export default {
       this.v_0 = data[0].windSpeed
       // закрыть окно
       this.chooseZoneWind = false
+      
     },
 
 
@@ -1148,6 +1179,7 @@ export default {
         this.iceField = data[0].Icearea
         // закрыть окно
         this.chooseZoneIce = false
+        
     },
     
     cableWriteSelected(data){
@@ -1155,6 +1187,7 @@ export default {
       console.log('Final get data', this.chosenCable)
       this.chooseCable = false
       this.setCableParams(this.chosenCable)
+      
     },
 
     setCableParams(chosenCable){
@@ -1166,6 +1199,7 @@ export default {
       this.Diameter = chosenCable.Diameter
       this.TKLR = chosenCable.TKLR * 0.000001
       this.m = chosenCable.Weight
+      
     },
 
     DotToCommas(data){
@@ -1260,14 +1294,20 @@ export default {
       return (y1 + (value-x1)* ((y2-y1)/(x2-x1))).toFixed(this.decimalsRounding+1)
     },
 
-    start() {
+    started_manual(){
       this.started = true
+      this.start()
+    },
+    start() {
+      // if (this.started) {this.started_manual()}
+      // this.started = true
       // как работает этот раздел... хех...
       // Если бы я ещё знал, как он работает.
       // В документе есть много пунктов, я их стал делать по порядку
       if(this.L < 1){
         this.L = 1
       }
+
       this.task_2_1()
       this.task_2_2()
       this.task_2_3()
@@ -1680,6 +1720,14 @@ export default {
         || this.violation_2_13_S
         || this.violation_2_13_H
       )
+    },
+    rulesViolationIcon(){
+      if (this.rulesViolation) return "mdi-alert"
+      else return "mdi-check"
+    },
+    rulesViolationText(){
+      if (this.rulesViolation) return "расчет содержит недопустимые значения, рекомендуется пересмотреть введенные требования"
+      else return "расчет не содержит недопустимых значений"
     },
 
     violation_2_1 () {
