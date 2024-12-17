@@ -202,11 +202,12 @@
                     </v-col>
                     <v-col cols="4">
                         <v-checkbox 
+
                         info
                         hide-details
                         label="Ввести вручную?"
                         v-model="self"
-                        class="mt-5"
+                        class="mt-8"
                         />
                     </v-col>
                 </v-row>

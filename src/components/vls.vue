@@ -351,14 +351,12 @@
           >
           
             <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                color="primary"
-                dark
+              <v-icon
+                class="mt-2"
                 v-bind="attrs"
                 v-on="on"
-              ><v-icon>mdi-cog</v-icon>
-                настройки
-              </v-btn>
+              >mdi-cog
+              </v-icon>
             </template>
             <v-card>
               <v-list>
