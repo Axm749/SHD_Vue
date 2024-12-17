@@ -103,7 +103,6 @@
         required
         outlined
         clearable 
-        
         :rules="rule"
         hide-details="auto"
         v-model.number="height"
@@ -400,7 +399,7 @@
               {{ rulesViolationText }} 
           </p>
           </v-col>
-          <v-col cols="3">
+          <!-- <v-col cols="3">
               <v-btn
               class="mt-3"
               @click="started=false"
@@ -408,7 +407,7 @@
               >
                   скрыть
               </v-btn>
-          </v-col>
+          </v-col> -->
       </v-row>
       
 
@@ -440,12 +439,10 @@
                   dark
                 ><toolbarInfo
                       :title="DotToCommas(W_kab) + '  Н/м'"
-                      :desc = "componentInfo.outcomes[0] + `. Значение ${(violation_2_1 ? ' не' : '')} находится в допустимых пределах`"
+                      :desc = "componentInfo.outcomes[0] + `. Значение ${(violation_2_1 ? ' не' : '')} находится в допустимых пределах` + (violation_2_1 ? ' что-то пошло не так. Проверьте введенные данные.' : '')"
                 />
-                <!-- {{ DotToCommas(W_kab)}} Н/м -->
                 </v-chip>
               </td>
-              <td v-if="violation_2_1"> что-то пошло не так </td>
             </tr>
 
             <!-- 2.2 -->
@@ -457,11 +454,10 @@
                   dark
                 ><toolbarInfo
                       :title="DotToCommas(H_nach) + '  Н'"
-                      :desc = "componentInfo.outcomes[1] + `. Значение ${(violation_2_2 ? ' не' : '')} находится в допустимых пределах`"
+                      :desc = "componentInfo.outcomes[1] + `. Значение ${(violation_2_2 ? ' не' : '')} находится в допустимых пределах`+ (violation_2_2 ? ' что-то пошло не так. Проверьте введенные данные.' : '')"
                 /></v-chip>
-                <!-- {{ DotToCommas(H_nach) }} Н;  -->
+                
               </td>
-              <td v-if="violation_2_2"> что-то пошло не так </td>
             </tr>
 
             <!-- 2.3 -->
@@ -473,10 +469,9 @@
                   dark
                 ><toolbarInfo
                       :title="DotToCommas(L1) + '  м'"
-                      :desc = "componentInfo.outcomes[2] + `. Значение ${(violation_2_3 ? ' не' : '')} находится в допустимых пределах`"
+                      :desc = "componentInfo.outcomes[2] + `. Значение ${(violation_2_3 ? ' не' : '')} находится в допустимых пределах`+ (violation_2_3 ? ' что-то пошло не так. Проверьте введенные данные.' : '')"
                 /></v-chip>
               </td>
-              <td v-if="violation_2_3"> что-то пошло не так </td>
             </tr>
             <tr>
               <td>Больший эквивалентный пролет </td>
@@ -533,9 +528,9 @@
                   dark
                 ><toolbarInfo
                       :title="DotToCommas(L_n0) + '  м'"
-                      :desc = "componentInfo.outcomes[7] + `. Значение ${(violation_2_5 ? ' не' : '')} находится в допустимых пределах`"
+                      :desc = "componentInfo.outcomes[7] + `. Значение ${(violation_2_5 ? ' не' : '')} находится в допустимых пределах`+ (violation_2_5 ? ' Кабель не может быть короче расстояния между опорами. Для исправления рекомендуется увеличить стрелу провеса.' : '')"
                 /></v-chip></td>
-              <td v-if="violation_2_5"> кабель не может быть короче расстояния между опорами </td>
+              <!-- <td v-if="violation_2_5"> кабель не может быть короче расстояния между опорами </td> -->
             </tr>
 
             <!-- 2.6 -->
@@ -546,9 +541,9 @@
                   dark
                 ><toolbarInfo
                       :title="DotToCommas(L_nk) + '  м'"
-                      :desc = "componentInfo.outcomes[8] + `. Значение ${(violation_2_6 ? ' не' : '')} находится в допустимых пределах`"
+                      :desc = "componentInfo.outcomes[8] + `. Значение ${(violation_2_6 ? ' не' : '')} находится в допустимых пределах`+ (violation_2_6 ? ' Кабель не может быть короче расстояния между опорами. Для исправления рекомендуется изменить температуры или увеличить стрелу провеса.' : '')"
                 /></v-chip></td>
-              <td v-if="violation_2_6"> кабель не может быть короче расстояния между опорами </td>
+              <!-- <td v-if="violation_2_6"> кабель не может быть короче расстояния между опорами </td> -->
             </tr>
 
             <!-- 2.7 -->
@@ -560,10 +555,13 @@
                   dark
                 ><toolbarInfo
                       :title="DotToCommas(W_g) + '  Н/м'"
-                      :desc = "componentInfo.outcomes[9] + '.' + getWarning(getColor(W_g, 20, 50))"
+                      :desc = "componentInfo.outcomes[9] 
+                      + '.' + getWarning(getColor(W_g, 20, 50))
+                      + (violation_2_7 ? ' Вес кабеля огромен, более 50 Н/м. Для исправления рекомендуется смягчить климатические нагрузки, сменить марку кабеля.' : '')
+                      "
                 /></v-chip>
               </td>
-              <td v-if="violation_2_7"> вес кабеля огромен </td>
+              <!-- <td v-if="violation_2_7"> вес кабеля огромен, более 50 Н/м </td> -->
             </tr>
 
             <!-- 2.8 -->
@@ -576,11 +574,14 @@
                   dark
                 ><toolbarInfo
                       :title="DotToCommas(W_v_ice) + '  Н/м'"
-                      :desc = "componentInfo.outcomes[10] + '.' + getWarning(getColor(W_v_ice, 10, 30))"
+                      :desc = "componentInfo.outcomes[10] 
+                        + '.' + getWarning(getColor(W_v_ice, 10, 30))
+                        + (violation_2_8_ice ? ' Нагрузка огромна, больше 30 Н/м. Для исправления рекомендуется смягчить климатические нагрузки, уменьшить высоту установки или расстояние между опорами.' : '')
+                      "
                 /> 
                 </v-chip>
               </td>
-              <td v-if="violation_2_8_ice"> нагрузка огромна, больше 30 Н </td>
+              <!-- <td v-if="violation_2_8_ice"> нагрузка огромна, больше 30 Н </td> -->
             </tr>
             <!-- wind -->
             <tr>
@@ -591,11 +592,14 @@
                   dark
                 ><toolbarInfo
                       :title="DotToCommas(W_v_wind) + '  Н/м'"
-                      :desc = "componentInfo.outcomes[11] + '.' + getWarning(getColor(W_v_wind, 20, 50))"
+                      :desc = "componentInfo.outcomes[11] 
+                      + '.' + getWarning(getColor(W_v_wind, 20, 50))
+                      + (violation_2_8_wind ? ' Нагрузка огромна, больше 50 Н/м. Для исправления рекомендуется смягчить климатические нагрузки, уменьшить высоту установки или расстояние между опорами.' : '')
+                      "
                 />
                 </v-chip>
               </td>
-              <td v-if="violation_2_8_wind"> нагрузка огромна, больше 50 Н </td>
+              <!-- <td v-if="violation_2_8_wind"> нагрузка огромна, больше 50 Н </td> -->
             </tr>
 
             <!-- 2.9 -->
@@ -609,11 +613,10 @@
                       :title="DotToCommas(W_max) + '  Н/м'"
                       :desc = "componentInfo.outcomes[12] 
                         + '.' + getWarning(getColor(W_max, 20, 50))
-                        + (violation_2_9 ? ' Нагрузка огромна, больше 50 Н. Для исправления рекомендуется увеличить высоту установки или уменьшить расстояние между опорами.' : '')
+                        + (violation_2_9 ? ' Нагрузка огромна, больше 50 Н/м. Для исправления рекомендуется смягчить климатические нагрузки, уменьшить высоту установки или расстояние между опорами.' : '')
                         "
                 /></v-chip>
               </td>
-              <!-- <td v-if="violation_2_9"> нагрузка огромна, больше 50 Н </td> -->
             </tr>
 
             <!-- 2.10 -->
@@ -627,7 +630,7 @@
                       :title="DotToCommas(S_max) + '  м'"
                       :desc = "componentInfo.outcomes[13] 
                       + '.' + getWarning(getColor(S_max, (height/2), height))
-                      + (violation_2_10 ? ' Кабель будет лежать на земле. Для исправления рекомендуется смягчить условия, увеличить высоту установки или уменьшить расстояние между опорами.' : '')
+                      + (violation_2_10 ? ' Кабель будет лежать на земле. Для исправления рекомендуется смягчить условия, увеличить высоту установки или уменьшить расстояние между опорами.  Возможно сменить марку кабеля.' : '')
                       "
                 /> 
                 </v-chip>
@@ -1284,9 +1287,17 @@ export default {
     },
 
     started_manual(){
+      if (this.inputViolation){
+        this.snackbar=true
+        this.errorText = 'Неверно введены данные. '
+        return
+      }
+
+
       this.started = true
       this.start()
     },
+
     start() {
       // if (this.started) {this.started_manual()}
       // this.started = true
@@ -1362,7 +1373,7 @@ export default {
     // Длина кабеля в ненагруженном состоянии
     task_2_5(){
       this.L_n0 = (
-        this.L_kab / (1 + (this.H_nach / (this.E_kab * this.S_kab)))
+        (100 * this.L_kab) / (100 * (1 + (this.H_nach / (this.E_kab * this.S_kab))))
       ).toFixed(this.decimalsRounding)
       console.log('2.5 Длина кабеля в ненагруженном состоянии, м', this.L_n0)
     },
@@ -1552,9 +1563,24 @@ export default {
      * @return {number} S_n  -  значение параметра S, формула из пункта 2.4
      */
     get_S1_or_S2(S, L1, L_big){
+      
+      // console.error(S, L1, L_big,
+      // '(S*(L1^2)/(L_big^2))'
+      // , (S*(L1^2)/(L_big^2)))
+      // жалкие попытки
+      if (S<1 || L_big<1 ) {
+        S*=100
+        L_big*=10
+      }
+      // console.error(S, L1, L_big,
+      // '(S*(L1^2)/(L_big^2))'
+      // , (S*(L1^2)/(L_big^2)))
+      
+
       return parseFloat(
         S*(L1^2)/(L_big^2)
       ).toFixed(this.decimalsRounding+2)
+
     },
 
     another_get_S1_or_S2(W, L_n, H){
@@ -1715,8 +1741,8 @@ export default {
       else return "mdi-check"
     },
     rulesViolationText(){
-      if (this.rulesViolation) return "расчет содержит недопустимые значения, рекомендуется пересмотреть введенные требования"
-      else return "расчет не содержит недопустимых значений"
+      if (this.rulesViolation) return "Расчет содержит недопустимые значения, рекомендуется пересмотреть введенные требования"
+      else return "Расчет не содержит недопустимых значений"
     },
 
     violation_2_1 () {
@@ -1769,6 +1795,18 @@ export default {
     },
     violation_2_13_H () {
       return (this.getColor(this.H_n_vit, 30, 50) == 'red')
+    },
+
+
+
+    inputViolation(){
+      return (
+        this.L <1
+        || this.S<1
+        || this.h<0
+        || this.height<1
+        || (this.T_min>this.T_max)
+      )
     },
   }
 };
