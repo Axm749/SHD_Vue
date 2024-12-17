@@ -81,7 +81,7 @@
         
         :rules="rule"
         hide-details="auto"
-        v-model.number="L"
+        v-model.number="endpointDistance"
         class="mt-5"
       >
         <template v-slot:label>
@@ -129,7 +129,7 @@
         
         :rules="rule"
         hide-details="auto"
-        v-model.number="S"
+        v-model.number="strelaProvesaInput"
         class="mt-5"
       >
         <template v-slot:label>
@@ -389,48 +389,38 @@
                 {{rulesViolationIcon}}
               </v-icon>
               {{ rulesViolationText }} 
-              <!-- {{ rulesViolation }} -->
-              <!-- {{ violation_2_1 }}
-              {{ violation_2_2 }}
-              {{ violation_2_3 }}
-              {{ violation_2_4 }}
-              {{ violation_2_5 }}
-              {{ violation_2_6 }}
-              {{ violation_2_7 }}
-              {{ violation_2_8_ice }}
-              {{ violation_2_8_Wind }}
-              {{ violation_2_9 }} -->
-              
           </p>
           </v-col>
-          <v-col cols="3">
+          <v-col cols="1">
               <v-btn
-              class="mt-3"
-              v-if="started"
-              icon
-              @click="snackbar=true; errorText = 'Функция ещё не реализована '"
+                class="mt-3"
+                v-if="started"
+                icon
+                @click="snackbar=true; errorText = 'Функция ещё не реализована '"
               >  
                 <v-icon>
                   mdi-share
                 </v-icon>
               </v-btn>
-              
+            </v-col>
+            <!-- <v-col cols="1">
               <v-btn
-              class="mt-3"
-              v-if="started"
-              icon
-              @click="started = false"
+                class="mt-3"
+                v-if="started"
+                icon
+                @click="started = false"
               >
                 <v-icon>
                   mdi-close
                 </v-icon>
               </v-btn>
-              
+            </v-col> -->
+            <v-col cols="2">  
               <v-btn
-              class="mt-3"
-              v-if="started"
-              icon
-              @click="started = false"
+                class="mt-3"
+                v-if="started"
+                icon
+                @click="started = false"
               >
                 <v-icon>
                   mdi-eye-off
@@ -497,7 +487,7 @@
                   :color="getColorBinary(violation_2_3)"
                   dark
                 ><toolbarInfo
-                      :title="DotToCommas(L1) + '  м'"
+                      :title="DotToCommas(endpointDistance1) + '  м'"
                       :desc = "componentInfo.outcomes[2] + `. Значение ${(violation_2_3 ? ' не' : '')} находится в допустимых пределах`+ (violation_2_3 ? ' что-то пошло не так. Проверьте введенные данные.' : '')"
                 /></v-chip>
               </td>
@@ -508,7 +498,7 @@
                   :color="getColorBinary(violation_2_3)"
                   dark
                 ><toolbarInfo
-                      :title="DotToCommas(L2) + '  м'"
+                      :title="DotToCommas(endpointDistance2) + '  м'"
                       :desc = "componentInfo.outcomes[3] + `. Значение ${(violation_2_3 ? ' не' : '')} находится в допустимых пределах`"
                 /></v-chip></td>
               <td v-if="violation_2_3"> что-то пошло не так </td>
@@ -519,7 +509,7 @@
                   :color="getColorBinary(violation_2_3)"
                   dark
                 ><toolbarInfo
-                      :title="DotToCommas(S1) + '  м'"
+                      :title="DotToCommas(strelaProvesa1) + '  м'"
                       :desc = "componentInfo.outcomes[4] + `. Значение ${(violation_2_3 ? ' не' : '')} находится в допустимых пределах`"
                 /></v-chip></td>
               <td v-if="violation_2_3"> что-то пошло не так </td>
@@ -530,7 +520,7 @@
                   :color="getColorBinary(violation_2_3)"
                   dark
                 ><toolbarInfo
-                      :title="DotToCommas(S2) + '  м'"
+                      :title="DotToCommas(strelaProvesa2) + '  м'"
                       :desc = "componentInfo.outcomes[5] + `. Значение ${(violation_2_3 ? ' не' : '')} находится в допустимых пределах`"
                 /></v-chip></td>
               <td v-if="violation_2_3"> что-то пошло не так, ваша высота кабеля равна {{ height }} </td>
@@ -543,7 +533,7 @@
                   :color="getColorBinary(violation_2_4)"
                   dark
                 ><toolbarInfo
-                      :title="DotToCommas(L_kab) + '  м'"
+                      :title="DotToCommas(cableLength) + '  м'"
                       :desc = "componentInfo.outcomes[6] + `. Значение ${(violation_2_4 ? ' не' : '')} находится в допустимых пределах`"
                 /></v-chip></td>
               <td v-if="violation_2_4"> кабель не может быть короче расстояния между опорами </td>
@@ -556,7 +546,7 @@
                   :color="getColorBinary(violation_2_5)"
                   dark
                 ><toolbarInfo
-                      :title="DotToCommas(L_n0) + '  м'"
+                      :title="DotToCommas(cableLengthNoLoad) + '  м'"
                       :desc = "componentInfo.outcomes[7] + `. Значение ${(violation_2_5 ? ' не' : '')} находится в допустимых пределах`+ (violation_2_5 ? ' Кабель не может быть короче расстояния между опорами. Для исправления рекомендуется увеличить стрелу провеса.' : '')"
                 /></v-chip></td>
               <!-- <td v-if="violation_2_5"> кабель не может быть короче расстояния между опорами </td> -->
@@ -569,7 +559,7 @@
                   :color="getColorBinary(violation_2_6)"
                   dark
                 ><toolbarInfo
-                      :title="DotToCommas(L_nk) + '  м'"
+                      :title="DotToCommas(cableLengthAtMaxTemperature) + '  м'"
                       :desc = "componentInfo.outcomes[8] + `. Значение ${(violation_2_6 ? ' не' : '')} находится в допустимых пределах`+ (violation_2_6 ? ' Кабель не может быть короче расстояния между опорами. Для исправления рекомендуется изменить температуры или увеличить стрелу провеса.' : '')"
                 /></v-chip></td>
               <!-- <td v-if="violation_2_6"> кабель не может быть короче расстояния между опорами </td> -->
@@ -580,12 +570,12 @@
               <td>Вес кабеля при воздействии максимального гололеда </td>
               <td> 
                 <v-chip
-                  :color="getColor(W_g, 20, 50)"
+                  :color="getColor(cableWeightMaxIce, 20, 50)"
                   dark
                 ><toolbarInfo
-                      :title="DotToCommas(W_g) + '  Н/м'"
+                      :title="DotToCommas(cableWeightMaxIce) + '  Н/м'"
                       :desc = "componentInfo.outcomes[9] 
-                      + '.' + getWarning(getColor(W_g, 20, 50))
+                      + '.' + getWarning(getColor(cableWeightMaxIce, 20, 50))
                       + (violation_2_7 ? ' Вес кабеля огромен, более 50 Н/м. Для исправления рекомендуется смягчить климатические нагрузки, сменить марку кабеля.' : '')
                       "
                 /></v-chip>
@@ -599,12 +589,12 @@
               <td>Ветровая нагрузка на кабель в режиме максимального гололеда </td>
               <td> 
                 <v-chip
-                  :color="getColor(W_v_ice, 10, 30)"
+                  :color="getColor(cableLoadMaxIce, 10, 30)"
                   dark
                 ><toolbarInfo
-                      :title="DotToCommas(W_v_ice) + '  Н/м'"
+                      :title="DotToCommas(cableLoadMaxIce) + '  Н/м'"
                       :desc = "componentInfo.outcomes[10] 
-                        + '.' + getWarning(getColor(W_v_ice, 10, 30))
+                        + '.' + getWarning(getColor(cableLoadMaxIce, 10, 30))
                         + (violation_2_8_ice ? ' Нагрузка огромна, больше 30 Н/м. Для исправления рекомендуется смягчить климатические нагрузки, уменьшить высоту установки или расстояние между опорами.' : '')
                       "
                 /> 
@@ -617,12 +607,12 @@
               <td>Ветровая нагрузка на кабель в режиме максимального ветра </td>
               <td> 
                 <v-chip
-                  :color="getColor(W_v_wind, 20, 50)"
+                  :color="getColor(cableLoadMaxWind, 20, 50)"
                   dark
                 ><toolbarInfo
-                      :title="DotToCommas(W_v_wind) + '  Н/м'"
+                      :title="DotToCommas(cableLoadMaxWind) + '  Н/м'"
                       :desc = "componentInfo.outcomes[11] 
-                      + '.' + getWarning(getColor(W_v_wind, 20, 50))
+                      + '.' + getWarning(getColor(cableLoadMaxWind, 20, 50))
                       + (violation_2_8_wind ? ' Нагрузка огромна, больше 50 Н/м. Для исправления рекомендуется смягчить климатические нагрузки, уменьшить высоту установки или расстояние между опорами.' : '')
                       "
                 />
@@ -653,12 +643,12 @@
               <td>Максимальная стрела провеса </td>
               <td> 
                 <v-chip
-                  :color="getColor(S_max, (height/2), height)"
+                  :color="getColor(strelaProvesa_max, (height/2), height)"
                   dark
                 ><toolbarInfo
-                      :title="DotToCommas(S_max) + '  м'"
+                      :title="DotToCommas(strelaProvesa_max) + '  м'"
                       :desc = "componentInfo.outcomes[13] 
-                      + '.' + getWarning(getColor(S_max, (height/2), height))
+                      + '.' + getWarning(getColor(strelaProvesa_max, (height/2), height))
                       + (violation_2_10 ? ' Кабель будет лежать на земле. Для исправления рекомендуется смягчить условия, увеличить высоту установки или уменьшить расстояние между опорами.  Возможно сменить марку кабеля.' : '')
                       "
                 /> 
@@ -693,13 +683,13 @@
               </td>
               <td> 
                 <v-chip
-                  :color="getColor(S_n_vit, (height/2), height)"
+                  :color="getColor(strelaProvesa_n_vit, (height/2), height)"
                   dark
                 ><toolbarInfo
-                      :title="DotToCommas(S_n_vit) + '  м'"
+                      :title="DotToCommas(strelaProvesa_n_vit) + '  м'"
                       :desc = "
                         componentInfo.outcomes[15] 
-                        + '.' + getWarning(getColor(S_n_vit, (height/2), height)) 
+                        + '.' + getWarning(getColor(strelaProvesa_n_vit, (height/2), height)) 
                         + (violation_2_13_S ? ' Кабель лежит на земле. Для исправления рекомендуется величить высоту установки или уменьшить стрелу провеса. Также можно изменить климатические условия ' : '')
                         "
                 /> 
@@ -787,7 +777,7 @@ export default {
       snackbar: false,      // окошко об ошибке
       timeout: 2500,        // время высвечивания окна об ошибке
       errorText: 'Неверно введены данные или они отсутствуют',
-      debug: true,
+      debug: false,
 
       rulesViolation: false,
       rulesViolationIcon: 'mdi-ghost',
@@ -811,7 +801,6 @@ export default {
       
 
       selected: '',
-
       chooseCable: false,
       chosenCable: {
         Mark: "ДПТС до 48ОВ (6x8)",
@@ -836,7 +825,7 @@ export default {
         incomes: [
         'm, погонный вес кабеля (кг/км)', 
         'L, расстояние между столбами (м)',
-        'S, стрела провеса - насколько кабель провесает в нижайшей точке (м)',
+        'strelaProvesaInput, стрела провеса - насколько кабель провесает в нижайшей точке (м)',
         'h – перепад высот между точками подвеса кабеля (м)',
         'Тср – средняя температура эксплуатации (С*)',
         'TкабСр – температура кабеля в условиях эксплуатации (С*)', 
@@ -876,21 +865,15 @@ export default {
       rule: [
           value => !!value || 'Необходимо заполнить это поле.',
       ],                              //Правила для текстовых полей
-
       decimalsRounding: 4, // число знаков после запятой при округлении. Где-то может расширяться или снижаться
-
-
-      // а вот отсюда уже нужные для вычисления переменные
-
       // константы:
       g: 9.8,         // ускорение свободного падения (м/с^2)
-      Ro_L: 0.0009,   // объёмная масса гололеда (кг/см^3)
+      constIceMass: 0.0009,   // объёмная масса гололеда (кг/см^3)
                       // БЫТЬ ОСТОРОЖНЫМ СО СТЕПЕНЬЮ ДЕСЯТКИ И ПЕРЕВОДИТЬ ДО ОТПРАВКИ
 
       // входные параметры
-      
-      L: 50,    // расстояние вежду опорами (м)
-      S: 1,     // Стрела провеса
+      endpointDistance: 50,    // расстояние вежду опорами (м)
+      strelaProvesaInput: 1,     // Стрела провеса
       h: 1,    // Перепад высот между точками подвеса кабеля
       height:25,// Высота расположения приведенного центра тяжести проводов, троссов и средних точек 
 
@@ -916,16 +899,16 @@ export default {
   // Получаемое из таблички кабеля
   // для примера берётся ДПТ до 48ОВ, с МДРН = 4
       // ЗДЕСЬ Я ХЗ, КАКАЯ ИМЕННО УПРУГОСТЬ. ЛИБО НАЧАЛЬНАЯ, ЛИБО КОНЕЧНАЯ, ЛИБО ВЫТЯЖКИ... беру начальную
-      E_kab: 4.56,        // модуль упругости кабеля (кН/мм^2)
-      E_vit: 3.19,
-      E_kon: 4.92, 
+      elasticity_kab: 4.56,        // модуль упругости кабеля (кН/мм^2)
+      elasticity_vit: 3.19,
+      elasticity_kon: 4.92, 
       Diameter: 0,        // диаметр кабеля
-      S_kab: 116.3,       // сечение кабеля (мм^2)
+      strelaProvesa_kab: 116.3,       // сечение кабеля (мм^2)
       TKLR: 0.00001692,   // Темпиратурный коэффициент линейного расширения (1/С*)
                           // БЫТЬ ОСТОРОЖНЫМ СО СТЕПЕНЬЮ ДЕСЯТКИ И НЕ ПЕРЕВОДИТЬ ДО ОТПРАВКИ. Принимающая функция переводит из коэффициента 10^(-6)
-      m: 115.6,   // удельный весь кабеля (кг/км)
-      S_vit: 3.19,
-      S_kon: 4.92,
+      cableMass: 115.6,   // удельный весь кабеля (кг/км)
+      strelaProvesa_vit: 3.19,
+      strelaProvesa_kon: 4.92,
 
 
 
@@ -967,38 +950,38 @@ export default {
       H_max_vit: 0, // Максимальная растягивающая нагрузка после вытяжки
       H_n_vit: 0, // Растягивающая нагрузка вытяжки
 
-      L1: 0,      // Малый эквивалентный пролет
-      L2: 0,      // Больший эквивалентный пролет
+      endpointDistance1: 0,      // Малый эквивалентный пролет
+      endpointDistance2: 0,      // Больший эквивалентный пролет
 
-      L1_max:0,
-      L2_max: 0,
+      endpointDistance1_max:0,
+      endpointDistance2_max: 0,
 
 
       // используется для составления монтажной таблицы
-      // L_n_MON_T: 0,  // длина кабеля в ненагруженном состоянии с учетом монтажной температуры
-      // L_MON_nk: 0,   // длина кабеля в ненагруженном состоянии при различной температуре
+      // endpointDistance_n_MON_T: 0,  // длина кабеля в ненагруженном состоянии с учетом монтажной температуры
+      // endpointDistance_MON_nk: 0,   // длина кабеля в ненагруженном состоянии при различной температуре
       // T_mon: 0,      // температура кабеля в условиях эксплуатации 
 
-      S1: 0,      //
-      S2: 0,      //
+      strelaProvesa1: 0,      //
+      strelaProvesa2: 0,      //
       
-      S1_max: 0,
-      S2_max: 0,
+      strelaProvesa1_max: 0,
+      strelaProvesa2_max: 0,
 
-      S1_n_vit: 0,
-      S2_n_vit: 0,
+      strelaProvesa1_n_vit: 0,
+      strelaProvesa2_n_vit: 0,
 
-      S_n_vit: 0, // Стрела провеса вытяжки
+      strelaProvesa_n_vit: 0, // Стрела провеса вытяжки
 
-      L_kab: 0,   // Длина подвешенного кабеля
-      L_n0: 0,    // Длина кабеля в ненагруженном состоянии
-      L_nk: 0,    // Длина кабеля с учетом температуры
-      L_max: 0,   // Длина кабеля в нагруженном состоянии
+      cableLength: 0,   // Длина подвешенного кабеля
+      cableLengthNoLoad: 0,    // Длина кабеля в ненагруженном состоянии
+      cableLengthAtMaxTemperature: 0,    // Длина кабеля с учетом температуры
+      cableLengthMax: 0,   // Длина кабеля в нагруженном состоянии
 
-      W_g: 0,     // Вес кабеля при воздействии максимального гололеда
-      W_v_ice: 0, // Нагрузка при максимальном гололеде
-      W_v_wind: 0,// Нагрузка при максимальном ветре
-      S_max: 0,
+      cableWeightMaxIce: 0,     // Вес кабеля при воздействии максимального гололеда
+      cableLoadMaxIce: 0, // Нагрузка при максимальном гололеде
+      cableLoadMaxWind: 0,// Нагрузка при максимальном ветре
+      strelaProvesa_max: 0,
 
 
       K_l: 1.2,       // коэффициент учитывающий влияние длины пролета на ветровую нагрузку
@@ -1150,10 +1133,10 @@ export default {
       W_max: 0,         // Максимальная нагрузка, действующая на кабель
 
 
-      L_n_minT: 0,      // длина кабеля в ненагруженом состоянии при минимальной темпиратуре
-      L_n_maxT: 0,      // длина кабеля в ненагруженом состоянии при максимальной темпиратуре
-      L_kab_vit: 0,     // длина кабеля после вытяжки
-      L_kab_vit_0: 0,
+      cableLengthNoLoad_minT: 0,      // длина кабеля в ненагруженом состоянии при минимальной темпиратуре
+      cableLengthNoLoad_maxT: 0,      // длина кабеля в ненагруженом состоянии при максимальной темпиратуре
+      cableLength_vit: 0,     // длина кабеля после вытяжки
+      cableLength_vit_0: 0,
 
     };
   },
@@ -1197,7 +1180,7 @@ export default {
     inputViolation(){
       return (
         this.L <1
-        || this.S<1
+        || this.strelaProvesaInput<1
         || this.h<0
         || this.height<1
         || (this.T_min>this.T_max)
@@ -1271,9 +1254,6 @@ export default {
       )
     },
 
-
-
-
     getViolation_2_1 () {
       this.violation_2_1 = (this.W_kab<=0 && !! this.W_kab )
     },
@@ -1282,45 +1262,45 @@ export default {
     },
     getViolation_2_3 () {
       this.violation_2_3 =  (
-        (this.L1>this.L2) 
-        || (this.L2<this.L1) 
-        || (this.S1<=0) 
-        || (this.S2<=0 && this.S2>this.height) 
+        (this.endpointDistance1>this.endpointDistance2) 
+        || (this.endpointDistance2<this.endpointDistance1) 
+        || (this.strelaProvesa1<=0) 
+        || (this.strelaProvesa2<=0 && this.strelaProvesa2>this.height) 
         || (
-          (this.L1.toString() == 'Infinity')  
-          || (this.L1.toString() == '-Infinity')
+          (this.endpointDistance1.toString() == 'Infinity')  
+          || (this.endpointDistance1.toString() == '-Infinity')
         )
       )
     },
     getViolation_2_4 () {
-      this.violation_2_4 =  (this.L_kab<this.L)
+      this.violation_2_4 =  (this.cableLength<this.endpointDistance)
     },
     getViolation_2_5 () {
-      this.violation_2_5 =  (this.L_n0<this.L)
+      this.violation_2_5 =  (this.cableLengthNoLoad<this.endpointDistance)
     },
     getViolation_2_6 () {
-      this.violation_2_6 =  (this.L_nk<this.L)
+      this.violation_2_6 =  (this.cableLengthAtMaxTemperature<this.endpointDistance)
     },
     getViolation_2_7 () {
-      this.violation_2_7 =  (this.getColor(this.W_g, 20, 50) == 'red')
+      this.violation_2_7 =  (this.getColor(this.cableWeightMaxIce, 20, 50) == 'red')
     },
     getViolation_2_8_ice () {
-      this.violation_2_8_ice =  (this.getColor(this.W_v_ice, 10, 30) == 'red')
+      this.violation_2_8_ice =  (this.getColor(this.cableLoadMaxIce, 10, 30) == 'red')
     },
     getViolation_2_8_wind () {
-      this.violation_2_8_wind =  (this.getColor(this.W_v_wind, 20, 50)=='red')|| this.W_v_wind<=0
+      this.violation_2_8_wind =  (this.getColor(this.cableLoadMaxWind, 20, 50)=='red')|| this.cableLoadMaxWind<=0
     },
     getViolation_2_9 () {
       this.violation_2_9 =  (this.getColor(this.W_max, 20, 50) == 'red') || this.W_max<=0
     },
     getViolation_2_10 () {
-      this.violation_2_10 =  (this.getColor(this.S_max, (this.height/2), this.height) == 'red') || this.S_max<=0
+      this.violation_2_10 =  (this.getColor(this.strelaProvesa_max, (this.height/2), this.height) == 'red') || this.strelaProvesa_max<=0
     },
     getViolation_2_11 () {
       this.violation_2_11 =  (this.getColor(this.H_max, 40, 50) == 'red') || this.H_max<=0
     },
     getViolation_2_13_S () {
-      this.violation_2_13_S =  (this.getColor(this.S_n_vit, (this.height/2), this.height) == 'red') || this.S_n_vit<=0
+      this.violation_2_13_S =  (this.getColor(this.strelaProvesa_n_vit, (this.height/2), this.height) == 'red') || this.strelaProvesa_n_vit<=0
     },
     getViolation_2_13_H () {
       this.violation_2_13_H =  (this.getColor(this.H_n_vit, 30, 50) == 'red')
@@ -1366,14 +1346,14 @@ export default {
     },
 
     setCableParams(chosenCable){
-      this.E_kab = chosenCable.L_nach    // модуль упругости кабеля (кН/мм^2)
+      this.elasticity_kab = chosenCable.L_nach    // модуль упругости кабеля (кН/мм^2)
       // ЗДЕСЬ Я ХЗ, КАКАЯ ИМЕННО УПРУГОСТЬ. ЛИБО НАЧАЛЬНАЯ, ЛИБО КОНЕЧНАЯ, ЛИБО ВЫТЯЖКИ... беру начальную
-      this.E_vit = chosenCable.L_feat
-      this.E_kon = chosenCable.L_kon
-      this.S_kab=chosenCable.Slice
+      this.elasticity_vit = chosenCable.L_feat
+      this.elasticity_kon = chosenCable.L_kon
+      this.strelaProvesa_kab=chosenCable.Slice
       this.Diameter = chosenCable.Diameter
       this.TKLR = chosenCable.TKLR * 0.000001
-      this.m = chosenCable.Weight
+      this.cableMass = chosenCable.Weight
       
     },
 
@@ -1492,8 +1472,8 @@ export default {
       // как работает этот раздел... хех...
       // Если бы я ещё знал, как он работает.
       // В документе есть много пунктов, я их стал делать по порядку
-      if(this.L < 1){
-        this.L = 1
+      if(this.endpointDistance < 1){
+        this.endpointDistance = 1
       }
 
       this.task_2_1()
@@ -1512,8 +1492,9 @@ export default {
     
     // Вес кабеля
     task_2_1(){
+      console.log('cablemass', this.cableMass)
       this.W_kab = parseFloat(
-        this.m * this.g / 1000
+        this.cableMass * this.g / 1000
         ).toFixed(this.decimalsRounding)
       console.log('2.1 вес кабеля, Н/м', this.W_kab)
     },
@@ -1521,66 +1502,66 @@ export default {
     // Растягивающая нагрузка, действующая на кабель
     task_2_2(){
 
-      this.H_nach = ((this.W_kab * this.L^2) / ( 8 * this.S )).toFixed(this.decimalsRounding+2)
+      this.H_nach = ((this.W_kab * this.endpointDistance^2) / ( 8 * this.strelaProvesaInput )).toFixed(this.decimalsRounding+2)
       console.log('2.2 Растягивающая нагрузка, Н', this.H_nach)
     },
 
     // Перепад высот между опорами
     task_2_3(){
-      this.L1 = (
-        this.L - (2 * this.h * this.H_nach)/(this.W_kab * this.L)
+      this.endpointDistance1 = (
+        this.endpointDistance - (2 * this.h * this.H_nach)/(this.W_kab * this.endpointDistance)
       ).toFixed(this.decimalsRounding+2)
-      console.log('2.3 Малый эквивалентный пролет', this.L1)
+      console.log('2.3 Малый эквивалентный пролет', this.endpointDistance1)
 
-      this.L2 = (
-        this.L + (2 * this.h * this.H_nach)/(this.W_kab * this.L)
+      this.endpointDistance2 = (
+        this.endpointDistance + (2 * this.h * this.H_nach)/(this.W_kab * this.endpointDistance)
       ).toFixed(this.decimalsRounding+2)
-      console.log('2.3 Больший эквивалентный пролет', this.L2)
+      console.log('2.3 Больший эквивалентный пролет', this.endpointDistance2)
 
-      // this.S1 = (
-      //   (this.W_kab * this.L1^2)/(8 * this.H_nach)
+      // this.strelaProvesa1 = (
+      //   (this.W_kab * this.endpointDistance1^2)/(8 * this.H_nach)
       // ).toFixed(this.decimalsRounding+2)
-      this.S1 = this.get_S1_or_S2(this.S, this.L1, this.L)
-      console.log('2.3 Малая стрела провеса', this.S1)
+      this.strelaProvesa1 = this.get_S1_or_S2(this.strelaProvesaInput, this.endpointDistance1, this.endpointDistance)
+      console.log('2.3 Малая стрела провеса', this.strelaProvesa1)
 
-      // this.S2 = (
-      //   (this.W_kab * this.L2^2)/(8 * this.H_nach)
+      // this.strelaProvesa2 = (
+      //   (this.W_kab * this.endpointDistance2^2)/(8 * this.H_nach)
       // ).toFixed(this.decimalsRounding+2)
-      this.S2 = this.get_S1_or_S2(this.S, this.L2, this.L)
-      console.log('2.3 Большая стрела провеса', this.S2)
+      this.strelaProvesa2 = this.get_S1_or_S2(this.strelaProvesaInput, this.endpointDistance2, this.endpointDistance)
+      console.log('2.3 Большая стрела провеса', this.strelaProvesa2)
     },
 
     // Длина подвешенного кабеля
     task_2_4(){
-      this.L_kab = (
-        this.L + 4/3 * ( (this.S1^2 / this.L1) + (this.S2^2 / this.L2) )
+      this.cableLength = (
+        this.endpointDistance + 4/3 * ( (this.strelaProvesa1^2 / this.endpointDistance1) + (this.strelaProvesa2^2 / this.endpointDistance2) )
       ).toFixed(this.decimalsRounding)
-      console.log('2.4 длина подвешенного кабеля, м', this.L_kab)
+      console.log('2.4 длина подвешенного кабеля, м', this.cableLength)
     },
 
     // Длина кабеля в ненагруженном состоянии
     task_2_5(){
-      this.L_n0 = (
-        (100 * this.L_kab) / (100 * (1 + (this.H_nach / (this.E_kab * this.S_kab))))
+      this.cableLengthNoLoad = (
+        (100 * this.cableLength) / (100 * (1 + (this.H_nach / (this.elasticity_kab * this.strelaProvesa_kab))))
       ).toFixed(this.decimalsRounding)
-      console.log('2.5 Длина кабеля в ненагруженном состоянии, м', this.L_n0)
+      console.log('2.5 Длина кабеля в ненагруженном состоянии, м', this.cableLengthNoLoad)
     },
 
     // Длина кабеля в ненагруженном состоянии с учетом температуры
     task_2_6(){
-      this.L_nk = parseFloat(
-        this.L_n0 * (1 + this.TKLR * (this.T - this.T_sr))
+      this.cableLengthAtMaxTemperature = parseFloat(
+        this.cableLengthNoLoad * (1 + this.TKLR * (this.T - this.T_sr))
       ).toFixed(this.decimalsRounding)
       // console.log('2.6 ТКЛР', this.TKLR)
       // console.log('2.6 проверка', 1 + this.TKLR * (this.T - this.T_sr))
-      console.log('2.6 Длина кабеля в ненагруженном состоянии с учетом температуры, м', this.L_nk)
+      console.log('2.6 Длина кабеля в ненагруженном состоянии с учетом температуры, м', this.cableLengthAtMaxTemperature)
     },
 
     // здесь будет уже упоминание таблицы
     // Вес кабеля при воздействии максимального гололеда
     task_2_7(){
       // для получения нужных Ki, Kd и d
-      this.height-=this.S
+      this.height-=this.strelaProvesaInput
       // this.interpolateHeight(this.height)
       this.K_i = this.interpolateUniversal(
           this.height, 
@@ -1602,23 +1583,23 @@ export default {
         )
       // this.interpolateUniversal(this.height, this.heightTable, 'K_i', 'height')
 
-      this.W_g = parseFloat(
+      this.cableWeightMaxIce = parseFloat(
         parseFloat(this.W_kab) + 
-        parseFloat(this.Ro_L * this.g * Math.PI * this.K_i * this.K_d * this.C * (this.d + this.C))
+        parseFloat(this.constIceMass * this.g * Math.PI * this.K_i * this.K_d * this.C * (this.d + this.C))
         ).toFixed(this.decimalsRounding)
-      // console.log('2.7 проверка', parseFloat(this.W_kab))
-      // console.log('2.7 проверка', this.Ro_L)
-      // console.log('2.7 проверка', this.g)
-      // console.log('2.7 проверка', Math.PI)
-      // console.log('2.7 проверка', this.K_i)
-      // console.log('2.7 проверка', this.K_d)
-      // console.log('2.7 проверка', this.C)
-      // console.log('2.7 проверка', this.d)
-      // console.log('2.7 проверка', parseFloat(this.d + this.C))
-      // console.log('2.7 проверка', parseFloat(this.Ro_L * this.g * Math.PI * this.K_i * this.K_d * this.C * (this.d + this.C)).toFixed(this.decimalsRounding))
+      console.log('2.7 проверка', parseFloat(this.W_kab))
+      console.log('2.7 проверка', this.constIceMass)
+      console.log('2.7 проверка', this.g)
+      console.log('2.7 проверка', Math.PI)
+      console.log('2.7 проверка', this.K_i)
+      console.log('2.7 проверка', this.K_d)
+      console.log('2.7 проверка C', this.C)
+      console.log('2.7 проверка d', this.d)
+      console.log('2.7 проверка C+d', parseFloat(this.d + this.C))
+      console.log('2.7 проверка', parseFloat(this.constIceMass * this.g * Math.PI * this.K_i * this.K_d * this.C * (this.d + this.C)).toFixed(this.decimalsRounding))
       
-      console.log('2.7 Вес кабеля при воздействии максимального гололеда, кг', this.W_g)
-      this.height+=this.S
+      console.log('2.7 Вес кабеля при воздействии максимального гололеда, кг', this.cableWeightMaxIce)
+      this.height+=this.strelaProvesaInput
     },
 
     // Ветровая нагрузка на кабель при гололеде
@@ -1669,19 +1650,19 @@ export default {
                     если v_г неизвестен, то
                     W_г = 0.25 * W_0
       */      
-      this.W_v_wind = parseFloat(this.windPressure(this.W_0))
-      console.log('ответ для ветра:', this.W_v_wind)
+      this.cableLoadMaxWind = parseFloat(this.windPressure(this.W_0))
+      console.log('ответ для ветра:', this.cableLoadMaxWind)
 
       if(this.debug) console.log('режим максимального гололеда, таблицы нет, потому W_г = 0.25*W_0 =', this.W_0/4)
-      this.W_v_ice = parseFloat(this.windPressure(this.W_0/4))
-      console.log('ответ для гололеда:', this.W_v_ice)
+      this.cableLoadMaxIce = parseFloat(this.windPressure(this.W_0/4))
+      console.log('ответ для гололеда:', this.cableLoadMaxIce)
     },
 
     // Максимальная нагрузка, действующая на кабель
     task_2_9(){
       this.W_max = parseFloat(
         Math.sqrt(
-          (this.W_v_wind*this.W_v_wind) + (this.W_v_ice*this.W_v_ice)
+          (this.cableLoadMaxWind*this.cableLoadMaxWind) + (this.cableLoadMaxIce*this.cableLoadMaxIce)
         ).toFixed(this.decimalsRounding)
       )
       console.warn('2.9 Максимальная нагрузка, действующая на кабель ???', this.W_max)
@@ -1691,37 +1672,37 @@ export default {
     task_2_10(){
       
       // длина кабеля в нагруженом состоянии
-      this.L_max = this.L + (4/3)*((this.S1^2/this.L1)+(this.S2^2/this.L2))
+      this.cableLengthMax = this.endpointDistance + (4/3)*((this.strelaProvesa1^2/this.endpointDistance1)+(this.strelaProvesa2^2/this.endpointDistance2))
 
-      // переопределение S1 и S2
-      console.log('переопределение S1 и S2')
-      console.log(`до:    S1=${this.S1}, S2=${this.S2}`)
+      // переопределение strelaProvesa1 и strelaProvesa2
+      console.log('переопределение strelaProvesa1 и strelaProvesa2')
+      console.log(`до:    strelaProvesa1=${this.strelaProvesa1}, strelaProvesa2=${this.strelaProvesa2}`)
 
-      this.S1 = parseFloat(
-        this.S*this.L1*this.L1/(this.L*this.L)
+      this.strelaProvesa1 = parseFloat(
+        this.strelaProvesaInput*this.endpointDistance1*this.endpointDistance1/(this.endpointDistance*this.endpointDistance)
       ).toFixed(this.decimalsRounding)
 
-      this.S2 = parseFloat(
-        this.S*((this.L2)^2)/((this.L)^2)
+      this.strelaProvesa2 = parseFloat(
+        this.strelaProvesaInput*((this.endpointDistance2)^2)/((this.endpointDistance)^2)
       ).toFixed(this.decimalsRounding)
 
-      console.log(`после: S1=${this.S1}, S2=${this.S2}`)
-      var a = this.makeA(this.L, this.h, this.L_nk)
+      console.log(`после: strelaProvesa1=${this.strelaProvesa1}, strelaProvesa2=${this.strelaProvesa2}`)
+      var a = this.makeA(this.endpointDistance, this.h, this.cableLengthAtMaxTemperature)
       a = parseFloat(a.toFixed(this.decimalsRounding+2))
-      var b = this.makeB(this.W_max, this.L, this.L_nk, this.E_kab, this.S_kab)
+      var b = this.makeB(this.W_max, this.endpointDistance, this.cableLengthAtMaxTemperature, this.elasticity_kab, this.strelaProvesa_kab)
 
       b = parseFloat(b.toFixed(this.decimalsRounding+2))
       // console.log('a =',a, 'and b =',b)
 
-      this.S_max = this.kubicEquasion(a,b)
-      this.S_max = parseFloat(this.S_max.toFixed(this.decimalsRounding+2))
-      console.log('2.10 максимальная стрела провеса =',this.S_max)
-      console.log('2.10 для сравнения обычная стрела провеса =',this.S)
+      this.strelaProvesa_max = this.kubicEquasion(a,b)
+      this.strelaProvesa_max = parseFloat(this.strelaProvesa_max.toFixed(this.decimalsRounding+2))
+      console.log('2.10 максимальная стрела провеса =',this.strelaProvesa_max)
+      console.log('2.10 для сравнения обычная стрела провеса =',this.strelaProvesaInput)
     },
 
     // Максимальная растягивающая нагрузка при наихудших условиях
     task_2_11(){
-      this.H_max = (this.W_max * (this.L^2)) / (8 * this.S_max)
+      this.H_max = (this.W_max * (this.endpointDistance^2)) / (8 * this.strelaProvesa_max)
       this.H_max = parseFloat(this.H_max.toFixed(this.decimalsRounding+2))
       console.log('2.11 Максимальная растягивающая нагрузка при наихудших условиях', this.H_max, 'Н')
       console.log('для сравнения, обычная растягивающая нагрузка из 2.2', this.H_nach, 'Н')
@@ -1731,49 +1712,55 @@ export default {
     task_2_13(){
       console.log('2.13 Расчет конечной стрелы провеса и нагрузки при нормальных условиях')
       // стрела провеса вытяжки
-      var a = this.makeA(this.L, this.height, this.L_nk)
-      var b = this.makeB(this.W_kab, this.L, this.L_nk, this.E_vit, this.S_kab)
-      this.S_n_vit = this.kubicEquasion(a, b).toFixed(this.decimalsRounding)
-      console.log('стрела провеса вытяжки', this.S_n_vit)
+      var a = this.makeA(this.endpointDistance, this.height, this.cableLengthAtMaxTemperature)
+      var b = this.makeB(this.W_kab, this.endpointDistance, this.cableLengthAtMaxTemperature, this.elasticity_vit, this.strelaProvesa_kab)
+      this.strelaProvesa_n_vit = this.kubicEquasion(a, b).toFixed(this.decimalsRounding)
+      console.log('стрела провеса вытяжки', this.strelaProvesa_n_vit)
       // нагрузка после вытяжки (она же усталось металла)
       this.H_n_vit = (
-          (this.W_kab * (this.L^2)) / (8 * this.S_n_vit)
+          (this.W_kab * (this.endpointDistance^2)) / (8 * this.strelaProvesa_n_vit)
         ).toFixed(this.decimalsRounding)
       console.log('нагрузка после вытяжки', this.H_n_vit)
     },
 
     /**
      * получение параметра S, то бишь стрелы провеса
-     * @param {number} S      -
-     * @param {number} L1     -
-     * @param {number} L_big  -
+     * @param {number} S                     -
+     * @param {number} endpointDistance1     -
+     * @param {number} endpointDistance_big  -
      * 
      * @return {number} S_n  -  значение параметра S, формула из пункта 2.4
      */
-    get_S1_or_S2(S, L1, L_big){
+    get_S1_or_S2(S, endpointDistance1, endpointDistance_big){
       
-      // console.error(S, L1, L_big,
-      // '(S*(L1^2)/(L_big^2))'
-      // , (S*(L1^2)/(L_big^2)))
+      // console.error(S, endpointDistance1, endpointDistance_big,
+      // '(S*(endpointDistance1^2)/(endpointDistance_big^2))'
+      // , (S*(endpointDistance1^2)/(endpointDistance_big^2)))
       // жалкие попытки
-      if (S<1 || L_big<1 ) {
+      if (S<1 || endpointDistance_big<1 ) {
         S*=100
-        L_big*=10
+        endpointDistance_big*=10
       }
-      // console.error(S, L1, L_big,
-      // '(S*(L1^2)/(L_big^2))'
-      // , (S*(L1^2)/(L_big^2)))
+      // console.error(S, endpointDistance1, endpointDistance_big,
+      // '(S*(endpointDistance1^2)/(endpointDistance_big^2))'
+      // , (S*(endpointDistance1^2)/(endpointDistance_big^2)))
       
 
       return parseFloat(
-        S*(L1^2)/(L_big^2)
+        S*(endpointDistance1^2)/(endpointDistance_big^2)
       ).toFixed(this.decimalsRounding+2)
 
     },
 
-    another_get_S1_or_S2(W, L_n, H){
+    /**
+     * 
+     * @param W 
+     * @param cableLengthNoLoad 
+     * @param H 
+     */
+    another_get_S1_or_S2(W, cableLengthNoLoad, H){
       return parseFloat(
-        (W*L_n*L_n) / (8*H)
+        (W*cableLengthNoLoad*cableLengthNoLoad) / (8*H)
       ).toFixed(this.decimalsRounding+2)
     },
 
@@ -1795,10 +1782,10 @@ export default {
      * функция составляющая коэффициент A
      * @param {number} L     - длина без учета темпиратуры
      * @param {number} h     - высота установки
-     * @param {number} L_nk  - длина с учетом темпиратуры
+     * @param {number} cableLengthAtMaxTemperature  - длина с учетом темпиратуры
      */
-    makeA(L, h, L_nk){
-      var result = 3*((L^2) + (((h)^2)/2) - L*L_nk)/8
+    makeA(L, h, cableLengthAtMaxTemperature){
+      var result = 3*((L^2) + (((h)^2)/2) - L*cableLengthAtMaxTemperature)/8
       if(this.debug) console.log('a from makeA',result)
       return result
     },   
@@ -1807,20 +1794,20 @@ export default {
      * функция составляющая коэффициент B
      * @param {number} W     - нагрузка на кабель
      * @param {number} L     - длина без учета темпиратуры
-     * @param {number} L_nk  - длина с учетом темпиратуры
+     * @param {number} cableLengthAtMaxTemperature  - длина с учетом темпиратуры
      * @param {number} E     - модуль упругости
      * @param {number} S     - стрела провеса
      */
-    makeB(W, L, L_nk, E, S){
+    makeB(W, L, cableLengthAtMaxTemperature, E, S){
       if(this.debug) {
         console.log('W =', W)
         console.log('L =', L)
-        console.log('L_nk =', L_nk)
+        console.log('cableLengthAtMaxTemperature =', cableLengthAtMaxTemperature)
         console.log('E =', E)
         console.log('S =', S)
       }
       var result = parseFloat(
-        (-3*W*((L)^3)*L_nk)/(64*E*S)
+        (-3*W*((L)^3)*cableLengthAtMaxTemperature)/(64*E*S)
       )
       if(this.debug) console.log('b from makeB',result)
       return result

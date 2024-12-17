@@ -30,7 +30,6 @@
                 outlined
                 required
                 clearable
-                label="Количество узлов СХД (шт)"
                 :rules="rule"
                 hide-details="auto"
                 v-model.number="Usli_shd"
@@ -81,7 +80,6 @@
                 outlined
                 required
                 clearable
-                label="Усреднённое тепловыделение в процентах (%)"
                 :rules="rule"
                 hide-details="auto"
                 v-model.number="K_sred"
