@@ -379,17 +379,9 @@
       </v-row>
 <!-- 
       </v-card> -->
+      <div v-show="started">
       <br>
       <v-divider/>
-      
-
-    <!-- результаты вычислений -->
-    <!-- <v-card 
-      class="pa-5 mt-5"
-      v-show="started"
-    > -->
-    <div v-show="started">
-
       <v-row>
           <v-col  cols="100%">
           <p class="text-left pt-3">
@@ -399,15 +391,40 @@
               {{ rulesViolationText }} 
           </p>
           </v-col>
-          <!-- <v-col cols="3">
+          <v-col cols="3">
               <v-btn
               class="mt-3"
-              @click="started=false"
-              v-if="start"
-              >
-                  скрыть
+              v-if="started"
+              icon
+              @click="snackbar=true; errorText = 'Функция ещё не реализована '"
+              >  
+                <v-icon>
+                  mdi-share
+                </v-icon>
               </v-btn>
-          </v-col> -->
+              
+              <v-btn
+              class="mt-3"
+              v-if="started"
+              icon
+              @click="started = false"
+              >
+                <v-icon>
+                  mdi-close
+                </v-icon>
+              </v-btn>
+              
+              <v-btn
+              class="mt-3"
+              v-if="started"
+              icon
+              @click="started = false"
+              >
+                <v-icon>
+                  mdi-eye-off
+                </v-icon>
+              </v-btn>
+          </v-col>
       </v-row>
       
 
@@ -699,14 +716,14 @@
         </template>
       </v-simple-table>
 
-      <v-btn
+      <!-- <v-btn
         disabled
         class="mt-2  mr-5"
-      >сохранить (WIP)</v-btn>
-      <v-btn
+      >сохранить (WIP)</v-btn> -->
+      <!-- <v-btn
         @click="started=false"
         class="mt-2"
-      >скрыть</v-btn>
+      >скрыть</v-btn> -->
 
     </div>
     </v-card>
@@ -759,6 +776,27 @@ export default {
       timeout: 2500,        // время высвечивания окна об ошибке
       errorText: 'Неверно введены данные или они отсутствуют',
       debug: true,
+
+      rulesViolation: false,
+      rulesViolationIcon: 'mdi-ghost',
+      rulesViolationText: 'пока не введено',
+      violation_2_1: false,
+      violation_2_2: false,
+      violation_2_3: false,
+      violation_2_4: false,
+      violation_2_5: false,
+      violation_2_6: false,
+      violation_2_7: false,
+      violation_2_8_ice: false,
+      violation_2_8_wind: false,
+      violation_2_9: false,
+      violation_2_10: false,
+      violation_2_11: false,
+      violation_2_12: false,
+      violation_2_13_S: false,
+      violation_2_13_H: false,
+      violation_2_14: false,
+      
 
       selected: '',
 
@@ -1143,6 +1181,112 @@ export default {
       return 'ну здесь я не придумал, что написать, либо цвет не тот'
     },
 
+    // функция говорит, если введенные значения неправильны
+    inputViolation(){
+      return (
+        this.L <1
+        || this.S<1
+        || this.h<0
+        || this.height<1
+        || (this.T_min>this.T_max)
+      )
+    },
+    getRulesViolationIcon(){
+      if (this.rulesViolation) this.rulesViolationIcon = "mdi-alert"
+      else this.rulesViolationIcon = "mdi-check"
+    },
+    getRulesViolationText(){
+      if (this.rulesViolation) this.rulesViolationText = "Расчет содержит недопустимые значения, рекомендуется пересмотреть введенные требования"
+      else this.rulesViolationText = "Расчет не содержит недопустимых значений"
+    },
+
+    // для таблицы ответа
+    getRulesViolation () {
+      this.rulesViolation = (
+        // 2.1
+        this.getViolation_2_1()
+        // 2.2
+        || this.getViolation_2_2()
+        // 2.3
+        || this.getViolation_2_3()
+        // 2.4
+        || this.getViolation_2_4()
+        // 2.5
+        || this.getViolation_2_5()
+        // 2.6
+        || this.getViolation_2_6()
+        // 2.7
+        || this.getViolation_2_7()
+        // 2.8
+        || this.getViolation_2_8_ice()
+        || this.getViolation_2_8_wind()
+        // 2.9
+        || this.getViolation_2_9()
+        // 2.10
+        || this.getViolation_2_10()
+        // 2.11
+        || this.getViolation_2_11()
+        // 2.13
+        || this.getViolation_2_13_S()
+        || this.getViolation_2_13_H()
+      )
+    },
+
+
+
+
+    getViolation_2_1 () {
+      this.violation_2_1 = (this.W_kab<=0 && !! this.W_kab )
+    },
+    getViolation_2_2 () {
+      this.violation_2_2 =  ((this.H_nach<=0 && !!this.H_nach) || (this.H_nach.toString() == 'Infinity'))
+    },
+    getViolation_2_3 () {
+      this.violation_2_3 =  (
+        (this.L1>this.L2) 
+        || (this.L2<this.L1) 
+        || (this.S1<=0) 
+        || (this.S2<=0 && this.S2>this.height) 
+        || (
+          (this.L1.toString() == 'Infinity')  
+          || (this.L1.toString() == '-Infinity')
+        )
+      )
+    },
+    getViolation_2_4 () {
+      this.violation_2_4 =  (this.L_kab<this.L)
+    },
+    getViolation_2_5 () {
+      this.violation_2_5 =  (this.L_n0<this.L)
+    },
+    getViolation_2_6 () {
+      this.violation_2_6 =  (this.L_nk<this.L)
+    },
+    getViolation_2_7 () {
+      this.violation_2_7 =  (this.getColor(this.W_g, 20, 50) == 'red')
+    },
+    getViolation_2_8_ice () {
+      this.violation_2_8_ice =  (this.getColor(this.W_v_ice, 10, 30) == 'red')
+    },
+    getViolation_2_8_wind () {
+      this.violation_2_8_wind =  (this.getColor(this.W_v_wind, 20, 50)=='red')|| this.W_v_wind<=0
+    },
+    getViolation_2_9 () {
+      this.violation_2_9 =  (this.getColor(this.W_max, 20, 50) == 'red') || this.W_max<=0
+    },
+    getViolation_2_10 () {
+      this.violation_2_10 =  (this.getColor(this.S_max, (this.height/2), this.height) == 'red') || this.S_max<=0
+    },
+    getViolation_2_11 () {
+      this.violation_2_11 =  (this.getColor(this.H_max, 40, 50) == 'red') || this.H_max<=0
+    },
+    getViolation_2_13_S () {
+      this.violation_2_13_S =  (this.getColor(this.S_n_vit, (this.height/2), this.height) == 'red') || this.S_n_vit<=0
+    },
+    getViolation_2_13_H () {
+      this.violation_2_13_H =  (this.getColor(this.H_n_vit, 30, 50) == 'red')
+    },
+
 // // Из таблицы района по ветру         (за предустановленные взял 1 район)
 //     W: 0,     // нормативное ветровое давление, Па
 //     windField: 1, // район по ветру
@@ -1286,21 +1430,26 @@ export default {
       return (y1 + (value-x1)* ((y2-y1)/(x2-x1))).toFixed(this.decimalsRounding+1)
     },
 
+    // то, что происходит по нажатию кнопки
     started_manual(){
-      if (this.inputViolation){
+      // проверка введенных данных 
+      if (this.inputViolation()){
         this.snackbar=true
         this.errorText = 'Неверно введены данные. '
         return
       }
-
-
+      // показ окна вывода 
       this.started = true
+      // основной расчет
       this.start()
+      // проверка полученных данных 
+      this.getRulesViolation()
+      this.getRulesViolationText()
+      this.getRulesViolationIcon()
     },
 
+    // сам скрипт
     start() {
-      // if (this.started) {this.started_manual()}
-      // this.started = true
       // как работает этот раздел... хех...
       // Если бы я ещё знал, как он работает.
       // В документе есть много пунктов, я их стал делать по порядку
@@ -1694,121 +1843,7 @@ export default {
         this.a_w * this.K_l * this.K_w * this.C_x * W * parseFloat(this.d + 2* this.K_i * this.K_d * this.C ) * 0.001  
       ).toFixed(this.decimalsRounding)
     },
-
-
-    // чисто для своих проверок, привязано к своей кнопке
-    test(){
-      console.log("lets test")
-      console.log(this.W)
-    },
   },
-  computed: {
-    
-    
-    // для таблицы ответа
-    rulesViolation () {
-      return (
-        // 2.1
-        this.violation_2_1
-        // 2.2
-        || this.violation_2_2
-        // 2.3
-        || this.violation_2_3
-        // 2.4
-        || this.violation_2_4
-        // 2.5
-        || this.violation_2_5
-        // 2.6
-        || this.violation_2_6
-        // 2.7
-        || this.violation_2_7
-        // 2.8
-        || this.violation_2_8_ice
-        || this.violation_2_8_wind
-        // 2.9
-        || this.violation_2_9
-        // 2.10
-        || this.violation_2_10
-        // 2.11
-        || this.violation_2_11
-        // 2.13
-        || this.violation_2_13_S
-        || this.violation_2_13_H
-      )
-    },
-    rulesViolationIcon(){
-      if (this.rulesViolation) return "mdi-alert"
-      else return "mdi-check"
-    },
-    rulesViolationText(){
-      if (this.rulesViolation) return "Расчет содержит недопустимые значения, рекомендуется пересмотреть введенные требования"
-      else return "Расчет не содержит недопустимых значений"
-    },
-
-    violation_2_1 () {
-      return (this.W_kab<=0 && !! this.W_kab )
-    },
-    violation_2_2 () {
-      return ((this.H_nach<=0 && !!this.H_nach) || (this.H_nach.toString() == 'Infinity'))
-    },
-    violation_2_3 () {
-      return (
-        (this.L1>this.L2) 
-        || (this.L2<this.L1) 
-        || (this.S1<=0) 
-        || (this.S2<=0 && this.S2>this.height) 
-        || (
-          (this.L1.toString() == 'Infinity')  
-          || (this.L1.toString() == '-Infinity')
-        )
-      )
-    },
-    violation_2_4 () {
-      return (this.L_kab<this.L)
-    },
-    violation_2_5 () {
-      return (this.L_n0<this.L)
-    },
-    violation_2_6 () {
-      return (this.L_nk<this.L)
-    },
-    violation_2_7 () {
-      return (this.getColor(this.W_g, 20, 50) == 'red')
-    },
-    violation_2_8_ice () {
-      return (this.getColor(this.W_v_ice, 10, 30) == 'red')
-    },
-    violation_2_8_wind () {
-      return (this.getColor(this.W_v_wind, 20, 50)=='red')|| this.W_v_wind<=0
-    },
-    violation_2_9 () {
-      return (this.getColor(this.W_max, 20, 50) == 'red') || this.W_max<=0
-    },
-    violation_2_10 () {
-      return (this.getColor(this.S_max, (this.height/2), this.height) == 'red') || this.S_max<=0
-    },
-    violation_2_11 () {
-      return (this.getColor(this.H_max, 40, 50) == 'red') || this.H_max<=0
-    },
-    violation_2_13_S () {
-      return (this.getColor(this.S_n_vit, (this.height/2), this.height) == 'red') || this.S_n_vit<=0
-    },
-    violation_2_13_H () {
-      return (this.getColor(this.H_n_vit, 30, 50) == 'red')
-    },
-
-
-
-    inputViolation(){
-      return (
-        this.L <1
-        || this.S<1
-        || this.h<0
-        || this.height<1
-        || (this.T_min>this.T_max)
-      )
-    },
-  }
 };
 </script>
 

@@ -5,13 +5,57 @@
     >
       <!-- шапка при необходимости -->
 
+      <!-- настройки -->
+      <div 
+        :class="noMargins === true ? 'ma-0' : 'mx-5 mb-10 module_bg'"
+      >
+        <v-expansion-panels
+            accordion
+            tile
+          >
+            <v-expansion-panel>
+              <v-expansion-panel-header>
+                <h2>Глобальные настройки</h2>
+                <template v-slot:actions>
+                  <v-icon>
+                    mdi-cog
+                  </v-icon>
+                </template>
+              </v-expansion-panel-header>
+              <v-expansion-panel-content
+              >
+                <v-checkbox
+                  info
+                  hide-details
+                  label="Использовать альтернативное отображение"
+                  v-model="irregularView"
+                  @change="saveTheme"
+                />
+                <v-checkbox
+                  info
+                  hide-details
+                  label="Убрать отступы"
+                  v-model="noMargins"
+                  @change="saveTheme"
+                />
 
-      
-      
+                <v-switch
+                  v-model="$vuetify.theme.dark"
+                  inset
+                  @change="saveTheme"
+                  label="альтернативная тема"
+                  persistent-hint
+                />
+
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          
+        </v-expansion-panels>
+      </div>
       
       <!-- основной вид -->
       <div 
-        v-if="!irregularView"
+        v-show="!irregularView"
         :class="noMargins === true ? 'ma-0' : 'ma-5'"
       >
         <div 
@@ -50,7 +94,7 @@
 
       <!-- альтернативный вид -->
       <div 
-        v-if="irregularView"
+        v-show="irregularView"
         :class="noMargins === true ? 'ma-0 mt-5' : 'ma-5 module_bg'"
       >
         <!-- добавить свойство v-model="panel" -->
@@ -122,54 +166,6 @@
         </v-expansion-panels>
       </div>
       
-      <!-- настройки -->
-      <div 
-        :class="noMargins === true ? 'ma-0' : 'mx-5 mb-10 module_bg'"
-      >
-        <v-expansion-panels
-            accordion
-            tile
-          >
-            <v-expansion-panel>
-              <v-expansion-panel-header>
-                <h2>Глобальные настройки</h2>
-                <template v-slot:actions>
-                  <v-icon>
-                    mdi-cog
-                  </v-icon>
-                </template>
-              </v-expansion-panel-header>
-              <v-expansion-panel-content
-              >
-                <v-checkbox
-                  info
-                  hide-details
-                  label="Использовать альтернативное отображение"
-                  v-model="irregularView"
-                  @change="saveTheme"
-                />
-                <v-checkbox
-                  info
-                  hide-details
-                  label="Убрать отступы"
-                  v-model="noMargins"
-                  @change="saveTheme"
-                />
-
-                <v-switch
-                  v-model="$vuetify.theme.dark"
-                  inset
-                  @change="saveTheme"
-                  label="альтернативная тема"
-                  persistent-hint
-                />
-
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          
-        </v-expansion-panels>
-      </div>
-
     </div>
   
   </v-app>
