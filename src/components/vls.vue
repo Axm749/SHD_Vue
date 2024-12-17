@@ -389,6 +389,18 @@
                 {{rulesViolationIcon}}
               </v-icon>
               {{ rulesViolationText }} 
+              <!-- {{ rulesViolation }} -->
+              <!-- {{ violation_2_1 }}
+              {{ violation_2_2 }}
+              {{ violation_2_3 }}
+              {{ violation_2_4 }}
+              {{ violation_2_5 }}
+              {{ violation_2_6 }}
+              {{ violation_2_7 }}
+              {{ violation_2_8_ice }}
+              {{ violation_2_8_Wind }}
+              {{ violation_2_9 }} -->
+              
           </p>
           </v-col>
           <v-col cols="3">
@@ -1202,33 +1214,60 @@ export default {
 
     // для таблицы ответа
     getRulesViolation () {
-      this.rulesViolation = (
         // 2.1
         this.getViolation_2_1()
         // 2.2
-        || this.getViolation_2_2()
+        this.getViolation_2_2()
         // 2.3
-        || this.getViolation_2_3()
+         this.getViolation_2_3()
         // 2.4
-        || this.getViolation_2_4()
+         this.getViolation_2_4()
         // 2.5
-        || this.getViolation_2_5()
+         this.getViolation_2_5()
         // 2.6
-        || this.getViolation_2_6()
+         this.getViolation_2_6()
         // 2.7
-        || this.getViolation_2_7()
+         this.getViolation_2_7()
         // 2.8
-        || this.getViolation_2_8_ice()
-        || this.getViolation_2_8_wind()
+         this.getViolation_2_8_ice()
+         this.getViolation_2_8_wind()
         // 2.9
-        || this.getViolation_2_9()
+         this.getViolation_2_9()
         // 2.10
-        || this.getViolation_2_10()
+         this.getViolation_2_10()
         // 2.11
-        || this.getViolation_2_11()
+         this.getViolation_2_11()
         // 2.13
-        || this.getViolation_2_13_S()
-        || this.getViolation_2_13_H()
+         this.getViolation_2_13_S()
+         this.getViolation_2_13_H()
+      
+      this.rulesViolation =(
+        // 2.1
+        this.violation_2_1
+        // 2.2
+        || this.violation_2_2
+        // 2.3
+        || this.violation_2_3
+        // 2.4
+        || this.violation_2_4
+        // 2.5
+        || this.violation_2_5
+        // 2.6
+        || this.violation_2_6
+        // 2.7
+        || this.violation_2_7
+        // 2.8
+        || this.violation_2_8_ice
+        || this.violation_2_8_wind
+        // 2.9
+        || this.violation_2_9
+        // 2.10
+        || this.violation_2_10
+        // 2.11
+        || this.violation_2_11
+        // 2.13
+        || this.violation_2_13_S
+        || this.violation_2_13_H
       )
     },
 
