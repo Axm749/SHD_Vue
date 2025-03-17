@@ -71,11 +71,10 @@
       >
         <template v-slot:label>
           <toolbarInfo
-            title="я хз что"
-            desc = "я хз, что это за число, но оно имеет значение 37 и в расчетах фигурирует на третьем узле при расчете резерва N+1"
+            title="число дисков в системе резервирования"
+            desc = "Оно имеет значение 37 и в расчетах фигурирует на третьем узле при расчете резерва N+1"
           />
         </template> 
-      
       </v-text-field>
 
 
@@ -679,7 +678,7 @@ export default {
       }
     },
     
-    sumItUp(){
+    sumItVolume(){
       this.sumItUpAnswer = 0
       this.convServParam.forEach( servParam => {
         this.sumItUpAnswer += (servParam.count*servParam.volume)
@@ -687,6 +686,14 @@ export default {
       console.log( `${this.sumItUpAnswer} ГБ      ${this.sumItUpAnswer/1024} ТБ`)
       return this.sumItUpAnswer
     }, // суммарный объём всех серверов в гиперконвергентной вкладке
+
+    sumItCount(){
+      var answer = 0
+      this.convServParam.forEach( servParam => {
+        answer += servParam.count
+      })
+      return answer
+    },
         
     getMbrVideo() {
       // console.log("cams_Mbr", (this.mBr = localStorage.getItem("Bitrate")));
@@ -731,7 +738,7 @@ export default {
       
       if(!this.converg) {
         
-        if (this.standart_discs) 
+        if (!this.standart_discs) 
           this.answer = this.standart_system(
           this.mBR_in_calcs,
           this.users,
@@ -751,7 +758,8 @@ export default {
       }
       if( this.converg)  {
         
-        if (this.standart_discs)  
+        if (!this.standart_discs){  
+          console.log("standart discs")
           this.answer = this.converg_system(
             this.mBR_in_calcs,
             this.users,
@@ -760,7 +768,7 @@ export default {
             8,
             this.VM_count,
             this.volume_per_VM
-          );
+          )}
         else  
           this.answer = this.converg_system(
             this.mBR_in_calcs,
@@ -858,7 +866,7 @@ export default {
         ));
       
       // ---------------------------------------------------------------------------------------
-      answer.volume_TB_with_reserve = answer.volume_TB + (this.strange * node_disc_capacity)
+      answer.volume_TB_with_reserve = answer.volume_TB + ((this.strange+1) * node_disc_capacity)
       // console.log("объём, вместе с резервом N+1, Tбайт:   ", answer.volume_TB_with_reserve);
       // вызывает вопросы то, что я обозначил за strange
       // ---------------------------------------------------------------------------------------
@@ -914,13 +922,13 @@ export default {
 
       // здесь буду считать по ядрам
       // мне тут нужно количество ядер в одном ПО
-      answer.nodes_cores = 0
+      answer.nodes_cores = Math.ceil(208 / (24*2))
 
 
       // здесь посчитаю по ОЗУ
       // тут нужно иметь объёмы серверов
-      answer.server_volume_GB = this.sumItUp()
-      answer.nodes_server_volume = Math.ceil( answer.server_volume_GB/(node_discs * node_disc_capacity) );
+      answer.server_volume_GB = this.sumItVolume()
+      answer.nodes_server_volume = Math.ceil( answer.server_volume_GB/384 );
 
 
       
@@ -960,7 +968,7 @@ export default {
         let disc_group = 0
         if(this.convergChecked){
 
-        server_volume = this.sumItUp()/1024
+        server_volume = this.sumItVolume()/1024
         disc_group = Math.ceil(server_volume*2 / 0.85);
         this.volume_with_copy = Math.ceil(disc_group+2*this.volume_TB)
 
