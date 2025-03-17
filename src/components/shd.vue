@@ -476,11 +476,94 @@
       class="pa-5 mt-5"
       v-show="started"
     >
+    <v-simple-table>
+      <template v-slot:default>
+        <thead>
+            <tr>
+              <th class="text-left">
+                Параметр
+              </th>
+              <th class="text-left">
+                Значение:
+              </th>
+              <!-- <th class="text-left" v-if="rulesViolation">
+                Примечания:
+              </th> -->
+              </tr>
+          </thead>
+          <tbody>
+            
+            <tr v-if="answer.nodes">
+              <td>число узлов в системе </td>
+              <td>
+                {{ answer.nodes }} шт.
+              </td>
+            </tr>
 
-        <p v-if="answer.nodes"> число узлов в системе {{ answer.nodes }} шт.</p>
-        <p v-if="answer.volume_TiB"> объём системы в тебибайтах {{ answer.volume_TiB }} TiB;</p>
-        <p v-if="answer.volume_TB"> объём системы в терабайтах {{ answer.volume_TB }} ТБ;</p>
-        
+            <tr v-if="answer.nodes_cores">
+              <td>число узлов в системе на основании числа ядер/потоков </td>
+              <td>
+                {{ answer.nodes_cores }} шт.
+              </td>
+            </tr>
+
+            <tr v-if="answer.nodes_server_RAM">
+              <td>число узлов в системе на основании общего ОЗУ </td>
+              <td>
+                {{ answer.nodes_server_RAM }} шт.
+              </td>
+            </tr>
+
+            <tr v-if="answer.nodes_volume">
+              <td>число узлов в системе на основании объёма </td>
+              <td>
+                {{ answer.nodes_volume }} шт.
+              </td>
+            </tr>
+
+
+
+
+            <tr v-if="answer.volume_TiB">
+              <td>объём системы в тебибайтах </td>
+              <td>
+                {{ answer.volume_TiB }} TiB
+              </td>
+            </tr>
+
+            <tr v-if="answer.volume_TB">
+              <td>объём системы в терабайтах </td>
+              <td>
+                {{ answer.volume_TB }} ТБ
+              </td>
+            </tr>
+
+            <tr v-if="answer.volume_mib">
+              <td>объём системы в Mib </td>
+              <td>
+                {{ answer.volume_mib }} MiB
+              </td>
+            </tr>
+
+            <tr v-if="answer.volume_TB_with_reserve">
+              <td>объём системы с резервом </td>
+              <td>
+                {{ answer.volume_TB_with_reserve }} TiB
+              </td>
+            </tr>
+
+            <tr v-if="answer.volume_osvm">
+              <td>объём необходимый для работы виртуальных машин </td>
+              <td>
+                {{ answer.volume_osvm }} TiB
+              </td>
+            </tr>
+
+
+          </tbody>
+      </template>
+    </v-simple-table>
+
 
         <v-btn
           disabled
@@ -617,8 +700,8 @@ export default {
       stability_coef:           20, // коэффициент запаса места для стабильной работы РСХД
       VM_count:                 14, // число виртуальных машин
       volume_per_VM:            3, // объём требуемый для одной ВМ
-      volume_osvm:              0,
-      volume_with_archive:      0,
+      // volume_osvm:              0,
+      // volume_with_archive:      0,
 
 
       
@@ -652,10 +735,6 @@ export default {
     
     // изменение списка дополнительных серверов для гиперконвергента
     extendConvServParamList(){
-      // console.log('hello, making a new member')
-      // console.log(this.convServParam)
-      // console.log(this.convServParam.length)
-      // console.log(this.convServParam[this.convServParam.length-1])
       this.convServParam.push({
         id: this.convServParam.length, 
         title: `type idk`, 
@@ -693,14 +772,12 @@ export default {
         answer += servParam.count
       })
       return answer
-    },
-        
+    },     
     getMbrVideo() {
       // console.log("cams_Mbr", (this.mBr = localStorage.getItem("Bitrate")));
       this.video = true;
       return (this.mBR_input = localStorage.getItem("Bitrate"));
     }, //Ф-ция, отвечающая за присвоение битрейта от видеокамер
-
     getVideo() {
       if (this.dialog === false) {
         this.dialog = true;
@@ -710,6 +787,7 @@ export default {
       }
     }, //Ф-ция, отвечающая за вкладку с видеонаблюдением
 
+
     getConverg(){
         if (this.dialog1 === false) {
         this.dialog1 = true;
@@ -718,7 +796,6 @@ export default {
         this.dialog1 = false;
       }
     },
-
     getStores(){
         if (this.dialog2 === false) {
         this.dialog2 = true;
@@ -733,6 +810,7 @@ export default {
     start() {
       this.started = true;
       this.getMbr();
+      this.answer = {}
 
       
       
@@ -779,10 +857,11 @@ export default {
             this.VM_count,
             this.volume_per_VM
           );
-        
         console.log("calculated converg system")
       }
 
+      this.usli = this.answer.nodes
+      this.Power()
 
     }, 
 
@@ -877,15 +956,18 @@ export default {
       return answer
     }, 
 
-
-
-
-
-
-
-
-
-
+    /***
+     * Функция расчета стандартных систем
+     * 
+     * @param {float}   mbr                 - 
+     * @param {integer} users               -
+     * @param {integer} days                -
+     * @param {integer} node_discs          -
+     * @param {float}   node_disc_capacity  -
+     * 
+     * @returns {object} answer
+     * я хочу переделать это под систему, которая сама получая ответ будет рисовать ответ
+     */
     //Функция расчета гиперконвергентных систем
     converg_system(
       mbr,
@@ -899,8 +981,6 @@ export default {
     ){
       /*
       Что же происходит здесь...
-
-
 
         Считается объём от ОДНОГО источника за сутки в MiB
         Далее перевод в TiB
@@ -918,120 +998,101 @@ export default {
       
       */ 
       var answer = {}
-
-
       // здесь буду считать по ядрам
       // мне тут нужно количество ядер в одном ПО
       answer.nodes_cores = Math.ceil(208 / (24*2))
-
-
       // здесь посчитаю по ОЗУ
       // тут нужно иметь объёмы серверов
       answer.server_volume_GB = this.sumItVolume()
-      answer.nodes_server_volume = Math.ceil( answer.server_volume_GB/384 );
+      answer.nodes_server_RAM = Math.ceil( answer.server_volume_GB/384 );
 
 
-      
-      
       answer.volume_mib = mbr * 3600 * 24 / 8 
       // console.log("volume", answer.volume_mib, "MiB");
       answer.volume_tib = answer.volume_mib / (1024*1024);
       // console.log("volume", answer.volume_tib, "TiB");
-
       answer.volume_with_archive = answer.volume_tib
-
+      answer.volume_TB = Math.ceil(this.TiB_to_TB(answer.volume_tib));
       if (this.options.value == "video"){
         answer.volume_video = Math.ceil(100*
           (answer.volume_tib + (this.daily_metatdata_GiB/1024) )
           * users * days * this.replica * (1 + this.stability_coef/100) / 0.85)/100
-
         // console.log("объём кластера для видеоданных ", answer.volume_video, "TiB")
         answer.volume_osvm = Math.ceil(VM_count * volume_per_VM);
-        
-        
-        
         answer.volume_with_archive = Math.ceil(answer.volume_video + answer.volume_osvm);
         answer.volume_TB = Math.ceil(this.TiB_to_TB(answer.volume_with_archive));
       }
-
-      answer.nodes_volume = Math.ceil( this.TiB_to_TB( answer.volume_TB / (node_discs * node_disc_capacity)))
-      
-
-      answer.nodes = Math.max(answer.nodes_volume, answer.nodes_server_volume, answer.nodes_cores)
+      answer.nodes_volume = Math.ceil( this.TiB_to_TB( answer.volume_TB / (node_discs * node_disc_capacity)))      
+      answer.nodes = Math.max(answer.nodes_volume, answer.nodes_server_RAM, answer.nodes_cores)
       console.log(answer)
       return answer
     },
 
 
-    Converg() {
-        let server_volume = 0
-        let disc_group = 0
-        if(this.convergChecked){
+    // Converg() {
+    //     let server_volume = 0
+    //     let disc_group = 0
+    //     if(this.convergChecked){
 
-        server_volume = this.sumItVolume()/1024
-        disc_group = Math.ceil(server_volume*2 / 0.85);
-        this.volume_with_copy = Math.ceil(disc_group+2*this.volume_TB)
+    //     server_volume = this.sumItVolume()/1024
+    //     disc_group = Math.ceil(server_volume*2 / 0.85);
+    //     this.volume_with_copy = Math.ceil(disc_group+2*this.volume_TB)
 
-        this.volume_useful_with_copy= Math.ceil(2*this.volume_TB + disc_group)/0.8
-        }
-        else{
-            this.volume_with_copy= Math.ceil(this.volume_TB*2)
-            console.log('Объём с резервным копированием   ', this.volume_with_copy)
-            this.volume_useful_with_copy = Math.ceil(this.volume_with_copy/0.7)
-            console.log('учетом резерва требуемая от СХД полезная ёмкость', this.volume_useful_with_copy)
-        }
-    }, //Ф-ция, учитывающая объём СХД с резервом (при гиперконвергентной системе)
+    //     this.volume_useful_with_copy= Math.ceil(2*this.volume_TB + disc_group)/0.8
+    //     }
+    //     else{
+    //         this.volume_with_copy= Math.ceil(this.volume_TB*2)
+    //         console.log('Объём с резервным копированием   ', this.volume_with_copy)
+    //         this.volume_useful_with_copy = Math.ceil(this.volume_with_copy/0.7)
+    //         console.log('учетом резерва требуемая от СХД полезная ёмкость', this.volume_useful_with_copy)
+    //     }
+    // }, //Ф-ция, учитывающая объём СХД с резервом (при гиперконвергентной системе)
 
 
 
-    Standart() {
-      if (!this.standart_discs){
-        // стандартные узлы
-        if (this.converg){
-          // гиперконвергентные системы
-          this.usli = Math.ceil(this.volume_useful_with_copy / 7 / 4);
-        } else {
-          // обычные системы
-          this.usli = Math.ceil(this.volume_TB / 15 / 8);
-        }
-      } else{
-        // свои узлы
-        if (this.converg){ 
-          // гиперконвергентные системы
-          this.usli = Math.ceil(this.volume_useful_with_copy / this.disc_count / this.disc_capacity);
-        } else {
-          // здесь не важно, какой тип системы, ведь оно учитывалось в объёме
-          this.usli = Math.ceil(this.volume_TB / this.disc_count / this.disc_capacity);
-        }
+    // Standart() {
+    //   if (!this.standart_discs){
+    //     // стандартные узлы
+    //     if (this.converg){
+    //       // гиперконвергентные системы
+    //       this.usli = Math.ceil(this.volume_useful_with_copy / 7 / 4);
+    //     } else {
+    //       // обычные системы
+    //       this.usli = Math.ceil(this.volume_TB / 15 / 8);
+    //     }
+    //   } else{
+    //     // свои узлы
+    //     if (this.converg){ 
+    //       // гиперконвергентные системы
+    //       this.usli = Math.ceil(this.volume_useful_with_copy / this.disc_count / this.disc_capacity);
+    //     } else {
+    //       // здесь не важно, какой тип системы, ведь оно учитывалось в объёме
+    //       this.usli = Math.ceil(this.volume_TB / this.disc_count / this.disc_capacity);
+    //     }
 
-      }
-      console.log(this.usli);
-      console.log(!!this.usli);
-      if (!this.usli){
-        this.snackbar = true
-        this.started = false
-        return
-      }
-      localStorage.setItem("usli", this.usli);
-      localStorage.setItem("usli", this.usli + 2);
-      this.$emit("Usli", this.usli);
-      this.Power()
-      // console.log('emitting Usli')
+    //   }
+    //   console.log(this.usli);
+    //   console.log(!!this.usli);
+    //   if (!this.usli){
+    //     this.snackbar = true
+    //     this.started = false
+    //     return
+    //   }
+    //   localStorage.setItem("usli", this.usli);
+    //   localStorage.setItem("usli", this.usli + 2);
+    //   this.$emit("Usli", this.usli);
+    //   this.Power()
+    //   // console.log('emitting Usli')
       
 
-    }, //Ф-ция, рассчитывающа число узлов для различных типов систем и узлов
+    // }, //Ф-ция, рассчитывающа число узлов для различных типов систем и узлов
     
 
     // перевод из тебибайтов в терабайты
+    
     TiB_to_TB(TiB_value){
       return ( TiB_value / 0.85 / 0.9094947011773 )
     },
-
-
-
-
-
-
 
     Power() {
       if (this.converg) {
