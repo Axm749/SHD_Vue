@@ -57,25 +57,7 @@
       </v-text-field>
 
 
-      <v-text-field
-        flat
-        type="number"
-        required
-        outlined
-        clearable
-        label="неизвестно что "
-        :rules="rule"
-        hide-details="auto"
-        v-model.number="strange"
-        class="mt-5"
-      >
-        <template v-slot:label>
-          <toolbarInfo
-            title="число дисков в системе резервирования"
-            desc = "Оно имеет значение 37 и в расчетах фигурирует на третьем узле при расчете резерва N+1"
-          />
-        </template> 
-      </v-text-field>
+      
 
 
 
@@ -85,7 +67,7 @@
         info
         hide-details
         label="Узел не стандартный?"
-        v-model="standart_discs"
+        v-model="not_standart_discs"
         class="mt-5"
       />
       <!-- гиперконвергентность -->
@@ -98,7 +80,7 @@
       />
 
       <!-- если диск нестандартный -->
-      <template v-if="standart_discs">
+      <template v-if="not_standart_discs">
         <v-dialog
           v-model="dialog2"
           transition="dialog-bottom-transition"
@@ -211,45 +193,8 @@
               outlined
               class="pa-5"
             >
-              <h1>Другие параметры</h1>
-              <v-text-field
-                flat
-                type="number"
-                required
-                outlined
-                clearable
-                :rules="rule"
-                hide-details="auto"
-                v-model.number="replica"
-                class="mt-5"
-              >
-                <template v-slot:label>
-                  <toolbarInfo
-                    title="Коэффициент репликации"
-                    desc = "Количество реплик внутри базы данных"
-                  />
-                </template> 
-              </v-text-field>
-                
-
-              <v-text-field
-                flat
-                type="number"
-                required
-                outlined
-                clearable
-                :rules="rule"
-                hide-details="auto"
-                v-model.number="stability_coef"
-                class="mt-5"
-              >
-                <template v-slot:label>
-                  <toolbarInfo
-                    title="Коэффициент стабильности (%)"
-                    desc = "сколько нужно процентов запасного места (не меньше нуля)"
-                  />
-                </template> 
-              </v-text-field>
+              <h1>Виртуальные машины</h1>
+              
 
               <v-text-field
                 flat
@@ -434,6 +379,25 @@
 
       <!-- доступ к вычислениям видеонаблюдения -->
       <template v-if="options.value == 'video'">
+        <v-text-field
+          flat
+          type="number"
+          required
+          outlined
+          clearable
+          :rules="rule"
+          hide-details="auto"
+          v-model.number="daily_metatdata_GiB"
+          class="mt-5"
+        >
+          <template v-slot:label>
+            <toolbarInfo
+              title="Метаданные в день (GiB)"
+              desc = "Среднесуточный объём метаданных для хранения типа данных"
+            />
+          </template> 
+        </v-text-field>
+        
         <v-dialog
           v-model="dialog"
           novalidate
@@ -462,12 +426,259 @@
 
 
       <!-- старт -->
-      <v-btn 
-        @click="start" 
-        color="primary" 
-        class="mt-5"
-        width="100%"
-      >Старт</v-btn>
+      <v-row
+      class="mt-2"
+      >
+        <v-col
+        cols="100%"
+        >
+          <v-btn 
+            @click="start" 
+            color="primary" 
+            width="100%"
+          >Старт</v-btn>
+        </v-col>
+        <v-col
+        cols="auto"
+        >
+          
+          <v-menu 
+            top 
+            offset-y 
+            :close-on-content-click="false" 
+            v-model="menu"
+          >
+          
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                class="mt-2"
+                v-bind="attrs"
+                v-on="on"
+              >mdi-cog
+              </v-icon>
+            </template>
+            <v-card>
+              <v-list
+              
+              >
+                <!-- ////////////////////////////////////////////////////////////////// -->
+                  <v-list-item>
+                    <v-list-item-content>
+                      <v-list-item-title>Параметр резервирования</v-list-item-title>
+                      <v-list-item-subtitle>число дисков в системе резервирования</v-list-item-subtitle>
+                    </v-list-item-content>
+                    <v-list-item-action>
+                      <v-text-field
+                        flat
+                        type="number"
+                        required
+                        outlined
+                        clearable
+                        label="неизвестно что "
+                        :rules="rule"
+                        hide-details="auto"
+                        v-model.number="strange"
+                        class="mt-5"
+                      >
+                        <template v-slot:label>
+                          <toolbarInfo
+                            title="число дисков в системе резервирования"
+                            desc = "Оно имеет значение 37 и в расчетах фигурирует на третьем узле при расчете резерва N+1"
+                          />
+                        </template> 
+                      </v-text-field>
+                    </v-list-item-action>
+                  </v-list-item>
+
+                  <v-list-item v-if="options.value == 'video'">
+                    <v-list-item-content>
+                      <v-list-item-title>Метаданные в день (GiB)</v-list-item-title>
+                      <v-list-item-subtitle>Среднесуточный объём метаданных для хранения типа данных</v-list-item-subtitle>
+                    </v-list-item-content>
+                    <v-list-item-action>
+                      <v-text-field
+                        flat
+                        type="number"
+                        required
+                        outlined
+                        clearable
+                        :rules="rule"
+                        hide-details="auto"
+                        v-model.number="daily_metatdata_GiB"
+                        class="mt-5"
+                      >
+                        <template v-slot:label>
+                          <toolbarInfo
+                            title="Метаданные в день (GiB)"
+                            desc = "Среднесуточный объём метаданных для хранения типа данных"
+                          />
+                        </template> 
+                      </v-text-field>
+                
+                    </v-list-item-action>
+                  </v-list-item>
+                  
+                <!-- ////////////////////////////////////////////////////////////////// -->
+                <v-list-group
+                  :value="false"
+                  no-action
+                  sub-group
+                >
+                  <template v-slot:activator>
+                    <v-list-item-content>
+                      <v-list-item-title>Для гиперконвергентных систем</v-list-item-title>
+                    </v-list-item-content>
+                  </template>
+                
+
+                  <v-list-item >
+                    <v-list-item-content>
+                      <v-list-item-title>Коэффициент репликации</v-list-item-title>
+                      <v-list-item-subtitle>Количество реплик внутри базы данных</v-list-item-subtitle>
+                    </v-list-item-content>
+                    <v-list-item-action>
+                      <v-text-field
+                        flat
+                        type="number"
+                        required
+                        outlined
+                        clearable
+                        :rules="rule"
+                        hide-details="auto"
+                        v-model.number="replica"
+                        class="mt-5"
+                      >
+                        <template v-slot:label>
+                          <toolbarInfo
+                            title="Коэффициент репликации"
+                            desc = "Количество реплик внутри базы данных"
+                          />
+                        </template> 
+                      </v-text-field>
+                
+                    </v-list-item-action>
+                  </v-list-item>
+                <!-- ////////////////////////////////////////////////////////////////// -->
+                  <v-list-item >
+                    <v-list-item-content>
+                      <v-list-item-title>Коэффициент стабильности (%)</v-list-item-title>
+                      <v-list-item-subtitle>сколько нужно процентов запасного места (не меньше нуля)</v-list-item-subtitle>
+                    </v-list-item-content>
+                    <v-list-item-action>
+                      <v-text-field
+                        flat
+                        type="number"
+                        required
+                        outlined
+                        clearable
+                        :rules="rule"
+                        hide-details="auto"
+                        v-model.number="stability_coef"
+                        class="mt-5"
+                      >
+                        <template v-slot:label>
+                          <toolbarInfo
+                            title="Коэффициент стабильности (%)"
+                            desc = "сколько нужно процентов запасного места (не меньше нуля)"
+                          />
+                        </template> 
+                      </v-text-field>
+                    </v-list-item-action>
+                  </v-list-item>
+                <!-- ////////////////////////////////////////////////////////////////// -->
+                  <v-list-item three-line>
+                    <v-list-item-content>
+                      <v-list-item-title>Общее число потоков для работы системы</v-list-item-title>
+                      <v-list-item-subtitle>Суммарное число потоков процессора, необходимое для исправной работы всего ПО</v-list-item-subtitle>
+                    </v-list-item-content>
+                    <v-list-item-action>
+                      <v-text-field
+                        flat
+                        type="number"
+                        required
+                        outlined
+                        clearable
+                        :rules="rule"
+                        hide-details="auto"
+                        v-model.number="requiered_threads"
+                        class="mt-5"
+                      >
+                        <template v-slot:label>
+                          <toolbarInfo
+                            title="Общее число потоков для работы системы"
+                            desc = "Суммарное число потоков процессора, необходимое для исправной работы всего ПО"
+                          />
+                        </template> 
+                      </v-text-field>
+                    </v-list-item-action>
+                  </v-list-item>
+
+                  <v-list-item >
+                    <v-list-item-content>
+                      <v-list-item-title>Число ядер в одной ноде</v-list-item-title>
+                      <v-list-item-subtitle>Число физических ядер в каждой ноде, шт</v-list-item-subtitle>
+                    </v-list-item-content>
+                    <v-list-item-action>
+                      <v-text-field
+                        flat
+                        type="number"
+                        required
+                        outlined
+                        clearable
+                        :rules="rule"
+                        hide-details="auto"
+                        v-model.number="cores_per_node"
+                        class="mt-5"
+                      >
+                        <template v-slot:label>
+                          <toolbarInfo
+                            title="Число ядер в одной ноде"
+                            desc = "Число физических ядер в каждой ноде, шт"
+                          />
+                        </template> 
+                      </v-text-field>
+                    </v-list-item-action>
+                  </v-list-item>
+
+
+                  <v-list-item >
+                    <v-list-item-content>
+                      <v-list-item-title>Процессоры имеют гипертрединг?</v-list-item-title>
+                      <v-list-item-subtitle>Имеет ли одно физическое ядро два виртуальных потока</v-list-item-subtitle>
+                    </v-list-item-content>
+                    <v-list-item-action>
+                      <v-checkbox
+                        info
+                        hide-details
+                        v-model="multithread"
+                      />
+                    </v-list-item-action>
+                  </v-list-item>
+
+
+
+                </v-list-group>
+
+
+
+
+
+
+
+                <v-btn
+                  color="primary"
+                  text
+                  @click="menu = false"
+                >
+                  закрыть
+                </v-btn>
+              </v-list>
+            </v-card>
+          </v-menu>
+
+        </v-col>
+      </v-row>
+      
     </v-card>
 
 
@@ -491,6 +702,7 @@
               </th> -->
               </tr>
           </thead>
+
           <tbody>
             
             <tr v-if="answer.nodes">
@@ -619,6 +831,7 @@ export default {
       snackbar: false,      // окошко об ошибке
       timeout: 2500,
       errorText: 'Неверно введены данные или они отсутствуют',
+      menu: false,
 
 
       // для пункта с информацией о модуле
@@ -700,6 +913,9 @@ export default {
       stability_coef:           20, // коэффициент запаса места для стабильной работы РСХД
       VM_count:                 14, // число виртуальных машин
       volume_per_VM:            3, // объём требуемый для одной ВМ
+      requiered_threads:        208,
+      cores_per_node:           24,
+      multithread:              true,
       // volume_osvm:              0,
       // volume_with_archive:      0,
 
@@ -714,7 +930,7 @@ export default {
       days: "...", //Дни для рассчёта
       disc_capacity:   8, //Объём дисков в узлах
       disc_count:      15, //Кол-во дисков в узлах
-      standart_discs: false, //Параметр, отвечающий за стандартные/нестандартные узлы(по умолчанию стандартные узлы)
+      not_standart_discs: false, //Параметр, отвечающий за стандартные/нестандартные узлы(по умолчанию стандартные узлы)
       converg: false, //Параметр, отвечающий за гиперконвергентную/негиперконвергентную систему(по умолчанию негиперконвергентная)
       dialog: false, //Параметр, отвечающий за отображение видеонаблюдения
       dialog1: false,
@@ -799,7 +1015,7 @@ export default {
     getStores(){
         if (this.dialog2 === false) {
         this.dialog2 = true;
-        this.standart_discs = true
+        this.not_standart_discs = true
       } else {
         this.dialog2 = false;
       }
@@ -811,12 +1027,11 @@ export default {
       this.started = true;
       this.getMbr();
       this.answer = {}
-
       
       
       if(!this.converg) {
         
-        if (!this.standart_discs) 
+        if (!this.not_standart_discs) 
           this.answer = this.standart_system(
           this.mBR_in_calcs,
           this.users,
@@ -836,7 +1051,7 @@ export default {
       }
       if( this.converg)  {
         
-        if (!this.standart_discs){  
+        if (!this.not_standart_discs){  
           console.log("standart discs")
           this.answer = this.converg_system(
             this.mBR_in_calcs,
@@ -1000,7 +1215,11 @@ export default {
       var answer = {}
       // здесь буду считать по ядрам
       // мне тут нужно количество ядер в одном ПО
-      answer.nodes_cores = Math.ceil(208 / (24*2))
+      // необходимое число потоков для работы всего ПО = requiered_threads
+      // число потоков в одном узле = threads_per_node
+      var double_thread = this.multithread ? 2 : 1
+      // console.log(`double_thread = ${double_thread}`)
+      answer.nodes_cores = Math.ceil(this.requiered_threads / (this.threads_per_node * double_thread))
       // здесь посчитаю по ОЗУ
       // тут нужно иметь объёмы серверов
       answer.server_volume_GB = this.sumItVolume()
@@ -1028,72 +1247,11 @@ export default {
       return answer
     },
 
-
-    // Converg() {
-    //     let server_volume = 0
-    //     let disc_group = 0
-    //     if(this.convergChecked){
-
-    //     server_volume = this.sumItVolume()/1024
-    //     disc_group = Math.ceil(server_volume*2 / 0.85);
-    //     this.volume_with_copy = Math.ceil(disc_group+2*this.volume_TB)
-
-    //     this.volume_useful_with_copy= Math.ceil(2*this.volume_TB + disc_group)/0.8
-    //     }
-    //     else{
-    //         this.volume_with_copy= Math.ceil(this.volume_TB*2)
-    //         console.log('Объём с резервным копированием   ', this.volume_with_copy)
-    //         this.volume_useful_with_copy = Math.ceil(this.volume_with_copy/0.7)
-    //         console.log('учетом резерва требуемая от СХД полезная ёмкость', this.volume_useful_with_copy)
-    //     }
-    // }, //Ф-ция, учитывающая объём СХД с резервом (при гиперконвергентной системе)
-
-
-
-    // Standart() {
-    //   if (!this.standart_discs){
-    //     // стандартные узлы
-    //     if (this.converg){
-    //       // гиперконвергентные системы
-    //       this.usli = Math.ceil(this.volume_useful_with_copy / 7 / 4);
-    //     } else {
-    //       // обычные системы
-    //       this.usli = Math.ceil(this.volume_TB / 15 / 8);
-    //     }
-    //   } else{
-    //     // свои узлы
-    //     if (this.converg){ 
-    //       // гиперконвергентные системы
-    //       this.usli = Math.ceil(this.volume_useful_with_copy / this.disc_count / this.disc_capacity);
-    //     } else {
-    //       // здесь не важно, какой тип системы, ведь оно учитывалось в объёме
-    //       this.usli = Math.ceil(this.volume_TB / this.disc_count / this.disc_capacity);
-    //     }
-
-    //   }
-    //   console.log(this.usli);
-    //   console.log(!!this.usli);
-    //   if (!this.usli){
-    //     this.snackbar = true
-    //     this.started = false
-    //     return
-    //   }
-    //   localStorage.setItem("usli", this.usli);
-    //   localStorage.setItem("usli", this.usli + 2);
-    //   this.$emit("Usli", this.usli);
-    //   this.Power()
-    //   // console.log('emitting Usli')
-      
-
-    // }, //Ф-ция, рассчитывающа число узлов для различных типов систем и узлов
-    
-
-    // перевод из тебибайтов в терабайты
-    
+    // перевод из тебибайтов в терабайты  
     TiB_to_TB(TiB_value){
       return ( TiB_value / 0.85 / 0.9094947011773 )
     },
-
+    //Ф-ция, передающая параметр мощности в зависимости от типа системы
     Power() {
       if (this.converg) {
         //Мощность при гиперконвергентной системе
@@ -1110,7 +1268,7 @@ export default {
         localStorage.setItem("wats", this.wats);
         this.$emit("Power", this.wats);
       }
-    }, //Ф-ция, передающая параметр мощности в зависимости от типа системы
+    },
 
   
   },
