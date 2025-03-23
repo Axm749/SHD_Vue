@@ -321,12 +321,6 @@
                 @click="extendConvServParamList"
                 class="ma-5"
               >добавить</v-btn>
-
-              <!-- <v-btn
-                color="success"
-                @click="sumItUp"
-                class="mt-5"
-              >суммарный объём</v-btn> -->
           
             </v-card>
           </div>
@@ -438,6 +432,7 @@
             width="100%"
           >Старт</v-btn>
         </v-col>
+        <!-- настройки -->
         <v-col
         cols="auto"
         >
@@ -462,6 +457,33 @@
               
               >
                 <!-- ////////////////////////////////////////////////////////////////// -->
+                  <v-list-item >
+                    <v-list-item-content>
+                      <v-list-item-title>Число знаков при округлении</v-list-item-title>
+                      <v-list-item-subtitle>число знаков после запятой, шт</v-list-item-subtitle>
+                    </v-list-item-content>
+                    <v-list-item-action>
+                      <v-text-field
+                        flat
+                        type="number"
+                        required
+                        outlined
+                        clearable
+                        :rules="rule"
+                        hide-details="auto"
+                        v-model.number="decimalsRounding"
+                        class="mt-5"
+                      >
+                        <template v-slot:label>
+                          <toolbarInfo
+                            title="Число знаков при округлении"
+                            desc = "число знаков после запятой, шт"
+                          />
+                        </template> 
+                      </v-text-field>
+                    </v-list-item-action>
+                  </v-list-item>  
+                
                   <v-list-item>
                     <v-list-item-content>
                       <v-list-item-title>Параметр резервирования</v-list-item-title>
@@ -487,34 +509,6 @@
                           />
                         </template> 
                       </v-text-field>
-                    </v-list-item-action>
-                  </v-list-item>
-
-                  <v-list-item v-if="options.value == 'video'">
-                    <v-list-item-content>
-                      <v-list-item-title>Метаданные в день (GiB)</v-list-item-title>
-                      <v-list-item-subtitle>Среднесуточный объём метаданных для хранения типа данных</v-list-item-subtitle>
-                    </v-list-item-content>
-                    <v-list-item-action>
-                      <v-text-field
-                        flat
-                        type="number"
-                        required
-                        outlined
-                        clearable
-                        :rules="rule"
-                        hide-details="auto"
-                        v-model.number="daily_metatdata_GiB"
-                        class="mt-5"
-                      >
-                        <template v-slot:label>
-                          <toolbarInfo
-                            title="Метаданные в день (GiB)"
-                            desc = "Среднесуточный объём метаданных для хранения типа данных"
-                          />
-                        </template> 
-                      </v-text-field>
-                
                     </v-list-item-action>
                   </v-list-item>
                   
@@ -659,8 +653,8 @@
 
                 </v-list-group>
 
-
-
+                
+                <!-- decimalsRounding -->
 
 
 
@@ -678,15 +672,14 @@
 
         </v-col>
       </v-row>
-      
-    </v-card>
 
 
     <!-- результаты вычислений -->
-    <v-card 
+    <div 
       class="pa-5 mt-5"
       v-show="started"
     >
+    <v-divider/>
     <v-simple-table>
       <template v-slot:default>
         <thead>
@@ -705,10 +698,15 @@
 
           <tbody>
             
-            <tr v-if="answer.nodes">
+            <tr>
               <td>число узлов в системе </td>
               <td>
+                <v-chip
+                  color="primary"
+                  dark
+                >
                 {{ answer.nodes }} шт.
+                </v-chip>
               </td>
             </tr>
 
@@ -785,6 +783,7 @@
           @click="started=false"
           class="mt-2"
         >скрыть</v-btn>
+    </div>
     </v-card>
 
     <!-- уведомление об ошибке -->
@@ -832,6 +831,7 @@ export default {
       timeout: 2500,
       errorText: 'Неверно введены данные или они отсутствуют',
       menu: false,
+      decimalsRounding: 4,
 
 
       // для пункта с информацией о модуле
@@ -950,16 +950,7 @@ export default {
   methods: {
     
     // изменение списка дополнительных серверов для гиперконвергента
-    extendConvServParamList(){
-      this.convServParam.push({
-        id: this.convServParam.length, 
-        title: `type idk`, 
-        count: 1, 
-        volume: 0,
-      }) 
-      
-      // console.log(this.convServParam)
-    },
+
     deleteItem: function (item, index) {
       if(this.convServParam[index] === item) { 
       // The template passes index as the second parameter to avoid indexOf, 
@@ -1076,6 +1067,8 @@ export default {
       }
 
       this.usli = this.answer.nodes
+      localStorage.setItem("usli", this.usli);
+      this.$emit("Usli", this.usli);
       this.Power()
 
     }, 
@@ -1216,32 +1209,47 @@ export default {
       // здесь буду считать по ядрам
       // мне тут нужно количество ядер в одном ПО
       // необходимое число потоков для работы всего ПО = requiered_threads
-      // число потоков в одном узле = threads_per_node
+      // число ядер в одном узле = cores_per_node
       var double_thread = this.multithread ? 2 : 1
-      // console.log(`double_thread = ${double_thread}`)
-      answer.nodes_cores = Math.ceil(this.requiered_threads / (this.threads_per_node * double_thread))
+      console.log(`double_thread = ${double_thread}`)
+      answer.nodes_cores = Math.ceil(this.requiered_threads / (this.cores_per_node * double_thread))
+      console.log(`${this.requiered_threads} / (${this.cores_per_node}*${double_thread})`)
+      
       // здесь посчитаю по ОЗУ
       // тут нужно иметь объёмы серверов
       answer.server_volume_GB = this.sumItVolume()
       answer.nodes_server_RAM = Math.ceil( answer.server_volume_GB/384 );
 
 
+
+
       answer.volume_mib = mbr * 3600 * 24 / 8 
-      // console.log("volume", answer.volume_mib, "MiB");
+      console.log("volume", answer.volume_mib, "MiB");
       answer.volume_tib = answer.volume_mib / (1024*1024);
-      // console.log("volume", answer.volume_tib, "TiB");
+      console.log("volume", answer.volume_tib, "TiB");
+
       answer.volume_with_archive = answer.volume_tib
+
       answer.volume_TB = Math.ceil(this.TiB_to_TB(answer.volume_tib));
+
       if (this.options.value == "video"){
-        answer.volume_video = Math.ceil(100*
-          (answer.volume_tib + (this.daily_metatdata_GiB/1024) )
-          * users * days * this.replica * (1 + this.stability_coef/100) / 0.85)/100
-        // console.log("объём кластера для видеоданных ", answer.volume_video, "TiB")
+        answer.volume_video = 0.01 * Math.ceil( 100 *
+          (answer.volume_tib + (this.daily_metatdata_GiB/1024) ) * users * days * this.replica * (1 + (this.stability_coef/100)) / 0.85
+        )
+        console.log("объём кластера для видеоданных ", answer.volume_video, "TiB")
         answer.volume_osvm = Math.ceil(VM_count * volume_per_VM);
+
         answer.volume_with_archive = Math.ceil(answer.volume_video + answer.volume_osvm);
-        answer.volume_TB = Math.ceil(this.TiB_to_TB(answer.volume_with_archive));
+        //  здесь объём всё ещё в TiB
+
+        // перевожу обём с учетом архива в терабайты
+        answer.volume_TB = this.TiB_to_TB(answer.volume_with_archive).toFixed(this.decimalsRounding);
       }
-      answer.nodes_volume = Math.ceil( this.TiB_to_TB( answer.volume_TB / (node_discs * node_disc_capacity)))      
+
+      // число нод исходя из общего объёма
+      // здесь все величины в терабайтах
+      answer.nodes_volume = Math.ceil( answer.volume_TB / (node_discs * node_disc_capacity))      
+      
       answer.nodes = Math.max(answer.nodes_volume, answer.nodes_server_RAM, answer.nodes_cores)
       console.log(answer)
       return answer
