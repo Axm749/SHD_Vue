@@ -530,7 +530,7 @@ export default {
 
 
         heat_label: function () {
-            return `Максимальное тепловыделение (${this.measureUnit})       `
+            return this.componentInfo.incomes[2].toString() +` (${this.measureUnit})       `
         },
         heat_label_description: function () {
             return this.componentInfo.incomes[2].toString() +` Измеряется в ${this.measureUnit}       `
