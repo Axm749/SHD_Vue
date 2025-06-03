@@ -318,7 +318,9 @@
 
               <v-btn
                 color="primary"
-                @click="extendConvServParamList"
+                @click="convServParam.push(
+                  {id: 0, title: `новый`, count: 1, volume: 1}
+                )"
                 class="ma-5"
               >добавить</v-btn>
           
@@ -452,17 +454,26 @@
               >mdi-cog
               </v-icon>
             </template>
-            <v-card>
-              <v-list
-              
+            <v-card class="overflow-auto">
+              <v-toolbar
+                color="primary"
+                dark
               >
+
+                <v-toolbar-title>
+                  Настройки модуля
+                </v-toolbar-title>
+                
+              </v-toolbar>
+              <v-col> 
+                <v-col>
                 <!-- ////////////////////////////////////////////////////////////////// -->
-                  <v-list-item >
-                    <v-list-item-content>
+                  <v-row>
+                    <!-- <v-list-item-content>
                       <v-list-item-title>Число знаков при округлении</v-list-item-title>
                       <v-list-item-subtitle>число знаков после запятой, шт</v-list-item-subtitle>
-                    </v-list-item-content>
-                    <v-list-item-action>
+                    </v-list-item-content> -->
+                    <!-- <v-list-item-action> -->
                       <v-text-field
                         flat
                         type="number"
@@ -481,15 +492,15 @@
                           />
                         </template> 
                       </v-text-field>
-                    </v-list-item-action>
-                  </v-list-item>  
+                    <!-- </v-list-item-action> -->
+                  </v-row>  
                 
-                  <v-list-item>
-                    <v-list-item-content>
+                  <v-row>
+                    <!-- <v-list-item-content>
                       <v-list-item-title>Параметр резервирования</v-list-item-title>
                       <v-list-item-subtitle>число дисков в системе резервирования</v-list-item-subtitle>
                     </v-list-item-content>
-                    <v-list-item-action>
+                    <v-list-item-action> -->
                       <v-text-field
                         flat
                         type="number"
@@ -509,28 +520,17 @@
                           />
                         </template> 
                       </v-text-field>
-                    </v-list-item-action>
-                  </v-list-item>
-                  
+                    <!-- </v-list-item-action> -->
+                  </v-row>
+                </v-col>
                 <!-- ////////////////////////////////////////////////////////////////// -->
-                <v-list-group
-                  :value="false"
-                  no-action
-                  sub-group
-                >
-                  <template v-slot:activator>
-                    <v-list-item-content>
-                      <v-list-item-title>Для гиперконвергентных систем</v-list-item-title>
-                    </v-list-item-content>
-                  </template>
-                
-
-                  <v-list-item >
-                    <v-list-item-content>
-                      <v-list-item-title>Коэффициент репликации</v-list-item-title>
-                      <v-list-item-subtitle>Количество реплик внутри базы данных</v-list-item-subtitle>
-                    </v-list-item-content>
-                    <v-list-item-action>
+                <v-divider class="py-3"/>
+                <v-expansion-panels flat tile>
+                  <v-expansion-panel>
+                    <v-expansion-panel-header>
+                        Для гиперконвергентных систем
+                    </v-expansion-panel-header>
+                    <v-expansion-panel-content>
                       <v-text-field
                         flat
                         type="number"
@@ -549,16 +549,6 @@
                           />
                         </template> 
                       </v-text-field>
-                
-                    </v-list-item-action>
-                  </v-list-item>
-                <!-- ////////////////////////////////////////////////////////////////// -->
-                  <v-list-item >
-                    <v-list-item-content>
-                      <v-list-item-title>Коэффициент стабильности (%)</v-list-item-title>
-                      <v-list-item-subtitle>сколько нужно процентов запасного места (не меньше нуля)</v-list-item-subtitle>
-                    </v-list-item-content>
-                    <v-list-item-action>
                       <v-text-field
                         flat
                         type="number"
@@ -577,16 +567,7 @@
                           />
                         </template> 
                       </v-text-field>
-                    </v-list-item-action>
-                  </v-list-item>
-                <!-- ////////////////////////////////////////////////////////////////// -->
-                  <v-list-item three-line>
-                    <v-list-item-content>
-                      <v-list-item-title>Общее число потоков для работы системы</v-list-item-title>
-                      <v-list-item-subtitle>Суммарное число потоков процессора, необходимое для исправной работы всего ПО</v-list-item-subtitle>
-                    </v-list-item-content>
-                    <v-list-item-action>
-                      <v-text-field
+                       <v-text-field
                         flat
                         type="number"
                         required
@@ -604,15 +585,6 @@
                           />
                         </template> 
                       </v-text-field>
-                    </v-list-item-action>
-                  </v-list-item>
-
-                  <v-list-item >
-                    <v-list-item-content>
-                      <v-list-item-title>Число ядер в одной ноде</v-list-item-title>
-                      <v-list-item-subtitle>Число физических ядер в каждой ноде, шт</v-list-item-subtitle>
-                    </v-list-item-content>
-                    <v-list-item-action>
                       <v-text-field
                         flat
                         type="number"
@@ -631,34 +603,23 @@
                           />
                         </template> 
                       </v-text-field>
-                    </v-list-item-action>
-                  </v-list-item>
-
-
-                  <v-list-item >
-                    <v-list-item-content>
-                      <v-list-item-title>Процессоры имеют гипертрединг?</v-list-item-title>
-                      <v-list-item-subtitle>Имеет ли одно физическое ядро два виртуальных потока</v-list-item-subtitle>
-                    </v-list-item-content>
-                    <v-list-item-action>
-                      <v-checkbox
-                        info
-                        hide-details
-                        v-model="multithread"
-                      />
-                    </v-list-item-action>
-                  </v-list-item>
-
-
-
-                </v-list-group>
-
+                      <div class="d-flex flex-row">
+                        <v-checkbox
+                            info
+                            hide-details
+                            v-model="multithread"
+                            label="имеется гипертрединг"
+                          ></v-checkbox>
+                          <toolbarInfo
+                          class="mt-5 ml-2"
+                            title=""
+                            desc = "обладает ли одно физическое ядро двумя логическими потоками"
+                          />
+                      </div>
+                    </v-expansion-panel-content>
+                  </v-expansion-panel>
+                </v-expansion-panels>
                 
-                <!-- decimalsRounding -->
-
-
-
-
                 <v-btn
                   color="primary"
                   text
@@ -666,7 +627,7 @@
                 >
                   закрыть
                 </v-btn>
-              </v-list>
+              </v-col>
             </v-card>
           </v-menu>
 
@@ -775,10 +736,10 @@
     </v-simple-table>
 
 
-        <v-btn
+        <!-- <v-btn
           disabled
           class="mt-2  mr-5"
-        >сохранить (WIP)</v-btn>
+        >сохранить (WIP)</v-btn> -->
         <v-btn
           @click="started=false"
           class="mt-2"
@@ -1015,6 +976,8 @@ export default {
     
     
     start() {
+
+
       this.started = true;
       this.getMbr();
       this.answer = {}
@@ -1067,6 +1030,11 @@ export default {
       }
 
       this.usli = this.answer.nodes
+      if ((!this.usli || this.usli== Infinity) || (!this.options.value)){
+                this.snackbar = true
+                this.started = false
+                return
+            }
       localStorage.setItem("usli", this.usli);
       this.$emit("Usli", this.usli);
       this.Power()
@@ -1130,19 +1098,11 @@ export default {
         Затем ветвление, на основании режима
         Если режим видеонаблюдения, то к объёму прибавляется объём метаданных на обработку видео
         Если любой другой, то этот шаг пропускается.
-
-        Далее 
-
-      
       */
 
       var answer = {}
-
       answer.volume_mib = mbr * users * days * 3600 * 24 / 8;
-
       answer.volume_TiB = Math.ceil(answer.volume_mib / (1024*1024));
-
-
       if (this.options.value == "video"){
         answer.volume_metadata_tib = this.daily_metatdata_GiB * days * users / 1024;
         answer.volume_TiB += Math.ceil(100* answer.volume_metadata_tib)/100
