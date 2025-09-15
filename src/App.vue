@@ -90,6 +90,15 @@
             ref="vls"
           />
         </div>
+
+        <div 
+          v-if="debug"
+          :class="noMargins === true ? 'mt-2' : 'mt-2 module_bg'"
+        >
+          <lotok
+            ref="lotok"
+          />
+        </div>
       </div>
 
       <!-- альтернативный вид -->
@@ -162,6 +171,23 @@
               </div>
             </v-expansion-panel-content>
           </v-expansion-panel>
+
+          <!-- Лотки -->
+          <v-expansion-panel eager
+                  v-if="debug">
+            <v-expansion-panel-header
+              expand-icon="mdi-menu-down"
+            >
+              <h2>Размеры лотков</h2>
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <div class="mx-n6">
+                <lotok
+                  ref="lotok"
+                />
+              </div>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
           
         </v-expansion-panels>
       </div>
@@ -175,8 +201,9 @@
 
 import power from './components/power.vue';
 import shd from './components/shd.vue';
-import cooling from './components/cooling.vue'
-import vls from './components/vls.vue'
+import cooling from './components/cooling.vue';
+import vls from './components/vls.vue';
+import lotok from './components/lotok.vue'
 
 
 export default {
@@ -186,13 +213,15 @@ export default {
     shd,
     power,
     cooling,
-    vls    
+    vls,
+    lotok
   },
 
   data: () => ({
     // здесь разве что настройки
     irregularView: false,
-    noMargins: true
+    noMargins: true,
+    debug: false
   }),
 
   methods:{
