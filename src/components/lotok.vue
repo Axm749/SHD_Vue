@@ -97,7 +97,7 @@
             <v-col>
                 <v-btn
                     color=""
-                    @click="cableParam = defaultCableParam"
+                    @click="cabel_reset"
                     width="100%"
                 >
                     Сбросить все кабели
@@ -115,7 +115,7 @@
             <v-col>
                 <v-btn
                     color=""
-                    @click="cableParam = defaultCableParam"
+                    @click="cabel_reset"
                     width="100%"
                 >
                     <v-icon>mdi-cog</v-icon>
@@ -166,7 +166,10 @@
       class="pa-5 mt-5"
       v-show="started"
   >
-      
+
+       <p>{{answer}}</p>
+<!--	  <td>Длина кабельного лотка: {{answer.Lotok_Shirota}} мм.</td>-->
+<!--	  <td> Высота кабельного лотка: {{answer.Lotok_Visota}} мм</td>-->
       
       <v-btn
         @click="started=false"
@@ -181,7 +184,7 @@
 <script>
 import headerTab from './ui/commonUi/header.vue';
 import toolbarInfo from './ui/commonUi/tooltip.vue';
-    
+/* eslint-disable no-use-before-define */
 export default{
     name: 'lotok_vue',
     components: {
@@ -190,16 +193,28 @@ export default{
         },
     data: () =>({
         cableParam: [
-            {id: 0, title: `Широкий`, count: 1, diameter: 15},
-            {id: 1, title: `Тонкий`, count: 1, diameter: 5},
-            {id: 2, title: `Много средних`, count: 7, diameter: 7}
+            {id: 0, title: `Много тонкий`, count: 5, diameter: 2},
+            {id: 1, title: `Много средних`, count: 5, diameter: 4}
         ],
         defaultCableParam: [
             {id: 0, title: `Широкий`, count: 1, diameter: 15},
             {id: 1, title: `Тонкий`, count: 1, diameter: 5},
             {id: 2, title: `Много средних`, count: 7, diameter: 7}
         ],
-
+        LotokDefault: [
+            {lenght: 500,height: 30},
+            {lenght: 550,height: 80},
+            {lenght: 600,height: 100},
+            {lenght: 650,height: 150},
+            {lenght: 700,height: 200},
+            {lenght: 750,height: 250},
+            {lenght: 800,height: 300},
+        ],
+        answer: {
+			Lotok_Visota: 0,
+            Lotok_Shirota: 0
+        },
+        gap_reserve: 5, //в миллиметрах
         started: false,  //Параметр, отвечающий за вывод результатов работы электропитания после нажатия "Старт"
         rule: [
             value => !!value || 'Необходимо заполнить это поле.',
@@ -245,23 +260,108 @@ export default{
         },
 
     }),
-    methods:{
-        start(){
-            
-            this.started = true
-            
-        },              //Ф-ция старт
-        deleteItem: function (item, index) {
-        if(this.cableParam[index] === item) { 
-        // The template passes index as the second parameter to avoid indexOf, 
-        // it will be better for the performance especially for one large array
-        // (because indexOf actually loop the array to do the match)
-            this.cableParam.splice(index, 1)
-            // console.log(this.convServParam)
-        } else {
-            let found = this.cableParam.indexOf(item)
-            this.cableParam.splice(found, 1)
-        }
+	methods:{
+		start(){
+			this.started = true
+			var max_height = 0
+			var length = 0
+			this.answer.Lotok_Visota = 0
+			this.answer.Lotok_Shirota = 0
+			// Простой счёт лотка
+			this.cableParam.forEach(item => {
+				if (max_height < item.diameter) {
+					max_height = item.diameter
+				}
+				length = length + (Number(item.diameter * item.count) + (this.gap_reserve * Number(item.count)))
+			})
+			// Оптимизация - можем ли мы наложить кабели друг на друга не увеличивая max_height?
+			// Массив для оптимизации
+			let Optimization_Arr_1 = []
+			// Счетчик id
+			var id_counter = 0
+			// Создание массива с учётом формы записи кабелей из фронта (т.е. учет параметра count)
+			this.cableParam.forEach(item => {
+				for (var i = 0; i<item.count; i++) {
+					Optimization_Arr_1.push(
+						{
+							id: id_counter,
+							cabel_width: Number(item.diameter),
+							cabel_height: Number(item.diameter)
+						}
+					)
+					id_counter += 1
+				}
+			})
+			// Небольшой костыль, сортирует от большего к меньшему для улучшеной работы алгоритма
+			Optimization_Arr_1.sort((a, b) => b.cabel_height - a.cabel_height)
+			console.log(Optimization_Arr_1,'sorted')
+			// Массив использованных кабелей
+			let used_cabels = []
+			// Параметр для определения какую ширину взять, по сути костыль?
+			let which_wider = 0
+			console.log(`Result: `,Optimization_Arr_1)
+			// Оптимизация, проверяется каждый с каждым, не учитывая самого себя и кабели которые уже были использованы, после чего записывает результат сложения в Optimization_arr_1
+			Optimization_Arr_1.forEach(Loop_1 => {
+				Optimization_Arr_1.forEach(Loop_2 => {
+					if (Loop_1.cabel_height + Loop_2.cabel_height <= max_height && Loop_1 != Loop_2 && !used_cabels.includes(Loop_1) && !used_cabels.includes(Loop_2)) {
+						// выбор используемой ширины
+						if (Loop_1.cabel_width > Loop_2.cabel_width){
+							which_wider = Loop_1.cabel_width
+						} else {
+							which_wider = Loop_2.cabel_width
+						}
+                        Optimization_Arr_1.push(
+							{
+								id: id_counter,
+								cabel_width: which_wider,
+								cabel_height: Number(Loop_1.cabel_height + Loop_2.cabel_height),
+								// использованные кабели для суммирования
+								cabels_used: [Loop_1,Loop_2],
+								// unused_volume: (which_wider*Number(Loop_1.cabel_height + Loop_2.cabel_height))- (()+())
+							}
+						)
+						// записываем в использованные кабели
+						used_cabels.push(Loop_1)
+						used_cabels.push(Loop_2)
+						id_counter += 1
+						// Optimization_Arr_1.splice(Optimization_Arr_1.indexOf(Loop_1),1)
+						// Optimization_Arr_1.splice(Optimization_Arr_1.indexOf(Loop_2),1)
+					}
+				})
+			})
+			// удаляем использованные кабели из результата
+			used_cabels.forEach(ToDelete => {
+				Optimization_Arr_1.splice(Optimization_Arr_1.indexOf(ToDelete),1)
+			})
+			this.answer = Optimization_Arr_1
+			console.log(Optimization_Arr_1, 'Optimization_Arr_1 result')
+			console.log(used_cabels, 'cabels used to make stacks')
+			// length = length - this.gap_reserve
+			// this.answer.Lotok_Visota = Number(max_height)
+			// this.answer.Lotok_Shirota = Number(length)
+
+		},              //Ф-ция старт
+		deleteItem: function (item, index) {
+			if(this.cableParam[index] === item) {
+			// The template passes index as the second parameter to avoid indexOf,
+			// it will be better for the performance especially for one large array
+			// (because indexOf actually loop the array to do the match)
+			this.cableParam.splice(index, 1)
+			// console.log(this.convServParam)
+			} else {
+			let found = this.cableParam.indexOf(item)
+			this.cableParam.splice(found, 1)
+			}
+		},
+		cabel_reset: function(){
+			this.cableParam = [
+				{id: 0, title: `Широкий`, count: 1, diameter: 15},
+				{id: 1, title: `Тонкий`, count: 1, diameter: 5},
+				{id: 2, title: `Много средних`, count: 7, diameter: 7}
+			]
+			// По сути это костыль, лучше как-то отменить мутацию defaultcableParam от изменения cableParam
+			console.log("Hiihihihihihiii!!!11")
+		}
 
 
         /**
@@ -317,7 +417,6 @@ export default{
 
 
     },
-      },
       mounted(){
           console.log('hello')
       }
