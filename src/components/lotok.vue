@@ -184,7 +184,7 @@
 <script>
 import headerTab from './ui/commonUi/header.vue';
 import toolbarInfo from './ui/commonUi/tooltip.vue';
-/* eslint-disable no-use-before-define */
+/* eslint-disable */
 export default{
     name: 'lotok_vue',
     components: {
@@ -193,8 +193,9 @@ export default{
         },
     data: () =>({
         cableParam: [
-            {id: 0, title: `Много тонкий`, count: 5, diameter: 2},
-            {id: 1, title: `Много средних`, count: 5, diameter: 4}
+	        {id: 0, title: `Широкий`, count: 1, diameter: 15},
+	        {id: 1, title: `Тонкий`, count: 3, diameter: 10},
+	        {id: 2, title: `Много средних`, count: 6, diameter: 5}
         ],
         defaultCableParam: [
             {id: 0, title: `Широкий`, count: 1, diameter: 15},
@@ -286,7 +287,12 @@ export default{
 						{
 							id: id_counter,
 							cabel_width: Number(item.diameter),
-							cabel_height: Number(item.diameter)
+							cabel_height: Number(item.diameter),
+							cabels_used: [{
+								id: id_counter,
+								cabel_width: Number(item.diameter),
+								cabel_height: Number(item.diameter),
+							}]
 						}
 					)
 					id_counter += 1
@@ -298,29 +304,64 @@ export default{
 			// Массив использованных кабелей
 			let used_cabels = []
 			// Параметр для определения какую ширину взять, по сути костыль?
-			let which_wider = 0
+			let more_wider = 0
+			let less_wider = 0
+			let buffer_obj = {}
 			console.log(`Result: `,Optimization_Arr_1)
 			// Оптимизация, проверяется каждый с каждым, не учитывая самого себя и кабели которые уже были использованы, после чего записывает результат сложения в Optimization_arr_1
 			Optimization_Arr_1.forEach(Loop_1 => {
 				Optimization_Arr_1.forEach(Loop_2 => {
-					if (Loop_1.cabel_height + Loop_2.cabel_height <= max_height && Loop_1 != Loop_2 && !used_cabels.includes(Loop_1) && !used_cabels.includes(Loop_2)) {
+					// console.log(Loop_1,' ', Loop_2)
+					if ((Loop_1.cabel_height + Loop_2.cabel_height <= max_height)
+						&& (Loop_1 != Loop_2)
+						&& (!used_cabels.includes(Loop_1))
+						&& (!used_cabels.includes(Loop_2))) {
 						// выбор используемой ширины
 						if (Loop_1.cabel_width > Loop_2.cabel_width){
-							which_wider = Loop_1.cabel_width
+							more_wider = Number(Loop_1.cabel_width)
+							less_wider = Number(Loop_2.cabel_width)
 						} else {
-							which_wider = Loop_2.cabel_width
+							more_wider = Number(Loop_2.cabel_width)
+							less_wider = Number(Loop_1.cabel_width)
 						}
-                        Optimization_Arr_1.push(
-							{
-								id: id_counter,
-								cabel_width: which_wider,
-								cabel_height: Number(Loop_1.cabel_height + Loop_2.cabel_height),
-								// использованные кабели для суммирования
-								cabels_used: [Loop_1,Loop_2],
-								// unused_volume: (which_wider*Number(Loop_1.cabel_height + Loop_2.cabel_height))- (()+())
+						console.log(Loop_2,Loop_1)
+						buffer_obj = {
+							id: id_counter,
+							cabel_width: more_wider,
+							cabel_height: Number(Loop_1.cabel_height + Loop_2.cabel_height),
+							// использованные кабели для суммирования данного стака
+							cabels_used: [],
+							// не использованное пространство
+							unspace_width: (more_wider - less_wider),
+							unspace_height: less_wider
+						}
+						// заполнение пустого пространства
+						Optimization_Arr_1.forEach(Loop_3 => {
+							if ((Loop_3.cabel_height <= buffer_obj.unspace_height)
+								&& (Loop_3.cabel_width <= buffer_obj.unspace_width)
+								&& (Loop_3 != buffer_obj)
+								&& (Loop_3 != Loop_2)
+								&& (Loop_3 != Loop_1)
+								&& (!used_cabels.includes(Loop_3))) {
+								// Уменьшаем неиспользованное пространство
+								buffer_obj.unspace_width = buffer_obj.unspace_width - Loop_3.cabel_width
+								// Добавляем кабели для заполнения в стак в массив использованных кабелей
+								Loop_3.cabels_used.forEach(put_used_cables => {
+									buffer_obj.cabels_used.push(put_used_cables)
+								})
+								used_cabels.push(Loop_3)
 							}
-						)
-						// записываем в использованные кабели
+						})
+						// добавление использованных кабелей для создания стака
+						Loop_1.cabels_used.forEach(put_used_cables => {
+							buffer_obj.cabels_used.push(put_used_cables)
+						})
+						Loop_2.cabels_used.forEach(put_used_cables => {
+							buffer_obj.cabels_used.push(put_used_cables)
+						})
+						// записываем созданый объект в массив оптимизации
+                        Optimization_Arr_1.push(buffer_obj)
+						// записываем в использованные кабели, нужно для *удаления* использованных ПРОМЕЖУТОЧНЫХ элементов
 						used_cabels.push(Loop_1)
 						used_cabels.push(Loop_2)
 						id_counter += 1

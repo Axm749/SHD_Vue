@@ -221,7 +221,7 @@ export default {
     // здесь разве что настройки
     irregularView: false,
     noMargins: true,
-    debug: false
+    debug: true
   }),
 
   methods:{
