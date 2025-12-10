@@ -126,6 +126,7 @@
 
 
         </v-row>
+		
 
 
 
@@ -173,8 +174,15 @@
       class="pa-5 mt-5"
       v-show="started"
   >
-
-       <p>{{answer}}</p>
+  <p> длина: {{answer.length}}</p>
+  <p> высота: {{answer.height}}</p>
+  <p> площадь: {{answer.S}} мм^2</p>
+  <p> какой бы была площадь в идеальном случае: {{answer.perfectS}} мм^2</p>
+  <p> площадь полученная / площадь идеальная: {{answer.percentOfPerfect}}%</p>
+  <p> площадь при расстановке в ряд: {{answer.SNonOptimised}} мм^2</p>
+  <p> площадь полученная / площадь при расстановке в ряд: {{answer.percentOfNonOptimised}}%</p>
+  
+  <p>{{answer}}</p>
 <!--	  <td>Длина кабельного лотка: {{answer.Lotok_Shirota}} мм.</td>-->
 <!--	  <td> Высота кабельного лотка: {{answer.Lotok_Visota}} мм</td>-->
 
@@ -273,16 +281,22 @@ export default{
 			this.started = true
 			var max_height = 0
 			var length = 0
+			var perfectS = 0
 			this.answer.Lotok_Visota = 0
 			this.answer.Lotok_Shirota = 0
 			// Простой счёт лотка
 			this.cableParam.forEach(item => {
 				// console.log(item)
+				// считаю идеальную площадь (хоть и подразумеваем как квадрат)
+				perfectS+=(item.diameter*item.diameter)*item.count
+				console.log(perfectS, "perfectS... added", item.diameter*item.diameter*item.count, "bc item.diameter = ", item.diameter)
+
 				if (max_height < item.diameter) {
 					max_height = item.diameter
 				}
 				length = length + (Number(item.diameter * item.count) + (this.gap_reserve * Number(item.count)))
 			})
+			console.log(max_height, "max_height")
 			// Оптимизация - можем ли мы наложить кабели друг на друга не увеличивая max_height?
 			// Массив для оптимизации
 			let Optimization_Arr_1 = []
@@ -382,7 +396,50 @@ export default{
 			used_cables.forEach(ToDelete => {
 				Optimization_Arr_1.splice(Optimization_Arr_1.indexOf(ToDelete),1)
 			})
-			this.answer = Optimization_Arr_1
+
+			// this.Optimization_Arr_1.forEach(item => {
+			// 	for (var i = 0; i<item.count; i++) {
+			// 		this.answer.push(
+			// 			{
+			// 				id: id_counter,
+			// 				cable_width: Number(item.diameter),
+			// 				cable_height: Number(item.diameter),
+			// 				cables_used: [{
+			// 					id: id_counter,
+			// 					cable_width: Number(item.diameter),
+			// 					cable_height: Number(item.diameter),
+			// 				}]
+			// 			}
+			// 		)
+			// 		id_counter += 1
+			// 	}
+			// })
+			
+			var max_length_end = 0
+			var max_height_end = 0
+			Optimization_Arr_1.forEach(cable => {
+				console.log(cable["id"], "cable", cable["cable_height"])
+				if (cable["cable_height"] >= max_height_end){
+					max_height_end = cable["cable_height"]
+				}
+				max_length_end+=cable["cable_width"]
+			})
+
+			this.answer = {	
+				
+				length: max_length_end,
+				height: max_height_end,
+				S: max_length_end*max_height_end,
+				perfectS: perfectS,
+				percentOfPerfect: (max_length_end*max_height_end/perfectS*100),
+				percentOfNonOptimised: ((max_length_end*max_height_end)/(max_height*length)*100),
+				length: length,
+				height: max_height,
+				SNonOptimised: length*max_height,
+				cables_used: Optimization_Arr_1
+			}
+			
+
 			console.log(Optimization_Arr_1, 'Optimization_Arr_1 result')
 			console.log(used_cables, 'cables used to make stacks')
 			// length = length - this.gap_reserve
@@ -520,13 +577,17 @@ export default{
 			console.log(new_arr, add_to_id, add_id)
 			// здесь и лежит главная логика объединения двух элементов
 			// мы имеем лишь два объекта: new_arr[add_to_id] и new_arr[add_id]
-			// if(
-			//
-			// ){
-			// 	new_arr[add_to_id] = {
-			//
-			// 	}
-			// }
+			if(
+				(new_arr[add_to_id] != new_arr[add_id])
+				&& (1)
+			){
+				console.log("можно объединить кабели: ", )
+				new_arr[add_to_id] = {
+					
+				}
+				// и обнуляем исходный объект
+				new_arr[add_id] = {}
+			}
 
 
 
