@@ -19,78 +19,76 @@
             class="inLine"
         >
             <div class="inCardTab mr-1 mt-1">
-                    <v-text-field
-                        v-model="server.title"
-                        required
-                        outlined
-                        clearable
-                        label="название"
-                        prepend-icon="mdi-rename-outline"
-                        placeholder="hello"
-                        :rules="rule"
-                        hide-details="auto"
-                        class="mt-2"
-                    >
-                        <template v-slot:label>
-                        <toolbarInfo
-                            title="название"
-                            desc = "название кабеля."
-                        />
-                        </template>
-                    </v-text-field>
+				<v-text-field
+					v-model="server.title"
+					required
+					outlined
+					clearable
+					label="название"
+					prepend-icon="mdi-rename-outline"
+					placeholder="hello"
+					:rules="rule"
+					hide-details="auto"
+					class="mt-2"
+				>
+					<template v-slot:label>
+					<toolbarInfo
+						title="название"
+						desc = "название кабеля."
+					/>
+					</template>
+				</v-text-field>
 
 
-                    <v-text-field
-                        v-model="server.count"
-                        type="number"
-                        required
-                        outlined
-                        clearable
-                        prepend-icon="mdi-counter"
-                        label="количество (шт)"
-                        :rules="rule"
-                        hide-details="auto"
-                        class="mt-5"
-                    >
-                        <template v-slot:label>
-                        <toolbarInfo
-                            title="количество (шт)"
-                            desc = "количество кабелей данного вида."
-                        />
-                        </template>
-                    </v-text-field>
+				<v-text-field
+					v-model="server.count"
+					type="number"
+					required
+					outlined
+					clearable
+					prepend-icon="mdi-counter"
+					label="количество (шт)"
+					:rules="rule"
+					hide-details="auto"
+					class="mt-5"
+				>
+					<template v-slot:label>
+					<toolbarInfo
+						title="количество (шт)"
+						desc = "количество кабелей данного вида."
+					/>
+					</template>
+				</v-text-field>
 
-                    <v-text-field
-                        v-model="server.diameter"
-                        type="number"
-                        required
-                        outlined
-                        clearable
-                        prepend-icon="mdi-diameter-outline"
-                        label="Диаметр (мм)"
-                        :rules="rule"
-                        hide-details="auto"
-                        class="mt-5"
-                    >
-                        <template v-slot:label>
-                        <toolbarInfo
-                            title="Диаметр (мм)"
-                            desc = "Диаметр одного кабеля данного вида."
-                        />
-                        </template>
-                    </v-text-field>
+				<v-text-field
+					v-model="server.diameter"
+					type="number"
+					required
+					outlined
+					clearable
+					prepend-icon="mdi-diameter-outline"
+					label="Диаметр (мм)"
+					:rules="rule"
+					hide-details="auto"
+					class="mt-5"
+				>
+					<template v-slot:label>
+					<toolbarInfo
+						title="Диаметр (мм)"
+						desc = "Диаметр одного кабеля данного вида."
+					/>
+					</template>
+				</v-text-field>
 
-                    <v-btn
-                        color="error"
-                        @click="deleteItem(server, index)"
-                        class="mt-5 mx-auto mb-2"
-                        width="100%"
-                    >
-                        <v-icon>mdi-trash-can</v-icon>  удалить
-                    </v-btn>
-                </div>
-
-
+				<v-btn
+					color="error"
+					@click="deleteItem(server, index)"
+					class="mt-5 mx-auto mb-2"
+					width="100%"
+				>
+					<v-icon>mdi-trash-can</v-icon>  удалить
+				</v-btn>
+			</div>
         </div>
 
         <v-row class="mt-1">
@@ -112,7 +110,7 @@
                     width="100%"
                 >добавить</v-btn>
             </v-col>
-            <v-col>
+            <!-- <v-col>
                 <v-btn
                     color=""
                     @click="cable_reset"
@@ -121,7 +119,7 @@
                     <v-icon>mdi-cog</v-icon>
                     Дополнительные настройки
                 </v-btn>
-            </v-col>
+            </v-col> -->
 
 
 
@@ -129,18 +127,31 @@
 		
 
 
-
-
-
-
-
-
-      <v-btn
-          @click="start"
-          color="primary"
-          class="mt-5"
-          width="100%"
-      >Старт</v-btn>
+		<v-text-field
+			v-model="default_height"
+			type="number"
+			required
+			outlined
+			clearable
+			prepend-icon="mdi-diameter-outline"
+			label="начальная высота лотка (мм)"
+			:rules="rule"
+			hide-details="auto"
+			class="mt-5"
+		>
+			<template v-slot:label>
+			<toolbarInfo
+				title="начальная высота лотка (мм)"
+				desc = "высота, ниже которой лоток не предлагается."
+			/>
+			</template>
+		</v-text-field>
+		<v-btn
+			@click="start"
+			color="primary"
+			class="mt-5"
+			width="100%"
+		>Старт</v-btn>
 		<v-btn
 			@click="secondary"
 			color="primary"
@@ -174,15 +185,15 @@
       class="pa-5 mt-5"
       v-show="started"
   >
-  <p> длина: {{answer.length}}</p>
-  <p> высота: {{answer.height}}</p>
-  <p> площадь: {{answer.S}} мм^2</p>
-  <p> какой бы была площадь в идеальном случае: {{answer.perfectS}} мм^2</p>
-  <p> площадь полученная / площадь идеальная: {{answer.percentOfPerfect}}%</p>
-  <p> площадь при расстановке в ряд: {{answer.SNonOptimised}} мм^2</p>
-  <p> площадь полученная / площадь при расстановке в ряд: {{answer.percentOfNonOptimised}}%</p>
-  
-  <p>{{answer}}</p>
+	<p> длина: {{answer.length}}</p>
+	<p> высота: {{answer.height}}</p>
+	<p> площадь: {{answer.S}} мм^2</p>
+	<p> какой бы была площадь в идеальном случае: {{answer.perfectS}} мм^2</p>
+	<p> площадь полученная / площадь идеальная: {{answer.percentOfPerfect}}%</p>
+	<p> площадь при расстановке в ряд: {{answer.SNonOptimised}} мм^2</p>
+	<p> площадь полученная / площадь при расстановке в ряд: {{answer.percentOfNonOptimised}}%</p>
+	
+	<p>{{answer}}</p>
 <!--	  <td>Длина кабельного лотка: {{answer.Lotok_Shirota}} мм.</td>-->
 <!--	  <td> Высота кабельного лотка: {{answer.Lotok_Visota}} мм</td>-->
 
@@ -214,8 +225,8 @@ export default{
         ],
         defaultCableParam: [
             {id: 0, title: `Широкий`, count: 1, diameter: 15},
-            {id: 1, title: `Тонкий`, count: 1, diameter: 5},
-            {id: 2, title: `Много средних`, count: 7, diameter: 7}
+	        {id: 1, title: `Тонкий`, count: 3, diameter: 10},
+	        {id: 2, title: `Много средних`, count: 6, diameter: 5}
         ],
         LotokDefault: [
             {lenght: 500,height: 30},
@@ -230,7 +241,8 @@ export default{
 			Lotok_Visota: 0,
             Lotok_Shirota: 0
         },
-        gap_reserve: 5, //в миллиметрах
+        gap_reserve: 5, 	//в миллиметрах
+		default_height: 50,	//в миллиметрах
         started: false,  //Параметр, отвечающий за вывод результатов работы электропитания после нажатия "Старт"
         rule: [
             value => !!value || 'Необходимо заполнить это поле.',
@@ -279,7 +291,7 @@ export default{
 	methods:{
 		start(){
 			this.started = true
-			var max_height = 0
+			var max_height = this.default_height
 			var length = 0
 			var perfectS = 0
 			this.answer.Lotok_Visota = 0
@@ -617,11 +629,11 @@ export default{
 		cable_reset: function(){
 			this.cableParam = [
 				{id: 0, title: `Широкий`, count: 1, diameter: 15},
-				{id: 1, title: `Тонкий`, count: 1, diameter: 5},
-				{id: 2, title: `Много средних`, count: 7, diameter: 7}
+				{id: 1, title: `Несколько средних`, count: 3, diameter: 10},
+				{id: 2, title: `Много тонких`, count: 6, diameter: 5}
 			]
 			// По сути это костыль, лучше как-то отменить мутацию defaultcableParam от изменения cableParam
-			console.log("Hiihihihihihiii!!!11")
+			// console.log("Hiihihihihihiii!!!11")
 		},
 
 		// расчет площади для массива кабелей
