@@ -1,297 +1,403 @@
 <template>
-  <div>
-    <!-- заголовок -->
-    <div class="header">
-        <headerTab
-            title="Расчет кабельных лотков"
-            v-bind:info = "componentInfo"
-        ></headerTab>
-    </div>
+	<div>        <!-- eslint-disable -->
+		<!-- заголовок -->
+		<div class="header">
+			<headerTab
+				title="Расчет кабельных лотков"
+				v-bind:info="componentInfo"
+			></headerTab>
+		</div>
 
-    <!-- поля ввода -->
-    <v-card class="pa-5" tile>
+		<!-- поля ввода -->
+		<v-card class="pa-5" tile>
 
-        <h2 class="my-5">Параметры кабеля</h2>
+			<h2 class="my-5">Параметры кабеля</h2>
 
-        <div
-            v-for="(server, index) in cableParam"
-            :key="index"
-            class="inLine"
-        >
-            <div class="inCardTab mr-1 mt-1">
-				<v-text-field
-					v-model="server.title"
-					required
-					outlined
-					clearable
-					label="название"
-					prepend-icon="mdi-rename-outline"
-					placeholder="hello"
-					:rules="rule"
-					hide-details="auto"
-					class="mt-2"
-				>
-					<template v-slot:label>
-					<toolbarInfo
-						title="название"
-						desc = "название кабеля."
-					/>
-					</template>
-				</v-text-field>
+			<div
+				v-for="(server, index) in cableParam"
+				:key="index"
+				class="inLine"
+			>
+				<div class="inCardTab mr-1 mt-1">
+					<v-text-field
+						v-model="server.title"
+						required
+						outlined
+						clearable
+						label="название"
+						prepend-icon="mdi-rename-outline"
+						placeholder="hello"
+						:rules="rule"
+						hide-details="auto"
+						class="mt-2"
+					>
+						<template v-slot:label>
+							<toolbarInfo
+								title="название"
+								desc="название кабеля."
+							/>
+						</template>
+					</v-text-field>
 
 
-				<v-text-field
-					v-model="server.count"
-					type="number"
-					required
-					outlined
-					clearable
-					prepend-icon="mdi-counter"
-					label="количество (шт)"
-					:rules="rule"
-					hide-details="auto"
-					class="mt-5"
-				>
-					<template v-slot:label>
-					<toolbarInfo
-						title="количество (шт)"
-						desc = "количество кабелей данного вида."
-					/>
-					</template>
-				</v-text-field>
+					<v-text-field
+						v-model="server.count"
+						type="number"
+						required
+						outlined
+						clearable
+						prepend-icon="mdi-counter"
+						label="количество (шт)"
+						:rules="rule"
+						hide-details="auto"
+						class="mt-5"
+					>
+						<template v-slot:label>
+							<toolbarInfo
+								title="количество (шт)"
+								desc="количество кабелей данного вида."
+							/>
+						</template>
+					</v-text-field>
 
-				<v-text-field
-					v-model="server.diameter"
-					type="number"
-					required
-					outlined
-					clearable
-					prepend-icon="mdi-diameter-outline"
-					label="Диаметр (мм)"
-					:rules="rule"
-					hide-details="auto"
-					class="mt-5"
-				>
-					<template v-slot:label>
-					<toolbarInfo
-						title="Диаметр (мм)"
-						desc = "Диаметр одного кабеля данного вида."
-					/>
-					</template>
-				</v-text-field>
+					<v-text-field
+						v-model="server.diameter"
+						type="number"
+						required
+						outlined
+						clearable
+						prepend-icon="mdi-diameter-outline"
+						label="Диаметр (мм)"
+						:rules="rule"
+						hide-details="auto"
+						class="mt-5"
+					>
+						<template v-slot:label>
+							<toolbarInfo
+								title="Диаметр (мм)"
+								desc="Диаметр одного кабеля данного вида."
+							/>
+						</template>
+					</v-text-field>
 
-				<v-btn
-					color="error"
-					@click="deleteItem(server, index)"
-					class="mt-5 mx-auto mb-2"
-					width="100%"
-				>
-					<v-icon>mdi-trash-can</v-icon>  удалить
-				</v-btn>
+					<v-btn
+						color="error"
+						@click="deleteItem(server, index)"
+						class="mt-5 mx-auto mb-2"
+						width="100%"
+					>
+						<v-icon>mdi-trash-can</v-icon>
+						удалить
+					</v-btn>
+				</div>
 			</div>
-        </div>
 
-        <v-row class="mt-1">
-            <v-col>
-                <v-btn
-                    color=""
-                    @click="cable_reset"
-                    width="100%"
-                >
-                    Сбросить все кабели
-                </v-btn>
-            </v-col>
-            <v-col>
-                <v-btn
-                    color="primary"
-                    @click="cableParam.push(
+			<v-row class="mt-1">
+				<v-col>
+					<v-btn
+						color=""
+						@click="cable_reset"
+						width="100%"
+					>
+						Сбросить все кабели
+					</v-btn>
+				</v-col>
+				<v-col>
+					<v-btn
+						color="primary"
+						@click="cableParam.push(
                         {id: 0, title: `новый`, count: 1, diameter: 1}
                     )"
-                    width="100%"
-                >добавить</v-btn>
-            </v-col>
-            <!-- <v-col>
-                <v-btn
-                    color=""
-                    @click="cable_reset"
-                    width="100%"
-                >
-                    <v-icon>mdi-cog</v-icon>
-                    Дополнительные настройки
-                </v-btn>
-            </v-col> -->
+						width="100%"
+					>добавить
+					</v-btn>
+				</v-col>
+				<!-- <v-col>
+					<v-btn
+						color=""
+						@click="cable_reset"
+						width="100%"
+					>
+						<v-icon>mdi-cog</v-icon>
+						Дополнительные настройки
+					</v-btn>
+				</v-col> -->
 
 
-
-        </v-row>
-		
+			</v-row>
 
 
-		<v-text-field
-			v-model="default_height"
-			type="number"
-			required
-			outlined
-			clearable
-			prepend-icon="mdi-diameter-outline"
-			label="начальная высота лотка (мм)"
-			:rules="rule"
-			hide-details="auto"
-			class="mt-5"
+			<v-text-field
+				v-model="default_height"
+				type="number"
+				required
+				outlined
+				clearable
+				prepend-icon="mdi-diameter-outline"
+				label="начальная высота лотка (мм)"
+				:rules="rule"
+				hide-details="auto"
+				class="mt-5"
+			>
+				<template v-slot:label>
+					<toolbarInfo
+						title="начальная высота лотка (мм)"
+						desc="высота, ниже которой лоток не предлагается."
+					/>
+				</template>
+			</v-text-field>
+
+			<v-row>
+				<v-col cols="100%">
+					<v-btn
+						@click="start"
+						color="primary"
+						class="mt-5"
+						width="100%"
+					>Старт</v-btn>
+				</v-col>
+				<v-col cols="auto">
+					<v-menu
+						top
+						offset-y
+						:close-on-content-click="false"
+						v-model="menu"
+					>
+
+						<template v-slot:activator="{ on, attrs }">
+							<v-icon
+								class="mt-6"
+								v-bind="attrs"
+								v-on="on"
+							>mdi-cog
+							</v-icon>
+						</template>
+						<v-card>
+							<v-list>
+								<v-list-item>
+									<v-list-item-content>
+										<v-list-item-title>Запас расстояния между кабелями</v-list-item-title>
+									</v-list-item-content>
+									<v-list-item-action>
+										<v-text-field
+											outlined
+											clearable
+											label="в миллиметрах"
+											v-model.number="gap_reserve"
+											type="number"
+										/>
+									</v-list-item-action>
+								</v-list-item>
+								<v-list-item>
+									<v-list-item-content>
+										<v-list-item-title>Запас расстояния высоты кабельного лотка</v-list-item-title>
+									</v-list-item-content>
+									<v-list-item-action>
+										<v-text-field
+											outlined
+											clearable
+											label="в миллиметрах"
+											v-model.number="height_gap"
+											type="number"
+										/>
+									</v-list-item-action>
+								</v-list-item>
+								<v-btn
+									color="primary"
+									text
+									@click="menu = false"
+								>
+									закрыть
+								</v-btn>
+							</v-list>
+						</v-card>
+					</v-menu>
+				</v-col>
+			</v-row>
+<!--			<v-btn-->
+<!--				@click="secondary"-->
+<!--				color="primary"-->
+<!--				class="mt-5"-->
+<!--				width="100%"-->
+<!--			>второй старт-->
+<!--			</v-btn>-->
+
+		</v-card>
+
+		<!-- уведомление об ошибке -->
+		<v-snackbar
+			v-model="snackbar"
+			:timeout="timeout"
+
 		>
-			<template v-slot:label>
-			<toolbarInfo
-				title="начальная высота лотка (мм)"
-				desc = "высота, ниже которой лоток не предлагается."
-			/>
+			{{ errorText }}
+
+			<template v-slot:action="{ attrs }">
+				<v-btn
+					color="accent"
+					text
+					v-bind="attrs"
+					@click="snackbar = false"
+				>
+					ОК
+				</v-btn>
 			</template>
-		</v-text-field>
-		<v-btn
-			@click="start"
-			color="primary"
-			class="mt-5"
-			width="100%"
-		>Старт</v-btn>
-		<v-btn
-			@click="secondary"
-			color="primary"
-			class="mt-5"
-			width="100%"
-		>второй старт</v-btn>
+		</v-snackbar>
 
-  </v-card>
+		<v-card
+			class="pa-5 mt-5"
+			v-if="started"
+		>
+			<v-simple-table>
+				<template v-slot:default>
+					<thead>
+					<tr>
+						<th class="text-left">
+							Параметр
+						</th>
+						<th class="text-left">
+							Значение:
+						</th>
+						<!-- <th class="text-left" v-if="rulesViolation">
+						  Примечания:
+						</th> -->
+					</tr>
+					</thead>
+					<tbody>
+					<!-- Высота кабельного лотка -->
+					<tr>
+						<td>Высота кабельного лотка</td>
+						<td>
+							<v-chip
+								:color="'grey'"
+								dark
+							><toolbarInfo
+								:title="answer.height + '  мм'"
+								:desc = "`Высота кабельного лотка с учётом заданного запаса в ${ height_gap } мм`"
+							/>
+							</v-chip>
+						</td>
+					</tr>
+					<!-- Ширина кабельного лотка -->
+					<tr>
+						<td>Ширина кабельного лотка</td>
+						<td>
+							<v-chip
+								:color="'grey'"
+								dark
+							><toolbarInfo
+								:title="answer.length + '  мм'"
+								:desc = "`Ширина кабельного лотка с учётом заданного запаса в ${gap_reserve} мм между каждым пучком кабелей, общий запас составляет ${gap_reserve * (answer.cables_used.length - 1)} мм`"
+							/>
+							</v-chip>
+						</td>
+					</tr>
+					<!-- Площадь кабельного лотка -->
+					<tr>
+						<td>Площадь кабельного лотка</td>
+						<td>
+							<v-chip
+								:color="getColor()"
+								dark
+							><toolbarInfo
+								:title="answer.S + '  мм^2'"
+								:desc = "`Площадь кабельного лотка, до применения запасов по длине и ширине.${(answer.S == answer.perfectS ? ` Рассчитанная площадь лотка (${answer.S} мм^2) равна идеальной площади лотка (${answer.perfectS} мм^2) до применения запасов.`:` Рассчитанная площадь лотка (${answer.S} мм^2) на ${Math.round(answer.percentOfPerfect - 100)}% больше, чем идеальная площадь лотка (${answer.perfectS} мм^2) до применения запасов`)}`"
+							/>
+							</v-chip>
+						</td>
+					</tr>
+					</tbody>
+				</template>
+			</v-simple-table>
+<!--			<p>{{ answer }}</p>-->
+			<!--	  <td>Длина кабельного лотка: {{answer.Lotok_Shirota}} мм.</td>-->
+			<!--	  <td> Высота кабельного лотка: {{answer.Lotok_Visota}} мм</td>-->
 
-  <!-- уведомление об ошибке -->
-  <v-snackbar
-          v-model="snackbar"
-          :timeout="timeout"
-
-      >
-      {{ errorText }}
-
-      <template v-slot:action="{ attrs }">
-          <v-btn
-          color="accent"
-          text
-          v-bind="attrs"
-          @click="snackbar = false"
-          >
-          ОК
-          </v-btn>
-      </template>
-      </v-snackbar>
-
-  <v-card
-      class="pa-5 mt-5"
-      v-show="started"
-  >
-	<p> длина: {{answer.length}}</p>
-	<p> высота: {{answer.height}}</p>
-	<p> площадь: {{answer.S}} мм^2</p>
-	<p> какой бы была площадь в идеальном случае: {{answer.perfectS}} мм^2</p>
-	<p> площадь полученная / площадь идеальная: {{answer.percentOfPerfect}}%</p>
-	<p> площадь при расстановке в ряд: {{answer.SNonOptimised}} мм^2</p>
-	<p> площадь полученная / площадь при расстановке в ряд: {{answer.percentOfNonOptimised}}%</p>
-	
-	<p>{{answer}}</p>
-<!--	  <td>Длина кабельного лотка: {{answer.Lotok_Shirota}} мм.</td>-->
-<!--	  <td> Высота кабельного лотка: {{answer.Lotok_Visota}} мм</td>-->
-
-      <v-btn
-        @click="started=false"
-        class="mt-2"
-      >скрыть</v-btn>
- </v-card>
+			<v-btn
+				@click="started=false"
+				class="mt-2"
+			>скрыть
+			</v-btn>
+		</v-card>
 
 
-</div>
+	</div>
 </template>
 
 <script>
 import headerTab from './ui/commonUi/header.vue';
 import toolbarInfo from './ui/commonUi/tooltip.vue';
 /* eslint-disable */
-export default{
-    name: 'lotok_vue',
-    components: {
-        headerTab,
-        toolbarInfo
-        },
-    data: () =>({
-        cableParam: [
-	        {id: 0, title: `Широкий`, count: 1, diameter: 15},
-	        {id: 1, title: `Тонкий`, count: 3, diameter: 10},
-	        {id: 2, title: `Много средних`, count: 6, diameter: 5}
-        ],
-        defaultCableParam: [
-            {id: 0, title: `Широкий`, count: 1, diameter: 15},
-	        {id: 1, title: `Тонкий`, count: 3, diameter: 10},
-	        {id: 2, title: `Много средних`, count: 6, diameter: 5}
-        ],
-        LotokDefault: [
-            {lenght: 500,height: 30},
-            {lenght: 550,height: 80},
-            {lenght: 600,height: 100},
-            {lenght: 650,height: 150},
-            {lenght: 700,height: 200},
-            {lenght: 750,height: 250},
-            {lenght: 800,height: 300},
-        ],
-        answer: {
+export default {
+	name: 'lotok_vue',
+	components: {
+		headerTab,
+		toolbarInfo
+	},
+	data: () => ({
+		cableParam: [
+			{id: 0, title: `Широкий`, count: 1, diameter: 15},
+			{id: 1, title: `Тонкий`, count: 3, diameter: 10},
+			{id: 2, title: `Много средних`, count: 6, diameter: 5}
+		],
+		defaultCableParam: [
+			{id: 0, title: `Широкий`, count: 1, diameter: 15},
+			{id: 1, title: `Тонкий`, count: 3, diameter: 10},
+			{id: 2, title: `Много средних`, count: 6, diameter: 5}
+		],
+		LotokDefault: [
+			{lenght: 500, height: 30},
+			{lenght: 550, height: 80},
+			{lenght: 600, height: 100},
+			{lenght: 650, height: 150},
+			{lenght: 700, height: 200},
+			{lenght: 750, height: 250},
+			{lenght: 800, height: 300},
+		],
+		answer: {
 			Lotok_Visota: 0,
-            Lotok_Shirota: 0
-        },
-        gap_reserve: 5, 	//в миллиметрах
+			Lotok_Shirota: 0
+		},
+		menu: false, // для работы попаппа?
+		gap_reserve: 5, 	//запас между кабелями в миллиметрах
+		height_gap: 5, //запас высоты в миллиметрах
 		default_height: 50,	//в миллиметрах
-        started: false,  //Параметр, отвечающий за вывод результатов работы электропитания после нажатия "Старт"
-        rule: [
-            value => !!value || 'Необходимо заполнить это поле.',
-        ],                       //Правила для текстовых полей
-        snackbar: false,      // окошко об ошибке
-        timeout: 2500,
-        errorText: 'Неверно введены данные или они отсутствуют',
+		started: false,  //Параметр, отвечающий за вывод результатов работы электропитания после нажатия "Старт"
+		rule: [
+			value => !!value || 'Необходимо заполнить это поле.',
+		],                       //Правила для текстовых полей
+		snackbar: false,      // окошко об ошибке
+		timeout: 2500,
+		errorText: 'Неверно введены данные или они отсутствуют',
 
 
-        // для пункта с информацией о модуле
-        componentInfo: {
-            name: 'расчет кабельных лотков',
-            incomes: [
-            'Название кабелей;',
-            'Диаметры кабелей (мм);',
-            'Кол-во кабелей одного вида (шт.);',
-            'запас диаметра для прокладки (мм).',
-            ],
-            outcomes: [
-            'Размеры лотка, необходимые для прокладки кабеля;'],
-            description: `В этом разделе программы рассчитываются габариты лотка, необходимого для прокладки указанных кабелей.`,
-            disclaimers: [
-            'Модуль рассчитывает в двух режимах работы: ',
-            'В прямоугольном, лоток будет параметры ширины и высоты;',
-            'В круговом, труба имеет значение радиуса.',
-            "_",
+		// для пункта с информацией о модуле
+		componentInfo: {
+			name: 'расчет кабельных лотков',
+			incomes: [
+				'Название кабелей;',
+				'Диаметры кабелей (мм);',
+				'Кол-во кабелей одного вида (шт.);',
+				'запас диаметра для прокладки (мм).',
+			],
+			outcomes: [
+				'Размеры лотка, необходимые для прокладки кабеля;'],
+			description: `В этом разделе программы рассчитываются габариты лотка, необходимого для прокладки указанных кабелей. В ходе работы алгоритма кабели с большим размером располагаются снизу, а кабели меньшего размера располагаются поверх больших кабелей. После полученного укомплектованного набора кабелей, между ними добавляется запас для монтажа и только после этого происходит вывод информации о ширине кабельного лотка (в режиме прямоугольного лотка, режим трубы в разработке). Высота кабельного лотка берёт заданное значение высоты кабеля, или же размер минимального кабеля в заданных входных параметрах. К этому значению добавляется запас высоты для крышки кабельного лотка, после чего полученное значение высоты кабельного лотка выводится в ответе.`,
+			disclaimers: [
+				'Модуль рассчитывает в режиме прямоугольного лотка: ',
+				'В прямоугольном режиме, параметры лотка будут выданны в виде ширины и высоты с учётом необходимых запасов для кабелей и крышки кабельного лотка.',
+				'Запасное расстояние между кабелями необходимо для монтажа кабелей.',
+				'Запасное расстояние для крышки кабельного лотка необходимо для упрощения монтажа кабелей'
 
-            ],
-            constants: [
-            {
-                name: 'PlaceHolder 1 value',
-                massive: [
-                    'PlaceHolder 1 value'
-                ]
-            },
-            {
-                name: 'PlaceHolder 2 value',
-                massive: [
-                    'PlaceHolder 2 value'
-                ]
-            },
-            ]
-        },
+			],
+		},
 
-    }),
-	methods:{
-		start(){
+	}),
+	methods: {
+		// методы для расчёта кабельных лотков
+		start() {
 			this.started = true
-			var max_height = this.default_height
+			var max_height = Number(this.default_height)
 			var length = 0
 			var perfectS = 0
 			this.answer.Lotok_Visota = 0
@@ -300,11 +406,11 @@ export default{
 			this.cableParam.forEach(item => {
 				// console.log(item)
 				// считаю идеальную площадь (хоть и подразумеваем как квадрат)
-				perfectS+=(item.diameter*item.diameter)*item.count
-				console.log(perfectS, "perfectS... added", item.diameter*item.diameter*item.count, "bc item.diameter = ", item.diameter)
+				perfectS += (item.diameter * item.diameter) * item.count
+				console.log(perfectS, "perfectS... added", item.diameter * item.diameter * item.count, "bc item.diameter = ", item.diameter)
 
 				if (max_height < item.diameter) {
-					max_height = item.diameter
+					max_height = Number(item.diameter)
 				}
 				length = length + (Number(item.diameter * item.count) + (this.gap_reserve * Number(item.count)))
 			})
@@ -316,7 +422,7 @@ export default{
 			var id_counter = 0
 			// Создание массива с учётом формы записи кабелей из фронта (т.е. учет параметра count)
 			this.cableParam.forEach(item => {
-				for (var i = 0; i<item.count; i++) {
+				for (var i = 0; i < item.count; i++) {
 					Optimization_Arr_1.push(
 						{
 							id: id_counter,
@@ -334,31 +440,31 @@ export default{
 			})
 			// Небольшой костыль, сортирует от большего к меньшему для улучшеной работы алгоритма
 			Optimization_Arr_1.sort((a, b) => b.cable_height - a.cable_height)
-			console.log(Optimization_Arr_1,'sorted')
+			console.log(Optimization_Arr_1, 'sorted')
 			// Массив использованных кабелей
 			let used_cables = []
 			// Параметр для определения какую ширину взять, по сути костыль?
 			let more_wider = 0
 			let less_wider = 0
 			let buffer_obj = {}
-			console.log(`Result: `,Optimization_Arr_1)
+			console.log(`Result: `, Optimization_Arr_1)
 			// Оптимизация, проверяется каждый с каждым, не учитывая самого себя и кабели которые уже были использованы, после чего записывает результат сложения в Optimization_arr_1
 			Optimization_Arr_1.forEach(Loop_1 => {
 				Optimization_Arr_1.forEach(Loop_2 => {
 					// console.log(Loop_1,' ', Loop_2)
-					if ((Loop_1.cable_height + Loop_2.cable_height <= max_height)
+					if ((Loop_1.cable_height + Loop_2.cable_height <= Number(max_height))
 						&& (Loop_1 !== Loop_2)
 						&& (!used_cables.includes(Loop_1))
 						&& (!used_cables.includes(Loop_2))) {
 						// выбор используемой ширины
-						if (Loop_1.cable_width > Loop_2.cable_width){
+						if (Loop_1.cable_width > Loop_2.cable_width) {
 							more_wider = Number(Loop_1.cable_width)
 							less_wider = Number(Loop_2.cable_width)
 						} else {
 							more_wider = Number(Loop_2.cable_width)
 							less_wider = Number(Loop_1.cable_width)
 						}
-						console.log(Loop_2,Loop_1)
+						console.log(Loop_2, Loop_1)
 						buffer_obj = {
 							id: id_counter,
 							cable_width: more_wider,
@@ -394,7 +500,7 @@ export default{
 							buffer_obj.cables_used.push(put_used_cables)
 						})
 						// записываем созданый объект в массив оптимизации
-                        Optimization_Arr_1.push(buffer_obj)
+						Optimization_Arr_1.push(buffer_obj)
 						// записываем в использованные кабели, нужно для *удаления* использованных ПРОМЕЖУТОЧНЫХ элементов
 						used_cables.push(Loop_1)
 						used_cables.push(Loop_2)
@@ -406,7 +512,7 @@ export default{
 			})
 			// удаляем использованные кабели из результата
 			used_cables.forEach(ToDelete => {
-				Optimization_Arr_1.splice(Optimization_Arr_1.indexOf(ToDelete),1)
+				Optimization_Arr_1.splice(Optimization_Arr_1.indexOf(ToDelete), 1)
 			})
 
 			// this.Optimization_Arr_1.forEach(item => {
@@ -426,37 +532,31 @@ export default{
 			// 		id_counter += 1
 			// 	}
 			// })
-			
+
 			var max_length_end = 0
-			var max_height_end = 0
+			var max_height_end = Number(this.default_height)
 			Optimization_Arr_1.forEach(cable => {
-				console.log(cable["id"], "cable", cable["cable_height"])
-				if (cable["cable_height"] >= max_height_end){
+				if (cable["cable_height"] >= max_height_end) {
 					max_height_end = cable["cable_height"]
 				}
-				max_length_end+=cable["cable_width"]
+				max_length_end += cable["cable_width"]
 			})
 
-			this.answer = {	
-				
-				length: max_length_end,
-				height: max_height_end,
-				S: max_length_end*max_height_end,
+
+			this.answer = {
+
+				S: max_length_end * max_height_end,
 				perfectS: perfectS,
-				percentOfPerfect: (max_length_end*max_height_end/perfectS*100),
-				percentOfNonOptimised: ((max_length_end*max_height_end)/(max_height*length)*100),
-				length: length,
-				height: max_height,
-				SNonOptimised: length*max_height,
+				percentOfPerfect: (max_length_end * max_height_end / perfectS * 100),
+				percentOfNonOptimised: ((max_length_end * max_height_end) / (max_height * length) * 100),
+				length: length + (this.gap_reserve * (Optimization_Arr_1.length - 1)),
+				height: Number(max_height) + (this.height_gap),
+				SNonOptimised: length * max_height,
 				cables_used: Optimization_Arr_1
 			}
-			
+
 
 			console.log(Optimization_Arr_1, 'Optimization_Arr_1 result')
-			console.log(used_cables, 'cables used to make stacks')
-			// length = length - this.gap_reserve
-			// this.answer.Lotok_Visota = Number(max_height)
-			// this.answer.Lotok_Shirota = Number(length)
 
 		},              //Ф-ция старт
 
@@ -512,11 +612,10 @@ export default{
 			console.log(main_arr, 'main arr')
 
 			var j_forbidden = [],
-				new_obj={},
-				new_arr=[],
+				new_obj = {},
+				new_arr = [],
 				possible_S = 0,
 				current_S = 0
-
 
 
 			// Оптимизация - можем ли мы наложить кабели друг на друга
@@ -531,14 +630,14 @@ export default{
 				for (let j = i; j < main_arr.length; j++) {
 					console.log(i, 'i', j, 'j')
 					// обнуляем служебные переменные
-					new_obj={}
-					new_arr=[]
+					new_obj = {}
+					new_arr = []
 					possible_S = 0
 
-					if (j_forbidden.includes(j)){
+					if (j_forbidden.includes(j)) {
 						console.log(j, 'is in', j_forbidden, 'must skip')
 					}
-					if ( i === j ){
+					if (i === j) {
 						console.log('Dont stack a cable with himself')
 					}
 					// 	i - кого совмещаем _ main_arr[i]
@@ -559,7 +658,7 @@ export default{
 					if (possible_S < current_S) {
 						console.log('hello', possible_S <= current_S)
 						console.log('hello', possible_S, current_S)
-						main_arr=new_arr
+						main_arr = new_arr
 						// 	также нужно указать, что индекс j в таком случае использовать нельзя
 						j_forbidden.push(j)
 						console.log('j_forbidden', j_forbidden)
@@ -589,18 +688,15 @@ export default{
 			console.log(new_arr, add_to_id, add_id)
 			// здесь и лежит главная логика объединения двух элементов
 			// мы имеем лишь два объекта: new_arr[add_to_id] и new_arr[add_id]
-			if(
+			if (
 				(new_arr[add_to_id] != new_arr[add_id])
 				&& (1)
-			){
-				console.log("можно объединить кабели: ", )
-				new_arr[add_to_id] = {
-					
-				}
+			) {
+				console.log("можно объединить кабели: ",)
+				new_arr[add_to_id] = {}
 				// и обнуляем исходный объект
 				new_arr[add_id] = {}
 			}
-
 
 
 			return {
@@ -612,21 +708,19 @@ export default{
 		},
 
 
-
-
 		deleteItem: function (item, index) {
-			if(this.cableParam[index] === item) {
-			// The template passes index as the second parameter to avoid indexOf,
-			// it will be better for the performance especially for one large array
-			// (because indexOf actually loop the array to do the match)
-			this.cableParam.splice(index, 1)
-			// console.log(this.convServParam)
+			if (this.cableParam[index] === item) {
+				// The template passes index as the second parameter to avoid indexOf,
+				// it will be better for the performance especially for one large array
+				// (because indexOf actually loop the array to do the match)
+				this.cableParam.splice(index, 1)
+				// console.log(this.convServParam)
 			} else {
-			let found = this.cableParam.indexOf(item)
-			this.cableParam.splice(found, 1)
+				let found = this.cableParam.indexOf(item)
+				this.cableParam.splice(found, 1)
 			}
 		},
-		cable_reset: function(){
+		cable_reset: function () {
 			this.cableParam = [
 				{id: 0, title: `Широкий`, count: 1, diameter: 15},
 				{id: 1, title: `Несколько средних`, count: 3, diameter: 10},
@@ -646,23 +740,38 @@ export default{
 
 			var current_height = 0
 			main_arr.forEach(item => {
-				if (current_height < item.cable_height) {current_height = item.cable_height}
+				if (current_height < item.cable_height) {
+					current_height = item.cable_height
+				}
 			})
 			console.log(current_height, 'current height')
 
-			var current_S = current_width*current_height;
+			var current_S = current_width * current_height;
 			console.log(current_S, 'current S')
 			return current_S;
+		},
+
+		// методы для графики
+		// получение цвета для рендера ответа
+		getColor(){
+			if( this.answer.percentOfPerfect <= 105 ){
+				return 'green'
+			} else if ( this.answer.percentOfPerfect <= 150 ){
+				return 'yellow'
+			} else if ( this.answer.percentOfPerfect <= 200 ){
+				return 'orange'
+			}
+			return 'red'
 		}
 	},
-      mounted(){
-          console.log('hello')
-      }
-  }
+	mounted() {
+		console.log('hello')
+	}
+}
 </script>
 
 <style>
-.inLine{
-    display:inline-block;
+.inLine {
+	display: inline-block;
 }
 </style>
